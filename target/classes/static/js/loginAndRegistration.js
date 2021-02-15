@@ -88,11 +88,6 @@ function checkPassConfirm(firstPas) {
     }
 }
 
-function showLoginMenu() {
-    var loginMenu = document.getElementById("loginMenu");
-    loginMenu.style.display = loginMenu.style.display === "none" ? "block" : "none";
-}
-
 function checkInputs() {
     var email = document.getElementsByName("email")[0];
     var password = document.getElementsByName("password")[0];

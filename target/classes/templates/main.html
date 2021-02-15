@@ -10,12 +10,7 @@
 </head>
 <body onresize="setWidth()">
 
-<div sec:authorize="!isAuthenticated()">
-    <header th:insert="blocks/headers :: header-guest"></header>
-</div>
-<div sec:authorize="isAuthenticated()">
-    <header th:insert="blocks/headers :: header"></header>
-</div>
+<header th:insert="blocks/header :: header"></header>
 
 <div id="mainCont" class="container mt-2" style="min-width: max-content">
     <div class="row">
