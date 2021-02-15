@@ -74,7 +74,7 @@ public class LoginAndRegistration {
     public String registrationPost(@ModelAttribute("userForm") User userForm, Model model) {
         User user = restTemplate.getForObject("http://localhost:8082/get-user/{email}", User.class, userForm.getEmail());
         if (user != null) {
-            model.addAttribute("usernameError", "Пользователь с такой электронной почтой уже существует");
+            model.addAttribute("errorEmail", "Пользователь с такой электронной почтой уже существует");
             return "registration";
         }
 

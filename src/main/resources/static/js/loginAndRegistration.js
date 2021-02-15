@@ -14,11 +14,11 @@ function isUserAgreement() {
     var userAgreement = document.getElementById("userAgreement");
     var registrationButton = document.getElementById("registrationButton");
 
-    registrationButton.style.display = userAgreement.checked ? "inline" : "none";
+    registrationButton.disabled = !userAgreement.checked;
 }
 
 function validation() {
-    var formElements = document.querySelector('.formRegistr').querySelectorAll('.registr');
+    var formElements = document.querySelector('.formRegistr').querySelectorAll('.form-control');
 
     for (var i = 0; i < formElements.length; i++) {
         if (!formElements[i].value) {

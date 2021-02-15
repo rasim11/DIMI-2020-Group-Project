@@ -1,7 +1,11 @@
-.registr {
+.form-control {
     background-color: white;
 }
 
 .customInvalid {
+    background-color: #f7dbe8;
+}
+
+.customInvalid:focus {
     background-color: #f7dbe8;
 }
