@@ -40,7 +40,7 @@ public class LoginAndRegistration {
     public String loginPost(@RequestParam String email, @RequestParam String password, Model model) {
         User user = restTemplate.getForObject("http://localhost:8082/get-user/{email}", User.class, email);
         if (user == null) {
-            model.addAttribute("error", "Пользователя с такой электронной почтой не существует");
+            model.addAttribute("errorEmail", "Пользователь не найден");
             model.addAttribute("email", email);
             model.addAttribute("password", password);
             return "login";
@@ -49,7 +49,7 @@ public class LoginAndRegistration {
         securityService.autoLogin(email, password);
 
         if (!securityService.isAuthenticated()) {
-            model.addAttribute("error", "Введён неверный пароль");
+            model.addAttribute("errorPass", "Введён неверный пароль");
             model.addAttribute("email", email);
             model.addAttribute("password", password);
             return "login";
