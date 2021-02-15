@@ -1,0 +1,85 @@
+<div th:fragment="header">
+    <script src=js/loginAndRegistration.js></script>
+    <script>
+        jQuery(function ($) {
+            $(document).mouseup(function (e) { // событие клика по веб-документу
+                var div = $("#loginMenu"); // тут указываем ID элемента
+                var maindiv = $("#contLoginMenu");
+                if (!maindiv.is(e.target) // если клик был не по нашему блоку
+                    && maindiv.has(e.target).length === 0) { // и не по его дочерним элементам
+                    div.hide(); // скрываем его
+                }
+            });
+        });
+    </script>
+    <link href="/css/header.css" rel="stylesheet">
+    <div class="navbar-dark bg-primary shadow-sm">
+        <br>
+        <div class="container" style="min-width: max-content">
+            <div class="row">
+                <table style="width: 100%; min-width: 720px">
+                    <tbody>
+                    <tr>
+                        <td>
+                            <a href="/" style="text-decoration: none">
+                                <h4 style="color: white; font-family: Jokerman">DIMI 2020|Problems manager</h4>
+                            </a>
+                        </td>
+                        <td style="width: 240px">
+                            <a href="#" style="text-decoration: none">
+                                <h4 class="text-white">Создать проблему</h4>
+                            </a>
+                        </td>
+                        <td id="contLoginMenu" style="white-space: nowrap; width: 4px">
+                            <button style="background: none;border: none;" onclick="showLoginMenu()">
+                                <img src="/img/user-default.png" class="round"
+                                     style="max-width: 34px; height: auto; display: inline-block"/>
+                                <span class="text-white" style="display: inline-block"
+                                      sec:authentication="name"></span>
+                            </button>
+                            <form align="center" method="post" th:action="@{/logout}" id="loginMenu"
+                                  class="dropdown-content" style="display: none">
+                                <a href="#" class="btn">
+                                    <span>Личный кабинет</span>
+                                </a>
+                                <br>
+                                <button type="submit" class="btn">
+                                    <span>Выйти</span>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <br>
+    </div>
+</div>
+
+<div th:fragment="header-guest">
+    <div class="navbar-dark bg-primary shadow-sm">
+        <br>
+        <div class="container" style="min-width: max-content">
+            <div class="row">
+                <table style="width: 100%; min-width: 720px">
+                    <tbody>
+                    <tr>
+                        <td>
+                            <a href="/" style="text-decoration: none">
+                                <h4 style="color: white; font-family: Jokerman">DIMI 2020|Problems manager</h4>
+                            </a>
+                        </td>
+                        <td style="white-space: nowrap; width: 4px">
+                            <a href="/login" style="text-decoration: none">
+                                <h4 style="color: white">Вход и регистрация</h4>
+                            </a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <br>
+    </div>
+</div>

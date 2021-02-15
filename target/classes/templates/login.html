@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org/">
+<head>
+    <script src=js/loginAndRegistration.js></script>
+    <meta charset="UTF-8">
+    <title>PM|Вход</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="/css/password.css" rel="stylesheet">
+    <link href="/css/validation.css" rel="stylesheet">
+</head>
+<body>
+
+<header th:insert="blocks/headers :: header-guest"></header>
+
+<div class="container mt-3" style="min-width: max-content">
+    <div th:if="${error}">
+        <h3 align="center" style="color: red;" th:text="${error}"/>
+    </div>
+    <form method="post" onsubmit="return checkInputs()">
+        <table align="center" style="width: 300px">
+            <tbody>
+            <tr>
+                <td>
+                    <input type="text" name="email" placeholder="Адрес электронной почты"
+                           style="width: 100%;height: 100%;" th:value="${email}" oninput="setValidFormat(this)">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="pas">
+                        <input type="password" id="pas-input" placeholder="Пароль" name="password"
+                               style="width: 270px" th:value="${password}" oninput="setValidFormat(this)">
+                        <a href="#" class="pas-control"
+                           onclick="showPas(this, 'pas-input')">
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <table align="center" style="width: 300px">
+            <tr>
+                <td>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;height: 100%">Войти</button>
+                </td>
+                <td style="width: 70%">
+                    <a class="btn btn-secondary" style="width: 100%;height: 100%" href="/registration">
+                        Регистрация
+                    </a>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+
+<footer th:insert="blocks/footer :: footer"></footer>
+
+</body>
+</html>
