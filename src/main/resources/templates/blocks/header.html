@@ -1,7 +1,7 @@
 <div th:fragment="header">
     <link href="/css/pageConfig.css" rel="stylesheet">
     <div class="bg-primary shadow-sm">
-        <div class="container pt-4 pb-4" sec:authorize="!isAuthenticated()">
+        <div class="container pt-4 pb-4" sec:authorize="!isAuthenticated()" style="min-width: 720px">
             <a href="/" style="text-decoration: none;">
                 <span class="text-white" style="font-family: Jokerman; font-weight: bold; font-size: 24px">
                     DIMI 2020|Task-FIX
@@ -11,7 +11,7 @@
                 <span class="text-white" style="font-weight: bold; font-size: 24px">Вход и регистрация</span>
             </a>
         </div>
-        <div class="container pt-4 pb-4" sec:authorize="isAuthenticated()">
+        <div class="container pt-4 pb-4" sec:authorize="isAuthenticated()" style="min-width: 720px">
             <script src=js/header.js></script>
             <script>
                 jQuery(function ($) {
@@ -37,14 +37,14 @@
                     <button style="background: none;border: none; margin-bottom: 20px" onclick="showLoginMenu()">
                         <img src="/img/user-default.png" class="round"
                              style="max-width: 34px; height: auto; display: inline-block"/>
-                        <span class="text-white" sec:authentication="name"></span>
+                        <span class="text-white" th:text="${userFirstname}"/>
                     </button>
                     <form method="post" th:action="@{/logout}" id="loginMenu"
                           class="dropdown-content">
-                        <a href="#" class="btn">
+                        <a href="/personal-account" class="btn btn-outline-success mb-1">
                             <span>Личный кабинет</span>
                         </a>
-                        <button type="submit" class="btn">
+                        <button type="submit" class="btn btn-outline-danger">
                             <span>Выйти</span>
                         </button>
                     </form>

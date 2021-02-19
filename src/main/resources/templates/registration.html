@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org/">
 <head>
-    <script src=js/loginAndRegistration.js></script>
     <meta charset="UTF-8">
     <title>PM|Регистрация</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link href="/css/password.css" rel="stylesheet">
     <link href="/css/validation.css" rel="stylesheet">
+    <script src=js/registration.js></script>
+    <script src=js/password.js></script>
+    <script src=js/validation.js></script>
 </head>
 <body>
 
@@ -16,7 +18,7 @@
     <h3>
         Регистрационная информация
     </h3>
-    <form method="post" th:object="${userForm}" class="formRegistr" onsubmit="return validation()">
+    <form method="post" th:object="${userForm}" class="form-registration" onsubmit="return isNoEmpty(this)">
         <div align="center" style="width: 450px">
             <input type="text" class="form-control mb-2" placeholder="Фамилия" name="lastname"
                    style="width: 100%"
@@ -42,11 +44,11 @@
                 <a href="#" class="pas-control" onclick="showPas(this, 'pas-input')"></a>
             </div>
             <div class="pas mb-4">
-                <input type="password" class="form-control" id="confPas-input" placeholder="Повторите пароль"
+                <input type="password" class="form-control" id="conf-pas-input" placeholder="Повторите пароль"
                        name="passwordConfirm"
                        oninput="checkPassConfirm(this)"
                        th:value="${userForm.getPasswordConfirm()}">
-                <a href="#" class="pas-control" onclick="showPas(this, 'confPas-input')"></a>
+                <a href="#" class="pas-control" onclick="showPas(this, 'conf-pas-input')"></a>
             </div>
         </div>
         <b>Пользовательское соглашение</b>

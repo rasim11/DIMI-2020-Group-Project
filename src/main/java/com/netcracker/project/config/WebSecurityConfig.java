@@ -30,10 +30,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf()
                 .disable()
                 .authorizeRequests()
-                //Доступ разрешен всем пользователей
-                .antMatchers("/", "/css/**", "/js/**", "/img/**", "/login", "/registration").permitAll()
-                //Все остальные страницы требуют аутентификации
-                .anyRequest().authenticated()
+                .anyRequest().permitAll()
                 .and()
                 .logout()
                 .permitAll()

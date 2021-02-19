@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org/">
 <head>
-    <script src=js/loginAndRegistration.js></script>
     <meta charset="UTF-8">
     <title>PM|Вход</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link href="/css/password.css" rel="stylesheet">
     <link href="/css/validation.css" rel="stylesheet">
+    <script src=js/password.js></script>
+    <script src=js/validation.js></script>
 </head>
 <body>
 
@@ -14,7 +15,7 @@
 
 <div class="container pt-4 pb-4 justify-content-md-center" style="width: 400px;">
     <h3 align="center">Вход</h3>
-    <form method="post" onsubmit="return checkInputs()">
+    <form method="post" class="form-login" onsubmit="return isNoEmpty(this)">
         <span style="color: red;" th:text="${errorEmail}"/>
         <input class="form-control mb-2" type="text" name="email" placeholder="Адрес электронной почты"
                style="width: 100%;" th:value="${email}" oninput="setValidFormat(this)">

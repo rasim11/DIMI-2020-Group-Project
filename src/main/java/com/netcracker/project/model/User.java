@@ -58,8 +58,16 @@ public class User implements UserDetails {
         return true;
     }
 
-    public void dataExtension(Role role){
+    public void dataExtension(Role role) {
         this.regDate = new Date();
         this.role = role;
+    }
+
+    public void update(User user) {
+        this.firstname = user.firstname;
+        this.lastname = user.lastname;
+        this.middlename = user.middlename;
+        this.email = user.email;
+        this.phoneNumber = user.phoneNumber;
     }
 }
