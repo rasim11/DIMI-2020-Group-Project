@@ -4,13 +4,12 @@ import com.netcracker.project.model.User;
 import com.netcracker.project.service.SecurityService;
 import com.netcracker.project.service.impl.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 
 @Controller
 public class PersonalAccountController {
@@ -20,9 +19,6 @@ public class PersonalAccountController {
 
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
-
-    @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @GetMapping("/personal-account")
     public String personalAccountGet(Model model) {
@@ -60,16 +56,31 @@ public class PersonalAccountController {
             String url = user.getEmail().equals(userForm.getEmail()) ? "redirect:/personal-account" :
                     "redirect:/logout";
 
-            user.update(userForm);
-            userDetailsService.updateUser(user);
+            userDetailsService.updateUserBasicData(user, userForm);
 
             return url;
         } else {
             User user = userDetailsService.getUserById(userForm.getId());
-            user.setPassword(bCryptPasswordEncoder.encode(userForm.getPassword()));
-            userDetailsService.updateUser(user);
+            userDetailsService.updateUserPass(user, userForm);
 
             return "redirect:/logout";
         }
+    }
+
+    @GetMapping("/id{id}")
+    public String showProfile(@PathVariable Long id, Model model) {
+        if (!securityService.isAuthenticated()) {
+            model.addAttribute("isAuthenticated", false);
+            model.addAttribute("msgErr", "Профили может просматривать только зарегистрированный пользователь!");
+            return "profile";
+        }
+
+        User user = userDetailsService.getUserById(id);
+        if (user == null) {
+            return "redirect:/";
+        }
+
+        model.addAttribute("userForm", user);
+        return "profile";
     }
 }

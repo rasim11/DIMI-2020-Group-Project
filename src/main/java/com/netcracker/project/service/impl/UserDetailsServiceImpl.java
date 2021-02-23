@@ -44,7 +44,13 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         return restTemplate.getForObject("http://localhost:8082/get-user-by-id/{id}", User.class, id);
     }
 
-    public void updateUser(User user){
+    public void updateUserBasicData(User user, User userForm){
+        user.update(userForm);
+        restTemplate.postForLocation("http://localhost:8082/add-user", user);
+    }
+
+    public void updateUserPass(User user, User userForm){
+        user.setPassword(bCryptPasswordEncoder.encode(userForm.getPassword()));
         restTemplate.postForLocation("http://localhost:8082/add-user", user);
     }
 }

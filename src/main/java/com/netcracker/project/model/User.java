@@ -7,9 +7,10 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -24,8 +25,8 @@ public class User implements UserDetails {
     private String password;
     private String passwordConfirm;
     private Role role;
-    private Date regDate;
-    private Long solvedProblemsNumber;
+    private String regDate;
+    private Long tasksCount;
     private Region region;
 
     @Override
@@ -59,7 +60,8 @@ public class User implements UserDetails {
     }
 
     public void dataExtension(Role role) {
-        this.regDate = new Date();
+        this.regDate = LocalDate.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+        this.tasksCount = 0L;
         this.role = role;
     }
 
