@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <link rel="shortcut icon" href="#">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+     <script src="/js/addTask.js" type="text/javascript"></script>
+    <link href="/css/addTask.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+<header th:insert="blocks/header :: header"></header>
+<div class="body" >
+    <form class="task_form" th:object="${taskForm}" method="post" onsubmit="return validation()">
+        <h3 class="header">Новая задача</h3>
+        <div class="form-group">
+            <label>Название проблемы</label><span class="red">*</span></label>
+            <input type="text" class="form-control required" id="problemName" name="taskName">
+            <small></small>
+        </div>
+        <div class="form-group">
+            <label>Описание</label><span class="red">*</span>
+            <textarea class="form-control required" id="discription" rows="3" name="taskDescription"></textarea>
+            <small></small>
+        </div>
+        <div class="form-group">
+            <label>Адрес</label><span class="red">*</span></label>
+            <input type="text" class="form-control  required" id="adress" placeholder="Адрес" name="taskLocation">
+            <small></small>
+        </div>
+        <div class="form-group">
+            <label>Комментарий</label><span class="red">*</span>
+            <input type="radio" id="on" name="commentAllow" value="true" > вкл /</input>
+            <input type="radio" id="off" name="commentAllow" value="false"> выкл </input>
+            <br>
+            <small></small>
+        </div>
+        <button type="submit" class="btn btn-success" >Добавить</button>
+    </form>
+</div>
+<footer th:insert="blocks/footer :: footer"></footer>
+</body>
+</html>

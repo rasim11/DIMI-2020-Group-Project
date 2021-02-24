@@ -1,6 +1,8 @@
 package com.netcracker.project.service;
 
 import com.netcracker.project.model.Role;
+import com.netcracker.project.model.Task;
+import com.netcracker.project.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -12,5 +14,9 @@ public class EntityService {
 
     public Role getRoleById(Long id) {
         return restTemplate.getForObject("http://localhost:8082/get-role/{id}", Role.class, id);
+    }
+    public void addTask(User user, Task task){
+        task.dataExtension(user);
+        restTemplate.postForLocation("http://localhost:8082/save-task", task);
     }
 }

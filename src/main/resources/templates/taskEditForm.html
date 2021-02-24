@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <link rel="shortcut icon" href="#">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+     <script src="/js/AddTask.js" type="text/javascript"></script>
+    <link href="/css/addTask.css" rel="stylesheet">
+</head>
+<body>
+    <form class="task_form" th:object="${task}" method="post">
+        <h3 class="header">Задача</h3>
+        <div class="form-group">
+            <label>Название проблемы</label><span class="red">*</span></label>
+            <input type="text" class="form-control required" id="problemName" name="taskName" th:value="${task.taskName}">
+            <small></small>
+        </div>
+        <div class="form-group">
+            <label>Описание</label><span class="red">*</span>
+            <textarea class="form-control required"rows="3" name="taskDescription" th:field="${task.taskDescription}"></textarea>
+            <small></small>
+        </div>
+        <div class="form-group">
+            <label>Адрес</label><span class="red">*</span></label>
+            <input type="text" class="form-control  required" id="adress" placeholder="Адрес" name="taskLocation"th:value="${task.taskLocation}">
+            <small></small>
+        </div>
+        <div class="form-group">
+            <label>Комментарий</label><span class="red">*</span>
+            <input type="radio" id="on" name="commentAllow" value="true" > вкл /</input>
+            <input type="radio" id="off" name="commentAllow" value="false"> выкл </input>
+            <br>
+            <small></small>
+        </div>
+        <input type="hidden" name="id" th:value="${task.id}">
+        <button type="submit" class="btn btn-success">Добавить</button>
+    </form>
+</body>
+</html>
