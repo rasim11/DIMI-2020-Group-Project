@@ -15,7 +15,7 @@ function formValidation(form){
 	for (var i = 0; i < formReq.length; i++) {
 		const input = formReq[i];
 		formDelError(input);
-		if (input.value==='') {
+		if (input.value.trim()==='') {
 			formAddError(input,'Заполните поле');
 			error++;
 		}

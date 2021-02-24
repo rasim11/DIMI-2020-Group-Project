@@ -41,6 +41,9 @@
                     </button>
                     <form method="post" th:action="@{/logout}" id="loginMenu"
                           class="dropdown-content">
+                        <a th:href="'/id'+ ${userId}" class="btn btn-outline-primary mb-1">
+                            <span>Мой профиль</span>
+                        </a>
                         <a href="/personal-account" class="btn btn-outline-success mb-1">
                             <span>Личный кабинет</span>
                         </a>

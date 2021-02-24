@@ -8,9 +8,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
-
 @Controller
 public class PersonalAccountController {
 
@@ -29,6 +26,7 @@ public class PersonalAccountController {
         User user = userDetailsService.getUserByEmail(securityService.getCurrentEmail());
         User oldUser = userDetailsService.getUserByEmail(securityService.getCurrentEmail());
         model.addAttribute("userFirstname", user.getFirstname());
+        model.addAttribute("userId", user.getId());
         model.addAttribute("userForm", user);
         model.addAttribute("oldUser", oldUser);
 
@@ -49,6 +47,7 @@ public class PersonalAccountController {
                 model.addAttribute("oldUser", oldUser);
                 model.addAttribute("errorEmail", "Пользователь с такой электронной почтой уже существует");
                 model.addAttribute("userFirstname", user.getFirstname());
+                model.addAttribute("userId", user.getId());
                 return "personal-account";
             }
 
@@ -80,6 +79,8 @@ public class PersonalAccountController {
             return "redirect:/";
         }
 
+        model.addAttribute("userFirstname", user.getFirstname());
+        model.addAttribute("userId", user.getId());
         model.addAttribute("userForm", user);
         return "profile";
     }
