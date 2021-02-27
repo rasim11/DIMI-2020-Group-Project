@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import static com.netcracker.project.url.UrlTemplates.*;
+
 @Controller
 public class LoginController {
     @Autowired
@@ -18,20 +20,13 @@ public class LoginController {
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
 
-    @GetMapping("/login")
+    @GetMapping(API + VERSION + USER_MANAGEMENT + USER_LOGIN)
     public String loginGet(Model model) {
-        if (securityService.isAuthenticated()) {
-            return "redirect:/";
-        }
         return "login";
     }
 
-    @PostMapping("/login")
+    @PostMapping(API + VERSION + USER_MANAGEMENT + USER_LOGIN)
     public String loginPost(@RequestParam String email, @RequestParam String password, Model model) {
-        if (securityService.isAuthenticated()) {
-            return "redirect:/";
-        }
-
         User user = userDetailsService.getUserByEmail(email);
         if (user == null) {
             model.addAttribute("errorEmail", "Пользователь не найден");
@@ -49,6 +44,6 @@ public class LoginController {
             return "login";
         }
 
-        return "redirect:/";
+        return REDIRECT_ON_MAIN_PAGE;
     }
 }

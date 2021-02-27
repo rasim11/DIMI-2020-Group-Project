@@ -12,6 +12,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import static com.netcracker.project.url.UrlTemplates.*;
+
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
@@ -30,11 +32,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf()
                 .disable()
                 .authorizeRequests()
-                .anyRequest().permitAll()
+                .antMatchers(API + VERSION + USER_MANAGEMENT + USER_LOGIN,
+                        API + VERSION + USER_MANAGEMENT + USER_REGISTRATION).not().fullyAuthenticated()
+                .antMatchers(API + VERSION + TASK_MANAGEMENT + TASK_POST).hasAuthority("Пользователь")
+                .antMatchers(API + VERSION + ADMIN_MANAGEMENT).hasAuthority("Админ")
+                .antMatchers(API + VERSION + PERSONAL_ACCOUNT).hasAnyAuthority("Пользователь",
+                "Админ")
+                .antMatchers("/resources/**", API + VERSION + MAIN_PAGE,
+                        API + VERSION + USER_MANAGEMENT + USER_GET + "/id").permitAll()
                 .and()
                 .logout()
                 .permitAll()
-                .logoutSuccessUrl("/");
+                .logoutSuccessUrl(API + VERSION + MAIN_PAGE);
     }
 
     @Bean

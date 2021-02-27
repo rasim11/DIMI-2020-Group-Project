@@ -1,6 +1,5 @@
 package com.netcracker.project.controllers;
 
-
 import com.netcracker.project.model.Role;
 import com.netcracker.project.model.User;
 import com.netcracker.project.service.EntityService;
@@ -14,6 +13,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import static com.netcracker.project.url.UrlTemplates.*;
+
 @Controller
 public class RegistrationController {
     @Autowired
@@ -25,31 +26,22 @@ public class RegistrationController {
     @Autowired
     private EntityService entityService;
 
-    @GetMapping("/registration")
+    @GetMapping(API + VERSION + USER_MANAGEMENT + USER_REGISTRATION)
     public String registrationGet(Model model) {
-        if (securityService.isAuthenticated()) {
-            return "redirect:/";
-        }
-
         model.addAttribute("userForm", new User());
-
         return "registration";
     }
 
 
-    @PostMapping("/registration")
+    @PostMapping(API + VERSION + USER_MANAGEMENT + USER_REGISTRATION)
     public String registrationPost(@ModelAttribute("userForm") User userForm, Model model) {
-        if (securityService.isAuthenticated()) {
-            return "redirect:/";
-        }
-
         User user = userDetailsService.getUserByEmail(userForm.getEmail());
         if (user != null) {
             model.addAttribute("errorEmail", "Пользователь с такой электронной почтой уже существует");
             return "registration";
         }
 
-        Role role = entityService.getRoleById(1L);
+        Role role = entityService.getRoleByName("Пользователь");
         if (role == null) {
             throw new UsernameNotFoundException("DB fatal error. User Role not found!");
         }
@@ -57,7 +49,7 @@ public class RegistrationController {
         userDetailsService.addUser(userForm, role);
 
         securityService.autoLogin(userForm.getEmail(), userForm.getPasswordConfirm());
-        return "redirect:/";
+        return REDIRECT_ON_MAIN_PAGE;
     }
 }
 

@@ -2,54 +2,63 @@
     <link href="/css/pageConfig.css" rel="stylesheet">
     <div class="bg-primary shadow-sm">
         <div class="container pt-4 pb-4" sec:authorize="!isAuthenticated()" style="min-width: 720px">
-            <a href="/" style="text-decoration: none;">
+            <a href="/api/v1/main-page" style="text-decoration: none;">
                 <span class="text-white" style="font-family: Jokerman; font-weight: bold; font-size: 24px">
                     DIMI 2020|Task-FIX
                 </span>
             </a>
-            <a href="/login" style="text-decoration: none; float: right">
+            <a href="/api/v1/user-management/user-login" style="text-decoration: none; float: right">
                 <span class="text-white" style="font-weight: bold; font-size: 24px">Вход и регистрация</span>
             </a>
         </div>
         <div class="container pt-4 pb-4" sec:authorize="isAuthenticated()" style="min-width: 720px">
-            <script src=js/header.js></script>
+            <script src=/js/header.js></script>
             <script>
                 jQuery(function ($) {
-                    $(document).mouseup(function (e) { // событие клика по веб-документу
-                        var div = $("#loginMenu"); // тут указываем ID элемента
+                    $(document).mouseup(function (e) {
+                        var div = $("#loginMenu");
                         var maindiv = $("#contLoginMenu");
-                        if (!maindiv.is(e.target) // если клик был не по нашему блоку
-                            && maindiv.has(e.target).length === 0) { // и не по его дочерним элементам
-                            div.hide(); // скрываем его
+                        if (!maindiv.is(e.target)
+                            && maindiv.has(e.target).length === 0) {
+                            div.hide();
                         }
                     });
                 });
             </script>
             <link href="/css/header.css" rel="stylesheet">
-            <a href="/" style="text-decoration: none;">
-                <span class="text-white" style="font-family: Jokerman; font-weight: bold; font-size: 24px">DIMI 2020|Task-FIX</span>
+            <a href="/api/v1/main-page" style="text-decoration: none;">
+                <span class="text-white" style="font-family: Jokerman; font-weight: bold; font-size: 24px">
+                    DIMI 2020|Task-FIX
+                </span>
             </a>
             <div style="display: inline-block; float: right">
-                <a href="/add-task" style="text-decoration: none">
+                <a href="/api/v1/task-management/task-post" sec:authorize="hasAuthority('Пользователь')"
+                   style="text-decoration: none">
                     <span class="text-white" style="font-weight: bold; font-size: 24px">Создать проблему</span>
                 </a>
+                <a href="/api/v1/admin-management" sec:authorize="hasAuthority('Админ')" style="text-decoration: none">
+                    <span class="text-white" style="font-weight: bold; font-size: 24px">Администрирование</span>
+                </a>
                 <div id="contLoginMenu" style="display: inline-block;">
-                    <button style="background: none;border: none; margin-bottom: 20px" onclick="showLoginMenu()">
+                    <button style="background: none;border: none;" onclick="showLoginMenu()">
                         <img src="/img/user-default.png" class="round"
                              style="max-width: 34px; height: auto; display: inline-block"/>
-                        <span class="text-white" th:text="${userFirstname}"/>
+                        <span class="text-white" th:text="${#authentication.getPrincipal().getFirstname}"/>
                     </button>
                     <form method="post" th:action="@{/logout}" id="loginMenu"
                           class="dropdown-content">
-                        <a th:href="'/id'+ ${userId}" class="btn btn-outline-primary mb-1">
-                            <span>Мой профиль</span>
-                        </a>
-                        <a href="/personal-account" class="btn btn-outline-success mb-1">
-                            <span>Личный кабинет</span>
-                        </a>
-                        <button type="submit" class="btn btn-outline-danger">
-                            <span>Выйти</span>
-                        </button>
+                        <div align="center">
+                            <a th:href="'/api/v1/user-management/user-get/id'+ ${#authentication.getPrincipal().getId}"
+                               class="btn btn-outline-primary mt-1 mb-1">
+                                <span>Мой профиль</span>
+                            </a>
+                            <a href="/api/v1/personal-account" class="btn btn-outline-success mb-1">
+                                <span>Личный кабинет</span>
+                            </a>
+                            <button type="submit" class="btn btn-outline-danger mb-1">
+                                <span>Выйти</span>
+                            </button>
+                        </div>
                     </form>
                 </div>
             </div>

@@ -10,7 +10,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -30,24 +29,16 @@ public class SecurityService {
         return authentication.isAuthenticated();
     }
 
-    public String getCurrentEmail() {
+    public User getCurrentUser() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        return auth.getName();
-    }
-
-    public String getCurrentUserFirstName() {
-        String email = getCurrentEmail();
-        User user = userDetailsService.getUserByEmail(email);
-        if (user == null) {
-            throw new UsernameNotFoundException("DB fatal error. User email not found!");
-        }
-        return user.getFirstname();
+        return (User)auth.getPrincipal();
     }
 
     public void autoLogin(String email, String password) {
-        UserDetails userDetails =  userDetailsService.getUserByEmail(email);
+        User user = userDetailsService.getUserByEmail(email);
+        user.setPasswordConfirm(password);
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken
-                = new UsernamePasswordAuthenticationToken(userDetails, password, userDetails.getAuthorities());
+                = new UsernamePasswordAuthenticationToken(user, password, ((UserDetails) user).getAuthorities());
 
         try {
             authenticationManager.authenticate(usernamePasswordAuthenticationToken);

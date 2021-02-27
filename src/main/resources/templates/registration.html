@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org/">
+<html xmlns:th="http://www.thymeleaf.org/" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
     <meta charset="UTF-8">
     <title>PM|Регистрация</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link href="/css/password.css" rel="stylesheet">
     <link href="/css/validation.css" rel="stylesheet">
-    <script src=js/registration.js></script>
-    <script src=js/password.js></script>
-    <script src=js/validation.js></script>
+    <script src=/js/registration.js></script>
+    <script src=/js/password.js></script>
+    <script src=/js/validation.js></script>
 </head>
 <body>
 
@@ -29,7 +29,7 @@
             <input type="text" class="form-control mb-2" placeholder="Отчество" name="middlename"
                    style="width: 100%"
                    oninput="checkInvalidFormat(this,/^[A-z|А-я]+$/)" th:value="${userForm.getMiddlename()}">
-            <span style="color: red; float: left;" th:text="${errorEmail}"/>
+            <span th:if="${errorEmail!=null}" style="color: red; float: left;" th:text="${errorEmail}"/>
             <input type="text" class="form-control mb-2" placeholder="Адрес электронной почты" name="email"
                    style="width: 100%"
                    oninput="checkInvalidFormat(this, /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/)"
