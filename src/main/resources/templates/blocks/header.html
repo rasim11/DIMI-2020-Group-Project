@@ -13,18 +13,6 @@
         </div>
         <div class="container pt-4 pb-4" sec:authorize="isAuthenticated()" style="min-width: 720px">
             <script src=/js/header.js></script>
-            <script>
-                jQuery(function ($) {
-                    $(document).mouseup(function (e) {
-                        var div = $("#loginMenu");
-                        var maindiv = $("#contLoginMenu");
-                        if (!maindiv.is(e.target)
-                            && maindiv.has(e.target).length === 0) {
-                            div.hide();
-                        }
-                    });
-                });
-            </script>
             <link href="/css/header.css" rel="stylesheet">
             <a href="/api/v1/main-page" style="text-decoration: none;">
                 <span class="text-white" style="font-family: Jokerman; font-weight: bold; font-size: 24px">
@@ -39,13 +27,13 @@
                 <a href="/api/v1/admin-management" sec:authorize="hasAuthority('Админ')" style="text-decoration: none">
                     <span class="text-white" style="font-weight: bold; font-size: 24px">Администрирование</span>
                 </a>
-                <div id="contLoginMenu" style="display: inline-block;">
+                <div id="div-hidden-login-menu" style="display: inline-block;">
                     <button style="background: none;border: none;" onclick="showLoginMenu()">
                         <img src="/img/user-default.png" class="round"
                              style="max-width: 34px; height: auto; display: inline-block"/>
                         <span class="text-white" th:text="${#authentication.getPrincipal().getFirstname}"/>
                     </button>
-                    <form method="post" th:action="@{/logout}" id="loginMenu"
+                    <form method="post" th:action="@{/logout}" id="form-login-menu"
                           class="dropdown-content">
                         <div align="center">
                             <a th:href="'/api/v1/user-management/user-get/id'+ ${#authentication.getPrincipal().getId}"

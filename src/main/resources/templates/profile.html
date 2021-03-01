@@ -21,7 +21,8 @@
         <h4 class="mb-4"
             th:text="${#authentication.getPrincipal().getFirstname() +
             ' '+ #authentication.getPrincipal().getMiddlename() +' ' +#authentication.getPrincipal().getLastname() }"/>
-        <p th:text="'Дата регистрации: '+${#authentication.getPrincipal().getRegDate()}"/>
+        <p th:text="'Дата регистрации: '+${#authentication.
+        getPrincipal().dateToString(#authentication.getPrincipal().getRegDate())}"/>
         <p th:text="'Опубликованных проблем: '+${#authentication.getPrincipal().getTasksCount()}"/>
         <a href="#"><p>Проблемы пользователя</p></a>
     </div>

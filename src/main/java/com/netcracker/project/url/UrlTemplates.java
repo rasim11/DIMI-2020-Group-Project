@@ -25,4 +25,5 @@ public final class UrlTemplates {
     public static final String BY_NAME = "-by-name";
     public static final String SERVER = "http://localhost:8082";
     public static final String USER_POST = "/user-post";
+    public static final String USER_DELETE = "/user-delete";
 }

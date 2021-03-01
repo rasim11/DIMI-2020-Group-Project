@@ -1,76 +1,76 @@
-var divIdMainBlock = "main-block";
-var divIdDataBasic = "div-data-basic";
-var divIdDataPass = "div-data-pass";
-var divIdDataProblems = "div-data-problems";
-var divIdDataUser = "div-data-user";
-var btnIdDataBasic = "btn-data-basic";
-var btnIdDataPass = "btn-data-pass";
-var btnIdDataProblems = "btn-data-problems";
-var btnIdUpdate = "update-button";
-var btnIdReset = "reset-button";
+const divClassMainContent = "div-main-content";
+const divIdDataBasic = "div-data-basic";
+const divIdAvatarMenu = "div-avatar-menu";
+const divIdHiddenAvatarMenu = "div-hidden-avatar-menu";
+const divIdDataPass = "div-data-pass";
+const divIdDataProblems = "div-data-problems";
+const divIdDialogWindow = "div-dialog-window";
+const btnIdDataBasic = "btn-data-basic";
+const btnIdDataPass = "btn-data-pass";
+const btnIdDataProblems = "btn-data-problems";
+const btnIdUpdate = "update-button";
+const btnIdReset = "reset-button";
+const btnIdDataAccount = "btn-data-account";
+const spanIdErrMsg = "err-msg";
+const inputIdPas = "pas-input";
+const inputIdConfPas = "conf-pas-input";
+const formIdDataAccount = "form-data-account";
+const formClassUpdate = "form-update";
+
 
 class User {
-    static urlGetCurUser = "http://localhost:8080/api/v1/user-management/current-user-get";
-    static urlPutUser = "http://localhost:8080/api/v1/user-management/user-put";
-    static curUser;
-    static newUser;
-    static isInvalid = false;
+    static URL_SERVER = "http://localhost:8080";
+    static URL_GET_CUR_USER = User.URL_SERVER + "/api/v1/user-management/current-user-get";
+    static URL_PUT_USER = User.URL_SERVER + "/api/v1/user-management/user-put";
+    static URL_DELETE_USER = User.URL_SERVER + "/api/v1/user-management/user-delete";
+    static CUR_USER;
+    static IS_INVALID = false;
 
-    constructor(id, userAtr) {
-        this._userAtr = userAtr;
-        this._id = id;
-    }
-
-    get userAtr() {
-        return this._userAtr;
-    }
-
-    set userAtr(value) {
-        this._userAtr = value;
-    }
-
-    get id() {
-        return this._id;
-    }
-
-    set id(value) {
-        this._id = value;
+    constructor(lastname, firstname, middlename, email, phoneNumber, password, passwordConfirm, id) {
+        this.lastname = lastname;
+        this.firstname = firstname;
+        this.middlename = middlename;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.password = password;
+        this.passwordConfirm = passwordConfirm;
+        this.id = id;
     }
 
     static setUserFromRequest() {
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', User.urlGetCurUser, false);
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', User.URL_GET_CUR_USER, false);
         xhr.send();
 
         if (xhr.status !== 200) {
             alert(xhr.status + ': ' + xhr.statusText);
         } else {
-            var user = JSON.parse(xhr.responseText);
-            var userAtr = [user.lastname, user.firstname, user.middlename, user.email, user.phoneNumber];
-            User.curUser = new User(user.id, userAtr);
-            User.newUser = new User(user.id, userAtr.slice());
+            const user = JSON.parse(xhr.responseText);
+            User.CUR_USER = new User(user.lastname, user.firstname, user.middlename, user.email,
+                user.phoneNumber, user.password, user.passwordConfirm, user.id);
         }
     }
 
-    isUserEmailFree() {
-        var pasInput = document.getElementById("pas-input") ?
-            document.getElementById("pas-input").value : null;
-        var confPasInput = document.getElementById("conf-pas-input") ?
-            document.getElementById("conf-pas-input").value : null;
+    static isUserEmailFree() {
+        const curValues = document.querySelector('.' + formClassUpdate).querySelectorAll('.form-control');
+        let curValuesArr = [];
 
-        var json = JSON.stringify({
-            "id": this.id,
-            "lastname": this.userAtr[0],
-            "firstname": this.userAtr[1],
-            "middlename": this.userAtr[2],
-            "email": this.userAtr[3],
-            "phoneNumber": this.userAtr[4],
-            "password": pasInput,
-            "passwordConfirm": confPasInput
-        });
+        for (let i = 0; i < curValues.length; i++) {
+            curValuesArr.push(curValues[i].value);
+        }
 
-        var xhr = new XMLHttpRequest();
-        xhr.open("PUT", User.urlPutUser, false);
+        if (curValuesArr.length === 5) {
+            curValuesArr.push(null);
+            curValuesArr.push(null);
+        }
+
+        const userTarget = new User(curValuesArr[0], curValuesArr[1], curValuesArr[2], curValuesArr[3], curValuesArr[4],
+            curValuesArr[5], curValuesArr[6], User.CUR_USER.id);
+
+        const json = JSON.stringify(userTarget);
+
+        const xhr = new XMLHttpRequest();
+        xhr.open("PUT", User.URL_PUT_USER, false);
         xhr.setRequestHeader("Content-type", "application/json; charset=utf-8");
         xhr.send(json);
 
@@ -84,7 +84,7 @@ class User {
 
 function imgLoad(input) {
     if (input.files && input.files[0]) {
-        var reader = new FileReader();
+        const reader = new FileReader();
         reader.onload = function (e) {
             $('#img-display').attr('src', e.target.result);
 
@@ -93,43 +93,39 @@ function imgLoad(input) {
     }
 }
 
-function openMenuLoadImg() {
-    var imgLoad = document.getElementsByName("img")[0];
+function openMenuLoadImg(hiddenMenu) {
+    hiddenMenu.style.display = "none";
+    const imgLoad = document.getElementsByName("img")[0];
     imgLoad.click();
 }
 
 function isNoDuplicate() {
-    var newValue = document.querySelector('.form-update').querySelectorAll('.form-control');
-    var updateButton = document.getElementById(btnIdUpdate);
-    var resetButton = document.getElementById(btnIdReset);
+    const newValues = document.querySelector('.' + formClassUpdate).querySelectorAll('.form-control');
+    const updateButton = document.getElementById(btnIdUpdate);
+    const resetButton = document.getElementById(btnIdReset);
+    const userAtr = Object.values(User.CUR_USER);
 
-    var flagIsNoDuplicate = true;
-    for (var i = 0; i < User.curUser.userAtr.length; i++) {
-        if (newValue[i].value !== User.curUser.userAtr[i]) {
-            User.newUser.userAtr[i] = newValue[i].value;
-            flagIsNoDuplicate = false;
+    for (let i = 0; i < newValues.length; i++) {
+        if (newValues[i].value !== userAtr[i]) {
+            updateButton.disabled = false;
+            resetButton.disabled = updateButton.disabled;
+            return;
         }
     }
-    updateButton.disabled = flagIsNoDuplicate;
+    updateButton.disabled = true;
     resetButton.disabled = updateButton.disabled;
 }
 
 function addDataUser(btnId) {
-    var mainBlock = document.getElementById(divIdMainBlock);
+    const divMainContent = document.querySelector('.' + divClassMainContent);
 
-    var divDataUser = document.createElement("div");
-    divDataUser.style.textAlign = "center";
-    divDataUser.style.display = "inline-block";
-    divDataUser.id = divIdDataUser;
-    mainBlock.appendChild(divDataUser);
-
-    var userForm = document.createElement("form");
-    userForm.method = "get";
-    userForm.action = "/api/v1/personal-account";
-    userForm.className = "form-update";
-    userForm.addEventListener("submit", function (e) {
+    const formDataUser = document.createElement("form");
+    formDataUser.method = "get";
+    formDataUser.action = "/api/v1/personal-account";
+    formDataUser.className = formClassUpdate;
+    formDataUser.addEventListener("submit", function (e) {
         e.preventDefault();
-        if (isValid(userForm) === true) {
+        if (isValid(formDataUser) === true) {
             addChangeSucMsg();
             setTimeout(function () {
                 e.target.submit();
@@ -138,169 +134,229 @@ function addDataUser(btnId) {
             addErrMsg();
         }
     });
-    divDataUser.appendChild(userForm);
+    divMainContent.appendChild(formDataUser);
 
-    var divDataVar = document.createElement("div");
+    const divDataVar = document.createElement("div");
     divDataVar.className = "mb-4";
     divDataVar.style.width = "450px";
-    userForm.appendChild(divDataVar);
+    divDataVar.style.textAlign = "center";
+    formDataUser.appendChild(divDataVar);
 
-    var blockTitle = document.createElement("h3");
+    const blockTitle = document.createElement("h3");
+    blockTitle.innerText = document.getElementById(btnId).innerText;
     divDataVar.appendChild(blockTitle);
 
     if (btnId === btnIdDataBasic) {
         divDataVar.id = divIdDataBasic;
-        blockTitle.innerText = "Основные данные";
         addDataBasic(divDataVar);
     } else {
         divDataVar.id = divIdDataPass;
-        blockTitle.innerText = "Пароль";
         addDataPass(divDataVar);
     }
 
-    var btnChange = document.createElement("button");
+    const btnChange = document.createElement("button");
     btnChange.type = "submit";
     btnChange.id = btnIdUpdate;
     btnChange.className = "btn btn-primary mt-2 mr-1";
-    btnChange.disabled = btnId === btnIdDataBasic;
+    btnChange.disabled = true;
     btnChange.textContent = "Изменить";
     divDataVar.appendChild(btnChange);
 
-    if (btnId === btnIdDataBasic) {
-        var btnReset = document.createElement("button");
-        btnReset.type = "button";
-        btnReset.id = btnIdReset;
-        btnReset.className = "btn btn-danger mt-2 ml-1";
-        btnReset.disabled = btnChange.disabled;
-        btnReset.textContent = "Сбросить";
-        btnReset.addEventListener("click", btnResetClick);
-        divDataVar.appendChild(btnReset);
-    }
+    const btnReset = document.createElement("button");
+    btnReset.type = "button";
+    btnReset.id = btnIdReset;
+    btnReset.className = "btn btn-danger mt-2 ml-1";
+    btnReset.disabled = btnChange.disabled;
+    btnReset.textContent = "Сбросить";
+    btnReset.addEventListener("click", btnResetClick);
+    divDataVar.appendChild(btnReset);
+
 }
 
 function addDataBasic(divDataBasic) {
-    var elemDataBasic = [];
+    let divMainHiddenMenu = document.createElement("div");
+    divMainHiddenMenu.id = divIdHiddenAvatarMenu;
+    divMainHiddenMenu.className = "mb-4";
+    divDataBasic.appendChild(divMainHiddenMenu);
 
-    var i = 0;
-    elemDataBasic[i] = document.createElement("img");
-    elemDataBasic[i].id = "img-display";
-    elemDataBasic[i].className = "mb-4";
-    elemDataBasic[i].src = "/img/user-default.png";
-    elemDataBasic[i].style.cursor = "pointer";
-    elemDataBasic[i].addEventListener("click", openMenuLoadImg);
-    divDataBasic.appendChild(elemDataBasic[i]);
+    let imgUserAvatar = document.createElement("img");
+    imgUserAvatar.id = "img-display";
+    imgUserAvatar.src = "/img/user-default.png";
+    imgUserAvatar.style.cursor = "pointer";
+    imgUserAvatar.addEventListener("click", showAvatarMenu);
+    divMainHiddenMenu.appendChild(imgUserAvatar);
 
-    i++;
-    elemDataBasic[i] = document.createElement("input");
-    elemDataBasic[i].type = "file";
-    elemDataBasic[i].name = "img";
-    elemDataBasic[i].accept = "image/jpeg,image/jpg,image/png";
-    elemDataBasic[i].style.display = "none";
-    elemDataBasic[i].addEventListener("change", imgLoad.bind(null, elemDataBasic[2]));
-    divDataBasic.appendChild(elemDataBasic[i]);
+    let divHiddenMenu = document.createElement("div");
+    divHiddenMenu.className = "dropdown-content";
+    divHiddenMenu.id = divIdAvatarMenu;
+    divMainHiddenMenu.appendChild(divHiddenMenu);
 
-    var iBegin = elemDataBasic.length;
-    for (i = iBegin; i < iBegin + 5; i++) {
-        elemDataBasic[i] = document.createElement("input");
-        elemDataBasic[i].type = "text";
-        elemDataBasic[i].className = "form-control mb-2";
-        elemDataBasic[i].style.width = "100%";
-        elemDataBasic[i].value = User.newUser.userAtr[i - iBegin];
-        elemDataBasic[i].addEventListener("input", isNoDuplicate);
+    for (let i = 0; i < 2; i++) {
+        let hiddenBtn = document.createElement("button");
+        hiddenBtn.type = "button";
 
-        switch (i) {
-            case iBegin:
-                elemDataBasic[i].placeholder = "Фамилия";
-                elemDataBasic[i].addEventListener("input", checkInvalidFormat.bind(null,
-                    elemDataBasic[i], /^[A-z|А-я]+$/));
-                break;
-            case iBegin + 1:
-                elemDataBasic[i].placeholder = "Имя";
-                elemDataBasic[i].addEventListener("input", checkInvalidFormat.bind(null,
-                    elemDataBasic[i], /^[A-z|А-я]+$/));
-                break;
-            case iBegin + 2:
-                elemDataBasic[i].placeholder = "Отчество";
-                elemDataBasic[i].addEventListener("input", checkInvalidFormat.bind(null,
-                    elemDataBasic[i], /^[A-z|А-я]+$/));
-                break;
-            case iBegin + 3:
-                elemDataBasic[i].placeholder = "Адрес электронной почты";
-                elemDataBasic[i].addEventListener("input", checkInvalidFormat.bind(null,
-                    elemDataBasic[i], /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/));
-                break;
-            case iBegin + 4:
-                elemDataBasic[i].placeholder = "Номер телефона";
-                elemDataBasic[i].addEventListener("input", checkInvalidFormat.bind(null,
-                    elemDataBasic[i], /^(8|\+7)\d{10}$/));
-                break;
+        if (i === 0) {
+            hiddenBtn.className = "btn btn-outline-primary mt-1 mb-1";
+            hiddenBtn.textContent = "Выбрать новое изображение";
+            hiddenBtn.addEventListener("click", openMenuLoadImg.bind(null, divHiddenMenu));
+        } else {
+            hiddenBtn.className = "btn btn-outline-danger mb-1";
+            hiddenBtn.textContent = "Удалить текущее изображение";
+            hiddenBtn.addEventListener("click", function () {
+                let inputSrcImg = document.getElementsByName("img")[0];
+                imgUserAvatar.src = "/img/user-default.png";
+                inputSrcImg.value = "";
+                divHiddenMenu.style.display = "none";
+            });
         }
-        divDataBasic.appendChild(elemDataBasic[i]);
+
+        divHiddenMenu.appendChild(hiddenBtn);
     }
 
-    if (User.isInvalid === true) {
+    let inputAvatar = document.createElement("input");
+    inputAvatar.type = "file";
+    inputAvatar.name = "img";
+    inputAvatar.accept = "image/jpeg,image/jpg,image/png";
+    inputAvatar.style.display = "none";
+    inputAvatar.addEventListener("change", imgLoad.bind(null, inputAvatar));
+    divDataBasic.appendChild(inputAvatar);
+
+    const userAtr = Object.values(User.CUR_USER);
+    for (let i = 0; i < 5; i++) {
+        let inputDataBasic = document.createElement("input");
+        inputDataBasic.type = "text";
+        inputDataBasic.className = "form-control mb-2";
+        inputDataBasic.style.width = "100%";
+        inputDataBasic.value = userAtr[i];
+        inputDataBasic.addEventListener("input", isNoDuplicate);
+
+        switch (i) {
+            case 0:
+                inputDataBasic.placeholder = "Фамилия";
+                inputDataBasic.addEventListener("input", checkInvalidFormat.bind(null,
+                    inputDataBasic, /^[A-z|А-я]+$/));
+                break;
+            case 1:
+                inputDataBasic.placeholder = "Имя";
+                inputDataBasic.addEventListener("input", checkInvalidFormat.bind(null,
+                    inputDataBasic, /^[A-z|А-я]+$/));
+                break;
+            case 2:
+                inputDataBasic.placeholder = "Отчество";
+                inputDataBasic.addEventListener("input", checkInvalidFormat.bind(null,
+                    inputDataBasic, /^[A-z|А-я]+$/));
+                break;
+            case 3:
+                inputDataBasic.placeholder = "Адрес электронной почты";
+                inputDataBasic.addEventListener("input", checkInvalidFormat.bind(null,
+                    inputDataBasic, /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/));
+                break;
+            case 4:
+                inputDataBasic.placeholder = "Номер телефона";
+                inputDataBasic.addEventListener("input", checkInvalidFormat.bind(null,
+                    inputDataBasic, /^(8|\+7)\d{10}$/));
+                break;
+        }
+        divDataBasic.appendChild(inputDataBasic);
+    }
+
+    if (User.IS_INVALID === true) {
         addErrMsg();
     }
 }
 
 function addDataPass(divDataPass) {
-    var elemDataPass = [];
+    for (let i = 0; i < 2; i++) {
+        let divPass = document.createElement("div");
+        divPass.className = "pas mb-2";
+        divPass.style.width = "100%";
+        divDataPass.appendChild(divPass);
 
-    for (var i = 0; i < 2; i++) {
-        elemDataPass[i] = document.createElement("div");
-        elemDataPass[i].className = "pas mb-2";
-        elemDataPass[i].style.width = "100%";
-        divDataPass.appendChild(elemDataPass[i]);
-
-        var inputPas = document.createElement("input");
+        const inputPas = document.createElement("input");
         inputPas.type = "password";
         inputPas.className = "form-control";
+        inputPas.addEventListener("input", checkPassEmpty);
 
         if (i === 0) {
-            inputPas.id = "pas-input";
+            inputPas.id = inputIdPas;
             inputPas.placeholder = "Новый пароль";
             inputPas.addEventListener("input", checkPassFormat);
         } else {
-            inputPas.id = "conf-pas-input";
+            inputPas.id = inputIdConfPas;
             inputPas.placeholder = "Повторите новый пароль";
             inputPas.addEventListener("input", checkPassConfirm.bind(null, inputPas));
         }
-        elemDataPass[i].appendChild(inputPas);
+        divPass.appendChild(inputPas);
 
-        var aPas = document.createElement("a");
+        const aPas = document.createElement("a");
         aPas.href = "#";
         aPas.className = "pas-control";
         aPas.addEventListener("click", showPas.bind(null, aPas, inputPas.id));
-        elemDataPass[i].appendChild(aPas);
+        divPass.appendChild(aPas);
     }
 }
 
 function addDataProblems() {
-    var mainBlock = document.getElementById(divIdMainBlock);
+    const divMainContent = document.querySelector('.' + divClassMainContent);
 
-    var divDataProblems = document.createElement("div");
+    const divDataProblems = document.createElement("div");
     divDataProblems.style.display = "inline-block";
     divDataProblems.style.width = "450px";
     divDataProblems.id = divIdDataProblems;
-    mainBlock.appendChild(divDataProblems);
+    divMainContent.appendChild(divDataProblems);
 
-    var textProblem = document.createElement("span");
-    textProblem.textContent = "Проблемы";
+    const textProblem = document.createElement("span");
+    textProblem.textContent = document.getElementById(btnIdDataProblems).innerText;
     divDataProblems.appendChild(textProblem);
 }
 
-function unfocusedButtons() {
-    var buttons = document.querySelectorAll("nav > button");
-    for (var i = 0; i < buttons.length; i++) {
-        buttons[i].style.backgroundColor = "";
-        buttons[i].style.color = "";
-    }
+function addDataAccount() {
+    const divMainContent = document.querySelector('.' + divClassMainContent);
+
+    const formDataAccount = document.createElement("form");
+    formDataAccount.id = formIdDataAccount;
+    formDataAccount.style.display = "inline-block";
+    formDataAccount.style.textAlign = "center";
+    formDataAccount.method = "post";
+    formDataAccount.action = "/logout";
+    formDataAccount.className = "mb-4";
+    formDataAccount.style.width = "450px";
+    formDataAccount.addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        const xhr = new XMLHttpRequest();
+        xhr.open("DELETE", User.URL_DELETE_USER + "/" + User.CUR_USER.id, false);
+        xhr.send();
+
+        addChangeSucMsg();
+        setTimeout(function () {
+            e.target.submit();
+        }, 1000);
+    });
+    divMainContent.appendChild(formDataAccount);
+
+    const blockTitle = document.createElement("h3");
+    blockTitle.innerText = document.getElementById(btnIdDataAccount).innerText;
+    formDataAccount.appendChild(blockTitle);
+
+    const blockText = document.createElement("p");
+    blockText.textContent = "Вы можете удалить свой аккаунт. При этом все данные будут безвозвратно потеряны. " +
+        "Также будут удалены все проблемы, созданные данным пользователем.";
+    blockText.style.fontSize = "20px";
+    blockText.style.textAlign = "start";
+    formDataAccount.appendChild(blockText);
+
+    const btnDelete = document.createElement("button");
+    btnDelete.type = "submit";
+    btnDelete.className = "btn btn-danger";
+    btnDelete.textContent = "Удалить";
+    formDataAccount.appendChild(btnDelete);
 }
 
 function loadBasicData() {
     User.setUserFromRequest();
 
-    var btn = document.getElementById(btnIdDataBasic);
+    const btn = document.getElementById(btnIdDataBasic);
     btn.style.backgroundColor = "#f1f1f1";
     btn.style.color = "#007bff";
 
@@ -308,54 +364,61 @@ function loadBasicData() {
 }
 
 function selectData(btn) {
-    if (btn.id === btnIdDataBasic) {
-        var divDataBasic = document.getElementById(divIdDataBasic);
-        if (!divDataBasic) {
-            selectDataUser(btn);
-            isNoDuplicate();
-        }
-    } else if (btn.id === btnIdDataPass) {
-        var divDataPass = document.getElementById(divIdDataPass);
-        if (!divDataPass) {
-            selectDataUser(btn);
-        }
-    } else if (btn.id === btnIdDataProblems) {
-        var divDataProblems = document.getElementById(divIdDataProblems);
-        if (!divDataProblems) {
-            selectDataProblems(btn);
+    let divTarget;
+    switch (btn.id) {
+        case btnIdDataBasic:
+            divTarget = document.getElementById(divIdDataBasic);
+            break;
+        case btnIdDataPass:
+            divTarget = document.getElementById(divIdDataPass);
+            break;
+        case btnIdDataProblems:
+            divTarget = document.getElementById(divIdDataProblems);
+            break;
+        case btnIdDataAccount:
+            divTarget = document.getElementById(formIdDataAccount);
+            break;
+    }
+
+    if (!divTarget) {
+        let btnUpdate = document.getElementById(btnIdUpdate);
+        if (btnUpdate && !btnUpdate.disabled) {
+            addDialogWindow(btn);
+            document.getElementById(divIdDialogWindow).classList.add('show');
+        } else {
+            changeContent(btn);
+            divVarAdd(btn.id);
         }
     }
 }
 
-function selectDataUser(btn) {
-    var divDataUser = document.getElementById(divIdDataUser);
-    var divDataProblems = document.getElementById(divIdDataProblems);
-
-    unfocusedButtons();
-    btn.style.backgroundColor = "#f1f1f1";
-    btn.style.color = "#007bff";
-
-    if (divDataUser) {
-        divDataUser.remove();
+function divVarAdd(btnId) {
+    switch (btnId) {
+        case btnIdDataBasic:
+        case btnIdDataPass:
+            addDataUser(btnId);
+            break;
+        case btnIdDataProblems:
+            addDataProblems();
+            break;
+        case btnIdDataAccount:
+            addDataAccount();
+            break;
     }
-
-    if (divDataProblems) {
-        divDataProblems.remove();
-    }
-    addDataUser(btn.id);
 }
 
-function selectDataProblems(btn) {
-    var divDataUser = document.getElementById(divIdDataUser);
+function changeContent(btn) {
+    const divMainContent = document.querySelector('.' + divClassMainContent);
+    divMainContent.innerHTML = "";
 
-    unfocusedButtons();
+    const buttons = document.querySelectorAll("nav > button");
+    for (let i = 0; i < buttons.length; i++) {
+        buttons[i].style.backgroundColor = "";
+        buttons[i].style.color = "";
+    }
+
     btn.style.backgroundColor = "#f1f1f1";
     btn.style.color = "#007bff";
-
-    if (divDataUser) {
-        divDataUser.remove();
-    }
-    addDataProblems();
 }
 
 function isValid(form) {
@@ -363,68 +426,165 @@ function isValid(form) {
         return false;
     }
 
-    return User.newUser.isUserEmailFree() === "";
+    return User.isUserEmailFree() === "";
 }
 
 function addErrMsg() {
-    var errMsg = document.getElementById("err-msg");
+    const errMsg = document.getElementById(spanIdErrMsg);
 
     if (!errMsg) {
-        var divDataBasic = document.getElementById(divIdDataBasic);
-        var targetElem = document.querySelector('.form-update').querySelectorAll('.form-control')[3];
+        const divDataBasic = document.getElementById(divIdDataBasic);
+        const targetElem = document.querySelector('.' + formClassUpdate).querySelectorAll('.form-control')[3];
 
-        var spanErrMsg = document.createElement("span");
+        const spanErrMsg = document.createElement("span");
         spanErrMsg.textContent = "Пользователь с такой электронной почтой уже существует";
         spanErrMsg.style.color = "red";
         spanErrMsg.style.float = "left";
-        spanErrMsg.id = "err-msg";
+        spanErrMsg.id = spanIdErrMsg;
         divDataBasic.insertBefore(spanErrMsg, targetElem);
     }
 
-    User.isInvalid = true;
+    User.IS_INVALID = true;
 }
 
 function addChangeSucMsg() {
-    var userForm = document.querySelector('.form-update');
+    const formDataUser = document.querySelector('.' + formClassUpdate);
+    const formDataAccount = document.getElementById(formIdDataAccount);
 
-    var divDataBasic = document.getElementById(divIdDataBasic);
-    if (divDataBasic) {
-        divDataBasic.remove();
-    }
-
-    var divDataPass = document.getElementById(divIdDataPass);
-    if (divDataPass) {
-        divDataPass.remove();
-    }
-
-    var divChangeSucMsg = document.createElement("div");
+    const divChangeSucMsg = document.createElement("div");
     divChangeSucMsg.className = "mb-4";
     divChangeSucMsg.style.width = "450px";
-    userForm.appendChild(divChangeSucMsg);
 
-    var textChangeSucMsg = document.createElement("h3");
-    textChangeSucMsg.textContent = "Данные успешно изменены!";
+    const textChangeSucMsg = document.createElement("h3");
+    textChangeSucMsg.style.textAlign = "center";
     textChangeSucMsg.className = "text-success";
+
+    let targetForm;
+    if (formDataUser) {
+        targetForm = formDataUser;
+        textChangeSucMsg.textContent = "Данные успешно изменены!";
+    } else if (formDataAccount) {
+        targetForm = formDataAccount;
+        textChangeSucMsg.textContent = "Аккаунт успешно удалён!";
+
+    }
+    targetForm.innerHTML = "";
+
+    targetForm.appendChild(divChangeSucMsg);
     divChangeSucMsg.appendChild(textChangeSucMsg);
 }
 
 function btnResetClick() {
-    var curValue = document.querySelector('.form-update').querySelectorAll('.form-control');
+    const curValues = document.querySelector('.' + formClassUpdate).querySelectorAll('.form-control');
 
-    for (var i = 0; i < curValue.length; i++) {
-        curValue[i].value = User.curUser.userAtr[i];
-        User.newUser.userAtr[i] = User.curUser.userAtr[i];
+    let userAtr = [];
+    if (document.getElementById(divIdDataBasic)) {
+        userAtr = Object.values(User.CUR_USER);
+    } else {
+        userAtr.push("");
+        userAtr.push("");
     }
 
-    User.isInvalid = false;
+    for (let i = 0; i < curValues.length; i++) {
+        curValues[i].value = userAtr[i];
+        setValidFormat(curValues[i]);
+    }
 
-    var errMsg = document.getElementById("err-msg");
+    User.IS_INVALID = false;
+
+    const errMsg = document.getElementById(spanIdErrMsg);
     if (errMsg) {
         errMsg.remove();
     }
 
-    var updateButton = document.getElementById(btnIdUpdate);
-    var resetButton = document.getElementById(btnIdReset);
+    const updateButton = document.getElementById(btnIdUpdate);
+    const resetButton = document.getElementById(btnIdReset);
     updateButton.disabled = true;
-    resetButton.disabled = true;
+    resetButton.disabled = updateButton.disabled;
+}
+
+function addDialogWindow(btn) {
+    const mainBlock = document.getElementById("main-block");
+
+    const divMainDialogWindow = document.createElement("div");
+    divMainDialogWindow.id = divIdDialogWindow;
+    divMainDialogWindow.className = "modal-dlg";
+    mainBlock.appendChild(divMainDialogWindow);
+
+    const divDialogWindow = document.createElement("div");
+    divDialogWindow.style.textAlign = "center";
+    divMainDialogWindow.appendChild(divDialogWindow);
+
+    const buttonWindowClose = document.createElement("button");
+    buttonWindowClose.className = "close-custom";
+    buttonWindowClose.title = "Закрыть";
+    buttonWindowClose.innerText = "X";
+    buttonWindowClose.addEventListener("click", function () {
+        divMainDialogWindow.classList.remove('show');
+        setTimeout(function () {
+            document.getElementById(divIdDialogWindow).remove();
+        }, 1000);
+    });
+    divDialogWindow.appendChild(buttonWindowClose);
+
+    const windowTitle = document.createElement("h3");
+    windowTitle.className = "text-white";
+    windowTitle.innerText = "Предупреждение";
+    divDialogWindow.appendChild(windowTitle);
+
+    const windowText = document.createElement("p");
+    windowText.className = "text-white";
+    windowText.textContent = "Вы изменили некоторые данные. Хотите ли вы применить изменения?";
+    divDialogWindow.appendChild(windowText);
+
+    const btnUpdateDlg = document.createElement("button");
+    btnUpdateDlg.type = "button";
+    btnUpdateDlg.className = "btn btn-success mr-1";
+    btnUpdateDlg.textContent = document.getElementById(btnIdUpdate).innerText;
+    btnUpdateDlg.addEventListener("click", function () {
+        buttonWindowClose.click();
+        document.getElementById(btnIdUpdate).click();
+    });
+    divDialogWindow.appendChild(btnUpdateDlg);
+
+    const btnResetDlg = document.createElement("button");
+    btnResetDlg.type = "button";
+    btnResetDlg.className = "btn btn-danger ml-1";
+    btnResetDlg.textContent = document.getElementById(btnIdReset).innerText;
+    btnResetDlg.addEventListener("click", function () {
+        buttonWindowClose.click();
+        document.getElementById(btnIdReset).click();
+        changeContent(btn);
+        divVarAdd(btn.id);
+    });
+    divDialogWindow.appendChild(btnResetDlg);
+}
+
+function checkPassEmpty() {
+    const inputPass = document.getElementById(inputIdPas);
+    const inputConfPass = document.getElementById(inputIdConfPas);
+    const btnUpdate = document.getElementById(btnIdUpdate);
+    const btnReset = document.getElementById(btnIdReset);
+
+    btnUpdate.disabled = !inputPass.value && !inputConfPass.value;
+    btnReset.disabled = btnUpdate.disabled;
+}
+
+function showAvatarMenu() {
+    const loginMenu = document.getElementById(divIdAvatarMenu);
+    loginMenu.style.display = loginMenu.style.display === "inline-block" ? "none" : "inline-block";
+
+    let body = document.querySelector("body");
+    if (typeof body.onmouseup !== "function") {
+        body.onmouseup = hideAvatarMenu.bind(body.onmouseup);
+    }
+}
+
+function hideAvatarMenu(e) {
+    const div = $("#" + divIdAvatarMenu);
+    const mainDiv = $("#" + divIdHiddenAvatarMenu);
+    if (!mainDiv.is(e.target)
+        && mainDiv.has(e.target).length === 0) {
+        div.hide();
+    }
 }

@@ -15,11 +15,12 @@ import static com.netcracker.project.url.UrlTemplates.*;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
-    public static final String urlGetUserByEmail = SERVER + API + VERSION + USER_MANAGEMENT +
-            USER_GET + BY_EMAIL + "{email}";
-    public static final String urlGetUserById = SERVER + API + VERSION + USER_MANAGEMENT +
-            USER_GET + BY_ID + "{id}";
-    public static final String urlPostUser = SERVER + API + VERSION + USER_MANAGEMENT + USER_POST;
+    public static final String URL_GET_USER_BY_EMAIL = SERVER + API + VERSION + USER_MANAGEMENT +
+            USER_GET + BY_EMAIL + "/{email}";
+    public static final String URL_GET_USER_BY_ID = SERVER + API + VERSION + USER_MANAGEMENT +
+            USER_GET + BY_ID + "/{id}";
+    public static final String URL_POST_USER = SERVER + API + VERSION + USER_MANAGEMENT + USER_POST;
+    public static final String URL_DELETE_USER = SERVER + API + VERSION + USER_MANAGEMENT + USER_DELETE + "/{id}";
 
     @Autowired
     private RestTemplate restTemplate;
@@ -28,7 +29,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User userDb = restTemplate.getForObject(urlGetUserByEmail, User.class, email);
+        User userDb = restTemplate.getForObject(URL_GET_USER_BY_EMAIL, User.class, email);
 
         if (userDb == null) {
             throw new UsernameNotFoundException("Пользователь не найден");
@@ -40,24 +41,28 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public void addUser(User user, Role role) {
         user.dataExtension(role);
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        restTemplate.postForLocation(urlPostUser, user);
+        restTemplate.postForLocation(URL_POST_USER, user);
     }
 
     public User getUserByEmail(String email) {
-        return restTemplate.getForObject(urlGetUserByEmail, User.class, email);
+        return restTemplate.getForObject(URL_GET_USER_BY_EMAIL, User.class, email);
     }
 
     public User getUserById(Long id) {
-        return restTemplate.getForObject(urlGetUserById, User.class, id);
+        return restTemplate.getForObject(URL_GET_USER_BY_ID, User.class, id);
     }
 
     public void updateUserBasicData(User user, User userForm) {
         user.update(userForm);
-        restTemplate.postForLocation(urlPostUser, user);
+        restTemplate.postForLocation(URL_POST_USER, user);
     }
 
     public void updateUserPass(User user, User userForm) {
         user.setPassword(bCryptPasswordEncoder.encode(userForm.getPassword()));
-        restTemplate.postForLocation(urlPostUser, user);
+        restTemplate.postForLocation(URL_POST_USER, user);
+    }
+
+    public void deleteUser(Long id) {
+        restTemplate.delete(URL_DELETE_USER, id);
     }
 }

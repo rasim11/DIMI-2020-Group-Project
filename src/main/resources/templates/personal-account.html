@@ -20,36 +20,41 @@
 <div id="main-block" class="container pt-4 pb-4" style="min-width: 960px;">
     <div style="display: inline-block;margin-right: 200px;vertical-align: top;">
         <nav class="nav flex-column" style="width: max-content;">
-            <button id="btn-data-basic" type="button" class="btn btn-outline-primary mb-2"
-                    style="width: 100%; border: none;text-align: start" onclick="selectData(this)">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
-                     class="bi bi-card-text"
-                     viewBox="0 1 16 16">
+            <button id="btn-data-basic" type="button" class="btn btn-outline-primary mb-2 nav-btn"
+                    onclick="selectData(this)">
+                <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-card-text" viewBox="0 0 16 16">
                     <path d="M14.5 3a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h13zm-13-1A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-13z"/>
                     <path d="M3 5.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zM3 8a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9A.5.5 0 0 1 3 8zm0 2.5a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5z"/>
                 </svg>
                 <span style="font-size: larger">Основные данные</span>
             </button>
-            <button id="btn-data-pass" type="button" class="btn btn-outline-primary mb-2"
-                    style="width: 100%; border: none;text-align: start" onclick="selectData(this)">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-key"
-                     viewBox="0 1 16 16">
+            <button id="btn-data-pass" type="button" class="btn btn-outline-primary mb-2 nav-btn"
+                    onclick="selectData(this)">
+                <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-key" viewBox="0 0 16 16">
                     <path d="M0 8a4 4 0 0 1 7.465-2H14a.5.5 0 0 1 .354.146l1.5 1.5a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0L13 9.207l-.646.647a.5.5 0 0 1-.708 0L11 9.207l-.646.647a.5.5 0 0 1-.708 0L9 9.207l-.646.647A.5.5 0 0 1 8 10h-.535A4 4 0 0 1 0 8zm4-3a3 3 0 1 0 2.712 4.285A.5.5 0 0 1 7.163 9h.63l.853-.854a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708 0l.646.647.793-.793-1-1h-6.63a.5.5 0 0 1-.451-.285A3 3 0 0 0 4 5z"/>
                     <path d="M4 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
                 </svg>
                 <span style="font-size: larger">Пароль</span>
             </button>
-            <button sec:authorize="!hasAuthority('Админ')" id="btn-data-problems" type="button"
-                    class="btn btn-outline-primary"
-                    style="width: 100%; border: none;text-align: start"
+            <button id="btn-data-account" type="button" class="btn btn-outline-primary mb-2 nav-btn"
                     onclick="selectData(this)">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-book"
-                     viewBox="0 1 16 16">
+                <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-person-circle" viewBox="0 0 16 16">
+                    <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
+                    <path fill-rule="evenodd"
+                          d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"/>
+                </svg>
+                <span style="font-size: larger">Аккаунт</span>
+            </button>
+            <button sec:authorize="!hasAuthority('Админ')" id="btn-data-problems" type="button"
+                    class="btn btn-outline-primary nav-btn" onclick="selectData(this)">
+                <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-book" viewBox="0 0 16 16">
                     <path d="M1 2.828c.885-.37 2.154-.769 3.388-.893 1.33-.134 2.458.063 3.112.752v9.746c-.935-.53-2.12-.603-3.213-.493-1.18.12-2.37.461-3.287.811V2.828zm7.5-.141c.654-.689 1.782-.886 3.112-.752 1.234.124 2.503.523 3.388.893v9.923c-.918-.35-2.107-.692-3.287-.81-1.094-.111-2.278-.039-3.213.492V2.687zM8 1.783C7.015.936 5.587.81 4.287.94c-1.514.153-3.042.672-3.994 1.105A.5.5 0 0 0 0 2.5v11a.5.5 0 0 0 .707.455c.882-.4 2.303-.881 3.68-1.02 1.409-.142 2.59.087 3.223.877a.5.5 0 0 0 .78 0c.633-.79 1.814-1.019 3.222-.877 1.378.139 2.8.62 3.681 1.02A.5.5 0 0 0 16 13.5v-11a.5.5 0 0 0-.293-.455c-.952-.433-2.48-.952-3.994-1.105C10.413.809 8.985.936 8 1.783z"/>
                 </svg>
                 <span style="font-size: larger">Проблемы</span>
             </button>
         </nav>
+    </div>
+    <div class="div-main-content" style="display: inline-block">
     </div>
 </div>
 

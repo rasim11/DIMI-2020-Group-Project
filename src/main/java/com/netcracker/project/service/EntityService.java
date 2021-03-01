@@ -11,25 +11,25 @@ import static com.netcracker.project.url.UrlTemplates.*;
 
 @Service
 public class EntityService {
-    public static final String urlGetRoleById = SERVER + API + VERSION + ROLE_MANAGEMENT + ROLE_GET +
-            BY_ID + "{id}";
-    public static final String urlGetRoleByName = SERVER + API + VERSION + ROLE_MANAGEMENT + ROLE_GET +
-            BY_NAME + "{name}";
-    public static final String urlPostTask = SERVER + API + VERSION + TASK_MANAGEMENT + TASK_POST;
+    public static final String URL_GET_ROLE_BY_ID = SERVER + API + VERSION + ROLE_MANAGEMENT + ROLE_GET +
+            BY_ID + "/{id}";
+    public static final String URL_GET_ROLE_BY_NAME = SERVER + API + VERSION + ROLE_MANAGEMENT + ROLE_GET +
+            BY_NAME + "/{name}";
+    public static final String URL_POST_TASK = SERVER + API + VERSION + TASK_MANAGEMENT + TASK_POST;
 
     @Autowired
     private RestTemplate restTemplate;
 
     public Role getRoleById(Long id) {
-        return restTemplate.getForObject(urlGetRoleById, Role.class, id);
+        return restTemplate.getForObject(URL_GET_ROLE_BY_ID, Role.class, id);
     }
 
     public Role getRoleByName(String name) {
-        return restTemplate.getForObject(urlGetRoleByName, Role.class, name);
+        return restTemplate.getForObject(URL_GET_ROLE_BY_NAME, Role.class, name);
     }
 
     public void postTask(User user, Task task) {
         task.dataExtension(user);
-        restTemplate.postForLocation(urlPostTask, task);
+        restTemplate.postForLocation(URL_POST_TASK, task);
     }
 }

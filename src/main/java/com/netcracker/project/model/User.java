@@ -25,7 +25,7 @@ public class User implements UserDetails {
     private String password;
     private String passwordConfirm;
     private Role role;
-    private String regDate;
+    private LocalDate regDate;
     private Long tasksCount;
     private Region region;
 
@@ -60,7 +60,7 @@ public class User implements UserDetails {
     }
 
     public void dataExtension(Role role) {
-        this.regDate = LocalDate.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+        this.regDate = LocalDate.now();
         this.tasksCount = 0L;
         this.role = role;
     }
@@ -71,5 +71,9 @@ public class User implements UserDetails {
         this.middlename = user.middlename;
         this.email = user.email;
         this.phoneNumber = user.phoneNumber;
+    }
+
+    public String dateToString(LocalDate localDate){
+        return localDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
     }
 }

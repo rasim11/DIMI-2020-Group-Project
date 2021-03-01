@@ -21,7 +21,7 @@ public class PersonalAccountRestController {
     }
 
     @PutMapping(API + VERSION + USER_MANAGEMENT + USER_PUT)
-    public String getIsUserEmailFree(@RequestBody User userReq) {
+    public String putUser(@RequestBody User userReq) {
         if (userReq.getPassword() == null) {
             User user = userDetailsService.getUserByEmail(userReq.getEmail());
             if (user != null && !user.getId().equals(userReq.getId())) {
@@ -40,5 +40,10 @@ public class PersonalAccountRestController {
         }
 
         return "";
+    }
+
+    @DeleteMapping(API + VERSION + USER_MANAGEMENT + USER_DELETE + "/{id}")
+    public void deleteUser(@PathVariable Long id) {
+        userDetailsService.deleteUser(id);
     }
 }
