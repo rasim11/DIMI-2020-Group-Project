@@ -59,13 +59,10 @@ class User {
             curValuesArr.push(curValues[i].value);
         }
 
-        if (curValuesArr.length === 5) {
-            curValuesArr.push(null);
-            curValuesArr.push(null);
-        }
-
-        const userTarget = new User(curValuesArr[0], curValuesArr[1], curValuesArr[2], curValuesArr[3], curValuesArr[4],
-            curValuesArr[5], curValuesArr[6], User.CUR_USER.id);
+        const userTarget = document.getElementById(divIdDataBasic) ? new User(curValuesArr[0], curValuesArr[1],
+            curValuesArr[2], curValuesArr[3], curValuesArr[4], null, null, User.CUR_USER.id) :
+            new User(null, null, null, null, null,
+                curValuesArr[0], curValuesArr[1], User.CUR_USER.id);
 
         const json = JSON.stringify(userTarget);
 
