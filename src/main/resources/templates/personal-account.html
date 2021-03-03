@@ -9,11 +9,12 @@
     <link href="/css/validation.css" rel="stylesheet">
     <link href="/css/personalAccount.css" rel="stylesheet">
     <link href="/css/imgProfile.css" rel="stylesheet">
+    <script src="/js/UrlTemplates.js"></script>
     <script src=/js/personalAccount.js></script>
     <script src=/js/password.js></script>
     <script src=/js/validation.js></script>
 </head>
-<body onload="loadBasicData()">
+<body onload="loadDataBasic()">
 
 <header th:insert="blocks/header :: header"></header>
 
@@ -54,7 +55,7 @@
             </button>
         </nav>
     </div>
-    <div class="div-main-content" style="display: inline-block">
+    <div id="div-main-content" style="display: inline-block">
     </div>
 </div>
 

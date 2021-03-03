@@ -1,4 +1,9 @@
-const divClassMainContent = "div-main-content";
+const URL_GET_CUR_USER = SERVER + API + VERSION + USER_MANAGEMENT + CUR_USER_GET;
+const URL_PUT_USER = SERVER + API + VERSION + USER_MANAGEMENT + USER_PUT;
+const URL_DELETE_USER = SERVER + API + VERSION + USER_MANAGEMENT + USER_DELETE;
+const URL_PERSONAL_ACCOUNT = API + VERSION + PERSONAL_ACCOUNT;
+
+const divIdMainContent = "div-main-content";
 const divIdDataBasic = "div-data-basic";
 const divIdAvatarMenu = "div-avatar-menu";
 const divIdHiddenAvatarMenu = "div-hidden-avatar-menu";
@@ -16,14 +21,9 @@ const inputIdPas = "pas-input";
 const inputIdConfPas = "conf-pas-input";
 const formIdDataAccount = "form-data-account";
 const formClassUpdate = "form-update";
-
+let curUser;
 
 class User {
-    static URL_SERVER = "http://localhost:8080";
-    static URL_GET_CUR_USER = User.URL_SERVER + "/api/v1/user-management/current-user-get";
-    static URL_PUT_USER = User.URL_SERVER + "/api/v1/user-management/user-put";
-    static URL_DELETE_USER = User.URL_SERVER + "/api/v1/user-management/user-delete";
-    static CUR_USER;
     static IS_INVALID = false;
 
     constructor(lastname, firstname, middlename, email, phoneNumber, password, passwordConfirm, id) {
@@ -36,46 +36,41 @@ class User {
         this.passwordConfirm = passwordConfirm;
         this.id = id;
     }
+}
 
-    static setUserFromRequest() {
-        const xhr = new XMLHttpRequest();
-        xhr.open('GET', User.URL_GET_CUR_USER, false);
-        xhr.send();
+function getUserFromRequest() {
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', URL_GET_CUR_USER, false);
+    xhr.send();
 
-        if (xhr.status !== 200) {
-            alert(xhr.status + ': ' + xhr.statusText);
-        } else {
-            const user = JSON.parse(xhr.responseText);
-            User.CUR_USER = new User(user.lastname, user.firstname, user.middlename, user.email,
-                user.phoneNumber, user.password, user.passwordConfirm, user.id);
-        }
+    if (xhr.status !== 200) {
+        alert(xhr.status + ': ' + xhr.statusText);
+    } else {
+        const user = JSON.parse(xhr.responseText);
+        curUser = new User(user.lastname, user.firstname, user.middlename, user.email,
+            user.phoneNumber, user.password, user.passwordConfirm, user.id);
     }
+}
 
-    static isUserEmailFree() {
-        const curValues = document.querySelector('.' + formClassUpdate).querySelectorAll('.form-control');
-        let curValuesArr = [];
+function isUserEmailFree() {
+    const curValues = document.querySelector('.' + formClassUpdate).querySelectorAll('.form-control');
 
-        for (let i = 0; i < curValues.length; i++) {
-            curValuesArr.push(curValues[i].value);
-        }
+    const userTarget = document.getElementById(divIdDataBasic) ? new User(curValues[0].value, curValues[1].value,
+        curValues[2].value, curValues[3].value, curValues[4].value, null, null, curUser.id) :
+        new User(null, null, null, null, null,
+            curValues[0].value, curValues[1].value, curUser.id);
 
-        const userTarget = document.getElementById(divIdDataBasic) ? new User(curValuesArr[0], curValuesArr[1],
-            curValuesArr[2], curValuesArr[3], curValuesArr[4], null, null, User.CUR_USER.id) :
-            new User(null, null, null, null, null,
-                curValuesArr[0], curValuesArr[1], User.CUR_USER.id);
+    const json = JSON.stringify(userTarget);
 
-        const json = JSON.stringify(userTarget);
+    const xhr = new XMLHttpRequest();
+    xhr.open("PUT", URL_PUT_USER, false);
+    xhr.setRequestHeader("Content-type", "application/json; charset=utf-8");
+    xhr.send(json);
 
-        const xhr = new XMLHttpRequest();
-        xhr.open("PUT", User.URL_PUT_USER, false);
-        xhr.setRequestHeader("Content-type", "application/json; charset=utf-8");
-        xhr.send(json);
-
-        if (xhr.status !== 200) {
-            return false;
-        } else {
-            return xhr.responseText;
-        }
+    if (xhr.status !== 200) {
+        return false;
+    } else {
+        return xhr.responseText;
     }
 }
 
@@ -100,7 +95,7 @@ function isNoDuplicate() {
     const newValues = document.querySelector('.' + formClassUpdate).querySelectorAll('.form-control');
     const updateButton = document.getElementById(btnIdUpdate);
     const resetButton = document.getElementById(btnIdReset);
-    const userAtr = Object.values(User.CUR_USER);
+    const userAtr = Object.values(curUser);
 
     for (let i = 0; i < newValues.length; i++) {
         if (newValues[i].value !== userAtr[i]) {
@@ -114,11 +109,11 @@ function isNoDuplicate() {
 }
 
 function addDataUser(btnId) {
-    const divMainContent = document.querySelector('.' + divClassMainContent);
+    const divMainContent = document.getElementById(divIdMainContent);
 
     const formDataUser = document.createElement("form");
     formDataUser.method = "get";
-    formDataUser.action = "/api/v1/personal-account";
+    formDataUser.action = URL_PERSONAL_ACCOUNT;
     formDataUser.className = formClassUpdate;
     formDataUser.addEventListener("submit", function (e) {
         e.preventDefault();
@@ -218,7 +213,7 @@ function addDataBasic(divDataBasic) {
     inputAvatar.addEventListener("change", imgLoad.bind(null, inputAvatar));
     divDataBasic.appendChild(inputAvatar);
 
-    const userAtr = Object.values(User.CUR_USER);
+    const userAtr = Object.values(curUser);
     for (let i = 0; i < 5; i++) {
         let inputDataBasic = document.createElement("input");
         inputDataBasic.type = "text";
@@ -294,7 +289,7 @@ function addDataPass(divDataPass) {
 }
 
 function addDataProblems() {
-    const divMainContent = document.querySelector('.' + divClassMainContent);
+    const divMainContent = document.getElementById(divIdMainContent);
 
     const divDataProblems = document.createElement("div");
     divDataProblems.style.display = "inline-block";
@@ -308,7 +303,7 @@ function addDataProblems() {
 }
 
 function addDataAccount() {
-    const divMainContent = document.querySelector('.' + divClassMainContent);
+    const divMainContent = document.getElementById(divIdMainContent);
 
     const formDataAccount = document.createElement("form");
     formDataAccount.id = formIdDataAccount;
@@ -322,7 +317,7 @@ function addDataAccount() {
         e.preventDefault();
 
         const xhr = new XMLHttpRequest();
-        xhr.open("DELETE", User.URL_DELETE_USER + "/" + User.CUR_USER.id, false);
+        xhr.open("DELETE", URL_DELETE_USER + "/" + curUser.email, false);
         xhr.send();
 
         addChangeSucMsg();
@@ -350,8 +345,8 @@ function addDataAccount() {
     formDataAccount.appendChild(btnDelete);
 }
 
-function loadBasicData() {
-    User.setUserFromRequest();
+function loadDataBasic() {
+    getUserFromRequest();
 
     const btn = document.getElementById(btnIdDataBasic);
     btn.style.backgroundColor = "#f1f1f1";
@@ -405,7 +400,7 @@ function divVarAdd(btnId) {
 }
 
 function changeContent(btn) {
-    const divMainContent = document.querySelector('.' + divClassMainContent);
+    const divMainContent = document.getElementById(divIdMainContent);
     divMainContent.innerHTML = "";
 
     const buttons = document.querySelectorAll("nav > button");
@@ -423,7 +418,7 @@ function isValid(form) {
         return false;
     }
 
-    return User.isUserEmailFree() === "";
+    return isUserEmailFree() === "";
 }
 
 function addErrMsg() {
@@ -476,7 +471,7 @@ function btnResetClick() {
 
     let userAtr = [];
     if (document.getElementById(divIdDataBasic)) {
-        userAtr = Object.values(User.CUR_USER);
+        userAtr = Object.values(curUser);
     } else {
         userAtr.push("");
         userAtr.push("");

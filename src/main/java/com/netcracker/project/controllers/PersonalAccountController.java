@@ -37,6 +37,16 @@ public class PersonalAccountController {
             return REDIRECT_ON_MAIN_PAGE;
         }
 
+        User curUser = securityService.getCurrentUser();
+        if (curUser.getId().equals(id)) {
+            model.addAttribute("isCurUser", true);
+            model.addAttribute("user", curUser);
+            model.addAttribute("roleName", curUser.getRole().getName());
+        } else {
+            model.addAttribute("user", user);
+            model.addAttribute("roleName", user.getRole().getName());
+        }
+
         return "profile";
     }
 }

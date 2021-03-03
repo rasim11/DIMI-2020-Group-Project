@@ -1,6 +1,9 @@
 package com.netcracker.project.service.impl;
 
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netcracker.project.model.Role;
 import com.netcracker.project.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,11 +24,14 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             USER_GET + BY_ID + "/{id}";
     public static final String URL_POST_USER = SERVER + API + VERSION + USER_MANAGEMENT + USER_POST;
     public static final String URL_DELETE_USER = SERVER + API + VERSION + USER_MANAGEMENT + USER_DELETE + "/{id}";
+    public static final String URL_GET_ALL_USERS = SERVER + API + VERSION + USER_MANAGEMENT + ALL_USERS_GET;
 
     @Autowired
     private RestTemplate restTemplate;
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
+    @Autowired
+    private ObjectMapper mapper;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -62,7 +68,15 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         restTemplate.postForLocation(URL_POST_USER, user);
     }
 
-    public void deleteUser(Long id) {
-        restTemplate.delete(URL_DELETE_USER, id);
+    public void deleteUser(String email) {
+        restTemplate.delete(URL_DELETE_USER, email);
+    }
+
+    public Iterable<User> getAllUsers() {
+        JsonNode users = restTemplate.getForObject(URL_GET_ALL_USERS, JsonNode.class);
+        return mapper.convertValue(users,
+                new TypeReference<Iterable<User>>() {
+                }
+        );
     }
 }

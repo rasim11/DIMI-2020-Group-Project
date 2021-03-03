@@ -42,8 +42,8 @@ public class PersonalAccountRestController {
         return "";
     }
 
-    @DeleteMapping(API + VERSION + USER_MANAGEMENT + USER_DELETE + "/{id}")
-    public void deleteUser(@PathVariable Long id) {
-        userDetailsService.deleteUser(id);
+    @DeleteMapping(API + VERSION + USER_MANAGEMENT + USER_DELETE + "/{email}")
+    public void deleteUser(@PathVariable String email) {
+        userDetailsService.deleteUser(email);
     }
 }

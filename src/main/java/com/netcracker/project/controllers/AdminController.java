@@ -15,6 +15,6 @@ public class AdminController {
 
     @GetMapping(API + VERSION + ADMIN_MANAGEMENT)
     public String administrationGet(Model model) {
-        return "redirect:" + API + VERSION + PERSONAL_ACCOUNT;
+        return "administration";
     }
 }

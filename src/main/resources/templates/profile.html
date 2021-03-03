@@ -18,13 +18,16 @@
     </div>
     <div sec:authorize="isAuthenticated()">
         <img src="/img/user-default.png" class="mb-4"/>
-        <h4 class="mb-4"
-            th:text="${#authentication.getPrincipal().getFirstname() +
-            ' '+ #authentication.getPrincipal().getMiddlename() +' ' +#authentication.getPrincipal().getLastname() }"/>
-        <p th:text="'Дата регистрации: '+${#authentication.
-        getPrincipal().dateToString(#authentication.getPrincipal().getRegDate())}"/>
-        <p th:text="'Опубликованных проблем: '+${#authentication.getPrincipal().getTasksCount()}"/>
-        <a href="#"><p>Проблемы пользователя</p></a>
+        <h4 class="mb-4" th:text="${user.getFirstname() + ' ' + user.getMiddlename() + ' ' + user.getLastname() }"/>
+        <p th:text="'Дата регистрации: '+${user.dateToString(user.getRegDate())}"/>
+        <div th:if="${isCurUser}">
+            <p th:text="'Электронная почта: '+${user.getEmail()}"/>
+            <p th:text="'Номер телефона: '+${user.getPhoneNumber()}"/>
+        </div>
+        <div th:if="${roleName} == 'Пользователь'">
+            <p th:text="'Опубликованных проблем: '+${user.getTasksCount()}"/>
+            <a href="#"><p>Проблемы пользователя</p></a>
+        </div>
     </div>
 </div>
 

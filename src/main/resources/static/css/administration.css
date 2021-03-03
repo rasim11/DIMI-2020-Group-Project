@@ -1,0 +1,18 @@
+.nav-btn {
+    width: 100%;
+    border: none;
+    text-align: start;
+}
+
+svg {
+    vertical-align: text-top;
+    width: 24px;
+    height: 24px;
+    fill: currentColor;
+}
+
+img {
+    width: 100px;
+    height: 100px;
+    border-radius: 100%;
+}
