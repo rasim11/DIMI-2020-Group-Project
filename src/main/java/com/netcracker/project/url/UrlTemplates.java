@@ -17,6 +17,7 @@ public final class UrlTemplates {
     public static final String USER_PUT = "/user-put";
     public static final String ADMIN_MANAGEMENT = "/admin-management";
     public static final String TASK_MANAGEMENT = "/task-management";
+    public static final String TASK_GET = "/task-get";
     public static final String TASK_POST = "/task-post";
     public static final String ROLE_MANAGEMENT = "/role-management";
     public static final String ROLE_GET = "/role-get";

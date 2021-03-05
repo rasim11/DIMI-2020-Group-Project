@@ -18,6 +18,7 @@ public class EntityService {
             BY_NAME + "/{name}";
     public static final String URL_POST_TASK = SERVER + API + VERSION + TASK_MANAGEMENT + TASK_POST;
     public static final String URL_GET_ALL_ROLES = SERVER + API + VERSION + ROLE_MANAGEMENT + ALL_ROLES_GET;
+    public static final String URL_GET_TASK_BY_ID = SERVER + API + VERSION + TASK_MANAGEMENT + TASK_GET + BY_ID + "/{id}";
 
     @Autowired
     private RestTemplate restTemplate;
@@ -39,5 +40,8 @@ public class EntityService {
                 new TypeReference<Iterable<Role>>() {
                 }
         );
+    }
+    public Task getTaskByID(Long id){
+        return restTemplate.getForObject(URL_GET_TASK_BY_ID,Task.class,id);
     }
 }

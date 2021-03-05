@@ -20,6 +20,7 @@ public class User implements UserDetails {
     private String lastname;
     private String firstname;
     private String middlename;
+    private String userImage;
     private String email;
     private String phoneNumber;
     private String password;

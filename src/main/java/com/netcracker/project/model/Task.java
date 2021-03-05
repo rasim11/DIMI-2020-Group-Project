@@ -14,6 +14,7 @@ public class Task {
     private String taskLocation;
     private Priority priority;
     private boolean commentAllow;
+    private String taskImage;
     private User author;
     private User responsible;
     private User socWorker;

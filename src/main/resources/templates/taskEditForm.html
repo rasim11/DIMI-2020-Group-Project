@@ -33,6 +33,15 @@
             <br>
             <small></small>
         </div>
+
+        <div class="form-group">
+            <label for="image"></label><br>
+            <img th:src="*{'data:image/jpg;image/png;base64,'+{taskImage}}" id="image" width="500" alt=""/>
+            <br>
+            <input type="file" id="addImg" name="image" th:value="${'/img/' + task.id + '.jpg'}" accept=".jpg, .png, .jpeg" width="
+            30"height="30">
+            <button id="delImage" class="btn btn-delete">Удалить</button>
+        </div>
         <input type="hidden" name="id" th:value="${task.id}">
         <button type="submit" class="btn btn-success">Добавить</button>
     </form>
