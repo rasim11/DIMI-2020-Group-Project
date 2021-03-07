@@ -8,6 +8,7 @@ const divClassUserAttribute = "div-user-attribute";
 const divClassUserActivity = "div-user-activity";
 const divIdMainContent = "div-main-content";
 const divIdDataUsers = "div-data-users"
+const divIdListUsers = "div-list-users";
 const divIdFilterRole = "div-filter-role";
 const divIdFilterRegDate = "div-filter-reg-date";
 const divIdFiltersActions = "div-filters-actions";
@@ -16,6 +17,9 @@ const btnIdDataUsers = "btn-data-users";
 const ulIdFiltersMenu = "ul-filters-menu";
 const checkedBtnIdRole = "checked-btn-id-role";
 const inputClassHiddenIsActive = "input-hidden-is-active";
+const inputIdSearchString = "input-search-string";
+const inputIdSearchEmail = "input-search-email";
+const inputIdSearchNames = "input-search-names";
 const spanIdCountUsers = "span-count-users";
 let users;
 let roles;
@@ -128,8 +132,8 @@ function addDataFilters() {
                     inputRegDate.addEventListener("focus", function () {
                         inputRegDate.type = "date";
                     });
-                    inputRegDate.addEventListener("blur", isFilterDateActive.bind(null, spanTitleFilter,
-                        divFilter));
+                    inputRegDate.addEventListener("blur", isFilterDateActive.bind(null, divFilter,
+                        spanTitleFilter));
                     inputRegDate.placeholder = j === 0 ? "От" : "До";
                     divFilterRoleBody.appendChild(inputRegDate);
                 }
@@ -169,20 +173,74 @@ function addDataUsers() {
     divDataUsers.style.display = "inline-block";
     divDataUsers.style.marginRight = "80px";
     divDataUsers.style.minWidth = "450px";
-    if (document.getElementById(divIdDataFilters)) {
-        divMainContent.insertBefore(divDataUsers, document.getElementById(divIdDataFilters));
-    } else {
-        divMainContent.appendChild(divDataUsers);
-    }
+    divMainContent.appendChild(divDataUsers);
 
     const blockTitle = document.createElement("h3");
     blockTitle.style.textAlign = "center";
     blockTitle.innerText = document.getElementById(btnIdDataUsers).innerText;
     divDataUsers.appendChild(blockTitle);
 
+    const divSearchString = document.createElement("div");
+    divSearchString.className = "search-string";
+    divDataUsers.appendChild(divSearchString);
+
+    const inputSearchString = document.createElement("input");
+    inputSearchString.id = inputIdSearchString;
+    inputSearchString.type = "text";
+    inputSearchString.className = "form-control";
+    inputSearchString.style.width = "100%";
+    inputSearchString.placeholder = "Введите критерий поиска";
+    inputSearchString.addEventListener("input", filterSearchStringActive.bind(null, inputSearchString));
+    divSearchString.appendChild(inputSearchString);
+
+    const btnClearSearchString = document.createElement("button");
+    btnClearSearchString.type = "button";
+    btnClearSearchString.style.outline = "none";
+    btnClearSearchString.className = "clear-search-string";
+    btnClearSearchString.addEventListener("click", function () {
+        inputSearchString.value = "";
+        filterSearchStringInactive();
+    });
+    divSearchString.appendChild(btnClearSearchString);
+
+    const divSearchBar = document.createElement("div");
+    divSearchBar.className = "mb-2";
+    divDataUsers.appendChild(divSearchBar);
+
+    const divSearchCriterion = document.createElement("div");
+    divSearchBar.appendChild(divSearchCriterion);
+
+    const labelSearchCriterion = document.createElement("label");
+    labelSearchCriterion.textContent = "Критерий поиска:";
+    labelSearchCriterion.style.fontSize = "14px";
+    divSearchCriterion.appendChild(labelSearchCriterion);
+
+    for (let i = 0; i < 2; i++) {
+        const label = document.createElement("label");
+        label.style.fontSize = "14px";
+        label.className = "ml-2";
+        divSearchCriterion.appendChild(label);
+
+        label.innerHTML = i === 0 ?
+            "<input id='" + inputIdSearchEmail + "' type='radio' name='searchCriterion' checked " +
+            "style='vertical-align: middle'> Email |" :
+            "<input id='" + inputIdSearchNames + "' type='radio' name='searchCriterion' " +
+            "style='vertical-align: middle'> ФИО";
+    }
+
+    addListUsers();
+}
+
+function addListUsers() {
+    const divDataUsers = document.getElementById(divIdDataUsers);
+
+    const divListUsers = document.createElement("div");
+    divListUsers.id = divIdListUsers;
+    divDataUsers.appendChild(divListUsers);
+
     const preData = document.createElement("div");
     preData.className = "mb-2";
-    divDataUsers.appendChild(preData);
+    divListUsers.appendChild(preData);
 
     const btnAddUser = document.createElement("button");
     btnAddUser.type = "button";
@@ -198,15 +256,15 @@ function addDataUsers() {
     preData.appendChild(spanCountUsers);
 
     const hrElement = document.createElement("hr");
-    divDataUsers.appendChild(hrElement);
+    divListUsers.appendChild(hrElement);
 
     for (let i = 0; i < users.length; i++) {
         const divUser = document.createElement("div");
         divUser.className = divClassUser + " mb-4";
-        divDataUsers.appendChild(divUser);
+        divListUsers.appendChild(divUser);
 
         const imgUserAvatar = document.createElement("img");
-        imgUserAvatar.src = "/img/user-default.png";
+        imgUserAvatar.src = users[i].userImage;
         divUser.appendChild(imgUserAvatar);
 
         const divUserAttribute = document.createElement("div");
@@ -220,8 +278,8 @@ function addDataUsers() {
             spanUserAttribute.style.display = "block";
             switch (j) {
                 case 0:
-                    spanUserAttribute.textContent = "ФИО: " + users[i].firstname + " " +
-                        users[i].middlename + " " + users[i].lastname;
+                    spanUserAttribute.textContent = "ФИО: " + users[i].lastname + " " + users[i].firstname + " " +
+                        users[i].middlename;
                     break;
                 case 1:
                     spanUserAttribute.textContent = "Email: " + users[i].email;
@@ -300,7 +358,7 @@ function deleteUser(divUser, divUserAttribute, spanCountUsers) {
     spanCountUsers.textContent = newCount.join(" ");
 }
 
-function isFilterDateActive(spanTitleFilter, divFilter) {
+function isFilterDateActive(divFilter, spanTitleFilter) {
     const divFilterElements = divFilter.querySelector(".card").querySelectorAll("input");
 
     for (let i = 0; i < divFilterElements.length; i++) {
@@ -364,21 +422,19 @@ function addFilterActions(spanTitleFilter, divFilter) {
 
 function filterActive(divFilter) {
     divFilter.querySelector("." + inputClassHiddenIsActive).value = "on";
-    const divFilters = document.querySelectorAll(".collapse");
-    const filtersActivity = document.getElementById(divIdDataFilters).querySelectorAll("." +
-        inputClassHiddenIsActive);
 
-    document.getElementById(divIdDataUsers).remove();
-    addDataUsers();
+    removeListUsers();
 
     switch (divFilter.id) {
         case divIdFilterRole:
-            filterRoleActive(divFilter, divFilters, filtersActivity, true);
+            filterRoleActive(divFilter);
             break;
         case divIdFilterRegDate:
-            filterRegDateActive(divFilter, divFilters, filtersActivity, true);
+            filterRegDateActive(divFilter);
             break;
     }
+
+    anotherFiltersActive(divFilter);
 }
 
 function filterInactive(divFilter, spanTitleFilter) {
@@ -388,21 +444,14 @@ function filterInactive(divFilter, spanTitleFilter) {
         spanTitleFilter.style.color = "black";
         divFilter.removeChild(target);
 
-        document.getElementById(divIdDataUsers).remove();
-        addDataUsers();
+        removeListUsers();
 
         divFilter.querySelector("." + inputClassHiddenIsActive).value = "";
-        const divFilters = document.querySelectorAll(".collapse");
-        const filtersActivity = document.getElementById(divIdDataFilters).querySelectorAll("." +
-            inputClassHiddenIsActive);
         const divFilterElements = divFilter.querySelector(".card").querySelectorAll("input");
         switch (divFilter.id) {
             case divIdFilterRole:
                 for (let i = 0; i < divFilterElements.length; i++) {
                     divFilterElements[i].checked = false;
-                }
-                if (filtersActivity[1].value) {
-                    filterRegDateActive(divFilters[1], divFilters, filtersActivity, false);
                 }
                 break;
             case divIdFilterRegDate:
@@ -410,15 +459,35 @@ function filterInactive(divFilter, spanTitleFilter) {
                     divFilterElements[i].type = "text";
                     divFilterElements[i].value = "";
                 }
-                if (filtersActivity[0].value) {
-                    filterRoleActive(divFilters[0], divFilters, filtersActivity, false);
-                }
                 break;
         }
+
+        anotherFiltersActive(divFilter);
     }
 }
 
-function filterRoleActive(divFilter, divFilters, filtersActivity, control) {
+function anotherFiltersActive(divFilter) {
+    const divFilters = document.querySelectorAll(".collapse");
+
+    for (let i = 0; i < divFilters.length; i++) {
+        let filterActivity = divFilters[i].querySelector("." + inputClassHiddenIsActive);
+        if (divFilters[i] !== divFilter && filterActivity.value) {
+            switch (i) {
+                case 0:
+                    filterRoleActive(divFilters[i]);
+                    break;
+                case 1:
+                    filterRegDateActive(divFilters[i]);
+                    break;
+            }
+        }
+    }
+
+    filterSearchStringActive(document.getElementById(inputIdSearchString));
+
+}
+
+function filterRoleActive(divFilter) {
     const checkedBtn = divFilter.querySelector(".card").querySelectorAll("input");
     const filterRoles = divFilter.querySelectorAll("label");
     const allUsers = document.querySelectorAll("." + divClassUser);
@@ -441,14 +510,10 @@ function filterRoleActive(divFilter, divFilters, filtersActivity, control) {
         }
     }
 
-    calculateUsersCount(usersCount);
-
-    if (control && filtersActivity[1].value) {
-        filterRegDateActive(divFilters[1], divFilters, filtersActivity, false);
-    }
+    calculateUsersCountFilters(usersCount);
 }
 
-function filterRegDateActive(divFilter, divFilters, filtersActivity, control) {
+function filterRegDateActive(divFilter) {
     const divFilterElements = divFilter.querySelector(".card").querySelectorAll("input");
     const allUsers = document.querySelectorAll("." + divClassUser);
 
@@ -474,14 +539,10 @@ function filterRegDateActive(divFilter, divFilters, filtersActivity, control) {
         }
     }
 
-    calculateUsersCount(usersCount);
-
-    if (control && filtersActivity[0].value) {
-        filterRoleActive(divFilters[0], divFilters, filtersActivity, false);
-    }
+    calculateUsersCountFilters(usersCount);
 }
 
-function calculateUsersCount(usersCount) {
+function calculateUsersCountFilters(usersCount) {
     let spanCountUsers = document.getElementById(spanIdCountUsers);
     let newCount = spanCountUsers.innerText.split(" ");
     newCount[newCount.length - 1] = (Number(newCount[newCount.length - 1]) - usersCount).toString();
@@ -489,15 +550,75 @@ function calculateUsersCount(usersCount) {
 }
 
 function filtersResetAll() {
-    document.getElementById(divIdDataUsers).remove();
-    addDataUsers();
+    removeListUsers();
     document.getElementById(divIdDataFilters).remove();
     addDataFilters();
+    filterSearchStringActive(document.getElementById(inputIdSearchString));
 }
 
 function filtersApplyAll() {
     const divFilters = document.querySelectorAll(".collapse");
+
+    let idActiveFilter;
     for (let i = 0; i < divFilters.length; i++) {
-        filterActive(divFilters[i]);
+        const filterActions = divFilters[i].querySelector("." + divClassFilterActions);
+
+        if (filterActions) {
+            divFilters[i].querySelector("." + inputClassHiddenIsActive).value = "on";
+            idActiveFilter = i;
+        }
     }
+
+    if (idActiveFilter) {
+        filterActive(divFilters[idActiveFilter]);
+    }
+}
+
+function removeListUsers() {
+    document.getElementById(divIdListUsers).remove();
+    addListUsers();
+}
+
+function filterSearchStringActive(inputSearchString) {
+    if (!inputSearchString.value) {
+        filterSearchStringInactive();
+        return;
+    }
+
+    const allUsers = document.querySelectorAll("." + divClassUser);
+    const radioNames = document.getElementById(inputIdSearchNames);
+
+    for (let i = 0; i < allUsers.length; i++) {
+        const criterionArr = radioNames.checked ?
+            allUsers[i].querySelectorAll("span")[0].innerText.split(":") :
+            allUsers[i].querySelectorAll("span")[1].innerText.split(" ");
+        const criterion = criterionArr[criterionArr.length - 1];
+        allUsers[i].style.display = criterion.indexOf(inputSearchString.value) === -1 ? "none" : "block";
+    }
+
+    calculateUsersCountSearchString()
+}
+
+function filterSearchStringInactive() {
+    const allUsers = document.querySelectorAll("." + divClassUser);
+
+    for (let i = 0; i < allUsers.length; i++) {
+        allUsers[i].style.display = "block";
+    }
+
+    calculateUsersCountSearchString();
+}
+
+function calculateUsersCountSearchString() {
+    const allUsers = document.querySelectorAll("." + divClassUser);
+
+    let usersCount = 0;
+    for (let i = 0; i < allUsers.length; i++) {
+        usersCount += allUsers[i].style.display === "block" ? 1 : 0;
+    }
+
+    let spanCountUsers = document.getElementById(spanIdCountUsers);
+    let newCount = spanCountUsers.innerText.split(" ");
+    newCount[newCount.length - 1] = (usersCount).toString();
+    spanCountUsers.textContent = newCount.join(" ");
 }

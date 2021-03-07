@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -30,10 +29,8 @@ public class TaskController {
     }
 
     @PostMapping(API + VERSION + TASK_MANAGEMENT + TASK_POST)
-    public String addNewTask(@ModelAttribute("taskForm") Task task,@RequestParam("image") MultipartFile file) throws IOException {
-        if (!securityService.isAuthenticated()) {
-            return "redirect:/";
-        }
+    public String addNewTask(@ModelAttribute("taskForm") Task task,
+                             @RequestParam("image") MultipartFile file) throws IOException {
         if (!file.isEmpty()) {
             String fileName = file.getOriginalFilename();
             System.out.println(fileName);
@@ -44,12 +41,9 @@ public class TaskController {
         return REDIRECT_ON_MAIN_PAGE;
     }
 
-    @GetMapping( API + VERSION + TASK_MANAGEMENT + TASK_GET + BY_ID + "/{id}")
-    public String getTask(@PathVariable("id") Long id, Model model) throws IOException {
-        if (!securityService.isAuthenticated()) {
-            return "redirect:/";
-        }
-        model.addAttribute("task",entityService.getTaskByID(id));
+    @GetMapping(API + VERSION + TASK_MANAGEMENT + TASK_GET + BY_ID + "/{id}")
+    public String getTask(@PathVariable("id") Long id, Model model) {
+        model.addAttribute("task", entityService.getTaskByID(id));
         return "taskEditForm";
     }
 }
