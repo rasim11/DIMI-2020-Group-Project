@@ -17,7 +17,7 @@
         <h2 class="text-primary" th:text="${msgErr}"/>
     </div>
     <div sec:authorize="isAuthenticated()">
-        <img src="/img/user-default.png" class="mb-4"/>
+        <img th:src="${user.getUserImage()}" class="mb-4"/>
         <h4 class="mb-4" th:text="${user.getFirstname() + ' ' + user.getMiddlename() + ' ' + user.getLastname() }"/>
         <p th:text="'Дата регистрации: '+${user.dateToString(user.getRegDate())}"/>
         <div th:if="${isCurUser}">

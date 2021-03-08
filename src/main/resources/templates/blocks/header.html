@@ -29,14 +29,14 @@
                 </a>
                 <div id="div-hidden-login-menu" style="display: inline-block;">
                     <button style="background: none;border: none;" onclick="showLoginMenu()">
-                        <img src="/img/user-default.png" class="round"
-                             style="max-width: 34px; height: auto; display: inline-block"/>
-                        <span class="text-white" th:text="${#authentication.getPrincipal().getFirstname}"/>
+                        <img th:src="${#authentication.getPrincipal().getUserImage()}"
+                             style="width: 34px; height: 34px; display: inline-block;border-radius: 100%;"/>
+                        <span class="text-white" th:text="${#authentication.getPrincipal().getFirstname()}"/>
                     </button>
                     <form method="post" th:action="@{/logout}" id="form-login-menu"
                           class="dropdown-content">
                         <div align="center">
-                            <a th:href="'/api/v1/user-management/user-get/id'+ ${#authentication.getPrincipal().getId}"
+                            <a th:href="'/api/v1/user-management/user-get/id'+ ${#authentication.getPrincipal().getId()}"
                                class="btn btn-outline-primary mt-1 mb-1">
                                 <span>Мой профиль</span>
                             </a>

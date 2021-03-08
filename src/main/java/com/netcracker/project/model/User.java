@@ -72,9 +72,10 @@ public class User implements UserDetails {
         this.middlename = user.middlename;
         this.email = user.email;
         this.phoneNumber = user.phoneNumber;
+        this.userImage = user.userImage;
     }
 
-    public String dateToString(LocalDate localDate){
+    public String dateToString(LocalDate localDate) {
         return localDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
     }
 }

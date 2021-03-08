@@ -19,6 +19,10 @@ public class AdminRestController {
 
     @GetMapping(value = API + VERSION + USER_MANAGEMENT + ALL_USERS_GET)
     public Iterable<User> getAllUsers() {
+        Iterable<User> users = userDetailsService.getAllUsers();
+        for (User user : users) {
+            user.setPassword(null);
+        }
         return userDetailsService.getAllUsers();
     }
 

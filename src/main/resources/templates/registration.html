@@ -41,14 +41,16 @@
                 <input type="password" class="form-control" id="pas-input" placeholder="Пароль" name="password"
                        oninput="checkPassFormat()"
                        th:value="${userForm.getPassword()}">
-                <a href="#" class="pas-control" onclick="showPas(this, 'pas-input')"></a>
+                <button type="button" class="pas-control" style="outline: none;"
+                        onclick="showPas(this, 'pas-input')"></button>
             </div>
             <div class="pas mb-4">
                 <input type="password" class="form-control" id="conf-pas-input" placeholder="Повторите пароль"
                        name="passwordConfirm"
                        oninput="checkPassConfirm(this)"
                        th:value="${userForm.getPasswordConfirm()}">
-                <a href="#" class="pas-control" onclick="showPas(this, 'conf-pas-input')"></a>
+                <button type="button" class="pas-control" style="outline: none;"
+                        onclick="showPas(this, 'conf-pas-input')"></button>
             </div>
         </div>
         <b>Пользовательское соглашение</b>
