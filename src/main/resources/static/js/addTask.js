@@ -42,7 +42,9 @@ function formDelError(input){
 let taskImage = document.getElementById("taskImage");
 let preview = document.getElementById("imgPrev");
 let delBtn = document.getElementById("delImage");
-delBtn.style.visibility="hidden";
+let imgPreview = document.querySelector(".imagePreview")
+delBtn.style.display="none";
+imgPreview.style.display="none";
 taskImage.addEventListener('change',()=>{
 	imagePreview(taskImage.files[0]);
 })
@@ -50,7 +52,8 @@ function imagePreview(file){
 	var reader = new FileReader();
 	reader.onload =  function (e){
 		preview.setAttribute("src",e.target.result);
-		delBtn.style.visibility="visible";
+		imgPreview.style.display="block";
+		delBtn.style.display="block"
 	};
 	reader.readAsDataURL(file);
 }
@@ -59,7 +62,7 @@ delBtn.addEventListener('click',e=>{
 	preview.setAttribute("src","");
 	taskImage.value=null;
 	e.preventDefault();
-	delBtn.style.visibility="hidden";
+	imgPreview.style.display="none";
 })
 
 
