@@ -38,3 +38,29 @@ function formDelError(input){
 	const small = input.parentElement.querySelector('small');
 	small.innerText='';
 }
+/*Отображение выбранного изображения*/
+let taskImage = document.getElementById("taskImage");
+let preview = document.getElementById("imgPrev");
+let delBtn = document.getElementById("delImage");
+delBtn.style.visibility="hidden";
+taskImage.addEventListener('change',()=>{
+	imagePreview(taskImage.files[0]);
+})
+function imagePreview(file){
+	var reader = new FileReader();
+	reader.onload =  function (e){
+		preview.setAttribute("src",e.target.result);
+		delBtn.style.visibility="visible";
+	};
+	reader.readAsDataURL(file);
+}
+/*Удаление выбранного изображения*/
+delBtn.addEventListener('click',e=>{
+	preview.setAttribute("src","");
+	taskImage.value=null;
+	e.preventDefault();
+	delBtn.style.visibility="hidden";
+})
+
+
+
