@@ -503,8 +503,10 @@ function btnResetClick() {
         errMsg.remove();
     }
 
-    const btnDelAvatar = document.querySelector("#" + divIdAvatarMenu).querySelectorAll("button")[1];
-    btnDelAvatar.click();
+    if (document.getElementById(divIdDataBasic)) {
+        const btnDelAvatar = document.querySelector("#" + divIdAvatarMenu).querySelectorAll("button")[1];
+        btnDelAvatar.click();
+    }
 
     const updateButton = document.getElementById(btnIdUpdate);
     const resetButton = document.getElementById(btnIdReset);
@@ -630,17 +632,18 @@ function compress(inputImgSrc) {
 }
 
 function isNoDuplicateAvatar() {
-    const updateButton = document.getElementById(btnIdUpdate);
-    const resetButton = document.getElementById(btnIdReset);
+    if (document.getElementById(divIdDataBasic)) {
+        const updateButton = document.getElementById(btnIdUpdate);
+        const resetButton = document.getElementById(btnIdReset);
 
-    const imgAvatar = document.getElementById(imgIdAvatar);
-    if (imgAvatar && imgAvatar.src !== curUser.userImage) {
-        //if()
-        updateButton.disabled = false;
+        const imgAvatar = document.getElementById(imgIdAvatar);
+        if (imgAvatar && imgAvatar.src !== curUser.userImage) {
+            updateButton.disabled = false;
+            resetButton.disabled = updateButton.disabled;
+            return;
+        }
+
+        updateButton.disabled = true;
         resetButton.disabled = updateButton.disabled;
-        return;
     }
-
-    updateButton.disabled = true;
-    resetButton.disabled = updateButton.disabled;
 }

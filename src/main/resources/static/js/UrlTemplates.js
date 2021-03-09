@@ -9,3 +9,5 @@ const CUR_USER_GET = "/current-user-get";
 const PERSONAL_ACCOUNT = "/personal-account";
 const ALL_ROLES_GET = "/all-roles-get";
 const ROLE_MANAGEMENT = "/role-management";
+const ADMIN_MANAGEMENT = "/admin-management";
+const USER_REGISTRATION = "/user-registration";

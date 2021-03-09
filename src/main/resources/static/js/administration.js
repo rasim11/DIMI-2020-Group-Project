@@ -1,6 +1,7 @@
 const URL_GET_ALL_USER = SERVER + API + VERSION + USER_MANAGEMENT + ALL_USERS_GET;
 const URL_DELETE_USER = SERVER + API + VERSION + USER_MANAGEMENT + USER_DELETE;
 const URL_GET_ALL_ROLES = SERVER + API + VERSION + ROLE_MANAGEMENT + ALL_ROLES_GET;
+const URL_REGISTRATION_THROUGH_ADMIN = API + VERSION + ADMIN_MANAGEMENT + USER_MANAGEMENT + USER_REGISTRATION;
 
 const divClassUser = "div-user";
 const divClassFilterActions = "div-filter-actions";
@@ -238,12 +239,14 @@ function addListUsers() {
     divListUsers.id = divIdListUsers;
     divDataUsers.appendChild(divListUsers);
 
-    const preData = document.createElement("div");
+    const preData = document.createElement("form");
     preData.className = "mb-2";
+    preData.action = URL_REGISTRATION_THROUGH_ADMIN;
+    preData.method = "get";
     divListUsers.appendChild(preData);
 
     const btnAddUser = document.createElement("button");
-    btnAddUser.type = "button";
+    btnAddUser.type = "submit";
     btnAddUser.className = "btn btn-outline-success";
     btnAddUser.textContent = "Добавить";
     preData.appendChild(btnAddUser);

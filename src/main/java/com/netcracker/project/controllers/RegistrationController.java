@@ -34,7 +34,6 @@ public class RegistrationController {
         return "registration";
     }
 
-
     @PostMapping(API + VERSION + USER_MANAGEMENT + USER_REGISTRATION)
     public String registrationPost(@ModelAttribute("userForm") User userForm, Model model) {
         User user = userDetailsService.getUserByEmail(userForm.getEmail());
@@ -53,5 +52,14 @@ public class RegistrationController {
 
         securityService.autoLogin(userForm.getEmail(), userForm.getPasswordConfirm());
         return REDIRECT_ON_MAIN_PAGE;
+    }
+
+    @GetMapping(API + VERSION + ADMIN_MANAGEMENT + USER_MANAGEMENT + USER_REGISTRATION)
+    public String registrationThroughAdminGet(Model model) {
+        Iterable<Role> roles = entityService.getAllRoles();
+
+        model.addAttribute("roles", roles);
+        model.addAttribute("userForm", new User());
+        return "registration-through-admin";
     }
 }

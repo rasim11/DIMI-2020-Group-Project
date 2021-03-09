@@ -35,7 +35,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(API + VERSION + USER_MANAGEMENT + USER_LOGIN,
                         API + VERSION + USER_MANAGEMENT + USER_REGISTRATION).not().fullyAuthenticated()
                 .antMatchers(API + VERSION + TASK_MANAGEMENT + TASK_POST).hasAuthority("Пользователь")
-                .antMatchers(API + VERSION + ADMIN_MANAGEMENT).hasAuthority("Админ")
+                .antMatchers(API + VERSION + ADMIN_MANAGEMENT,
+                        API + VERSION + ADMIN_MANAGEMENT + USER_MANAGEMENT + USER_REGISTRATION).hasAuthority("Админ")
                 .antMatchers(API + VERSION + PERSONAL_ACCOUNT).hasAnyAuthority("Пользователь",
                 "Админ")
                 .antMatchers("/resources/**", API + VERSION + MAIN_PAGE,

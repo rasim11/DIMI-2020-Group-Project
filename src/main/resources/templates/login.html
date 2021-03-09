@@ -15,7 +15,7 @@
 
 <div class="container pt-4 pb-4 justify-content-md-center" style="width: 400px;">
     <h3 align="center">Вход</h3>
-    <form method="post" class="form-login" onsubmit="return isNoEmpty(this)">
+    <form method="post" onsubmit="return isNoEmpty(this)">
         <span th:if="${errorEmail!=null}" style="color: red;" th:text="${errorEmail}"/>
         <input class="form-control mb-2" type="text" name="email" placeholder="Адрес электронной почты"
                style="width: 100%;" th:value="${email}" oninput="setValidFormat(this)">
