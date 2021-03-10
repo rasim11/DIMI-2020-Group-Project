@@ -3,6 +3,7 @@ package com.netcracker.project.model;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
@@ -23,8 +24,20 @@ public class Task {
     private String completeDate;
     private Feedback feedBack;
 
+    private TaskStatus taskStatus;
+
     public void dataExtension(User author) {
-        this.regDate = LocalDate.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
+        LocalDateTime now = LocalDateTime.now();
+        this.regDate = dtf.format(now) ;
         this.author = author;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }

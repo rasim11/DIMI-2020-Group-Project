@@ -29,4 +29,8 @@ public final class UrlTemplates {
     public static final String USER_DELETE = "/user-delete";
     public static final String ALL_USERS_GET = "/all-users-get";
     public static final String ALL_ROLES_GET = "/all-roles-get";
+
+    public static final String GET_TASK_LIST = "/get-task-list";
+    public static final String FIND = "/find";
+    public static final String FILTER = "/filter";
 }

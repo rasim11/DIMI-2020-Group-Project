@@ -2,95 +2,148 @@
 <html xmlns:th="http://www.thymeleaf.org/" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
     <script src="/js/mainPage.js"></script>
+    <script src="/js/tasksList.js"></script>
     <title>PM|Главная</title>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link href="/css/tasksList.css" rel="stylesheet">
 </head>
 <body onresize="setWidth()">
 
 <header th:insert="blocks/header :: header"></header>
 
-<div id="mainCont" class="container mt-2" style="min-width: max-content">
-    <div class="row">
-        <ul id="sidebarMenu" class="nav flex-column bg-light" style="min-width: max-content">
-            <li class="nav-item">
-                <span style="font-size: larger">Фильтры</span>
-            </li>
-            <li class="nav-item">
-                <a class="btn dropdown-toggle" data-toggle="collapse" href="#collapseStatus" role="button"
-                   aria-expanded="false"
-                   aria-controls="collapseStatus">
-                    <span id="textStatus" style="font-size: larger">Статус</span>
-                </a>
-                <div class="collapse" id="collapseStatus">
-                    <div class="card card-body" style="background: none;border: none">
-                        <div class="my-3">
-                            <div class="form-check" onclick="atLeastOneChecked()">
-                                <input id="inProgress" name="status" type="checkbox" class="form-check-input"
-                                       required="">
-                                <label class="form-check-label" for="inProgress" style="font-size: large">В
-                                    обработке</label>
-                            </div>
-                            <div class="form-check" onclick="atLeastOneChecked()">
-                                <input id="solved" name="status" type="checkbox" class="form-check-input"
-                                       required="">
-                                <label class="form-check-label" for="solved"
-                                       style="font-size: large">Решаемые</label>
-                            </div>
-                            <div class="form-check" onclick="atLeastOneChecked()">
-                                <input id="resolved" name="status" type="checkbox" class="form-check-input"
-                                       required="">
-                                <label class="form-check-label" for="resolved"
-                                       style="font-size: large">Решённые</label>
-                            </div>
-                            <div class="form-check" onclick="atLeastOneChecked()">
-                                <input id="canceled" name="status" type="checkbox" class="form-check-input"
-                                       required="">
-                                <label class="form-check-label" for="canceled"
-                                       style="font-size: large">Отменённые</label>
-                            </div>
-                            <br>
-                            <div class="form-check">
-                                <a id="btnReset" class="btn btn-primary" role="button" style="display: none"
-                                   onclick="resetChecked()">
-                                    <span style="font-size: large">Сбросить</span>
-                                </a>
+<div class="tableMain">
+    <div class="table-itemS2">
+
+        <form th:method="post" th:action="filter" >
+            <ul id="sidebarMenu" class="nav flex-column bg-light" style="min-width: max-content">
+                <li class="nav-item">
+                    <span style="font-size: larger">Фильтры</span>
+                </li>
+                <li class="nav-item">
+                    <a class="btn dropdown-toggle" data-toggle="collapse" href="#collapseStatus" role="button"
+                       aria-expanded="false"
+                       aria-controls="collapseStatus">
+                        <span id="textStatus" style="font-size: larger">Статус</span>
+                    </a>
+                    <div class="collapse" id="collapseStatus">
+                        <div class="card card-body" style="background: none;border: none">
+                            <div class="my-3">
+                                <div class="form-check" onclick="atLeastOneChecked()">
+                                    <input id="inProgress" name="IN_CREATING"   th:checked="*{IN_CREATING}"   type="checkbox" class="form-check-input">
+
+                                    <label class="form-check-label" for="inProgress" style="font-size: large">В
+                                        обработке</label>
+                                </div>
+                                <div class="form-check" onclick="atLeastOneChecked()">
+                                    <input id="solved" name="IN_PROCESSING"  th:checked="*{IN_PROCESSING}"  type="checkbox" class="form-check-input">
+
+                                    <label class="form-check-label" for="solved"
+                                           style="font-size: large">Решаемые</label>
+                                </div>
+                                <div class="form-check" onclick="atLeastOneChecked()">
+                                    <input id="resolved" name="RESOLVED" th:checked="*{RESOLVED}" type="checkbox" class="form-check-input">
+
+                                    <label class="form-check-label" for="resolved"
+                                           style="font-size: large">Решённые</label>
+                                </div>
+                                <div class="form-check" onclick="atLeastOneChecked()">
+                                    <input id="canceled" name="CANCELED" th:checked="*{CANCELED}"  type="checkbox" class="form-check-input">
+
+                                    <label class="form-check-label" for="canceled"
+                                           style="font-size: large">Отменённые</label>
+                                </div>
+
+
+                                <br>
+                                <div class="form-check">
+                                    <a id="btnReset" class="btn btn-primary" role="button" style="display: none"
+                                       onclick="resetChecked()">
+                                        <span style="font-size: large">Сбросить</span>
+                                    </a>
+                                    <br>
+                                    <br>
+                                    <button class="btn btn-primary"  th:type="submit" > Применить</button>
+
+                                </div>
+
                             </div>
                         </div>
                     </div>
-                </div>
-            </li>
-            <li class="nav-item">
-                <br><br>
-                <a class="btn btn-primary" role="button" href="#">
-                    <span style="font-size: larger">Показать на карте</span>
-                </a>
-            </li>
-        </ul>
+                </li>
+                <li class="nav-item">
+                    <br><br>
+                    <a class="btn btn-primary" role="button" href="#">
+                        <span style="font-size: larger">Показать на карте</span>
+                    </a>
+                </li>
+            </ul>
 
-        <table id="mainTable" style="margin-left: 10px; width: 82%;">
-            <tbody>
-            <tr>
-                <td>
-                    <input type="text" placeholder="Название проблемы" style="height: 100%; width: 100%">
-                </td>
-                <td width="16">
-                    <button class="btn btn-primary">
+        </form>
+
+    </div>
+
+
+    <div class="table-itemS">
+        <div class="tableMain">
+            <div class="table-item-rowS">
+                <form th:method="post" th:action="find"     >
+                    <input th:type="text" th:name="find" placeholder="Название проблемы" th:value="${find}" style="width: 80%;"  />
+                    <button class="btn btn-primary" th:type="submit"  >
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                              class="bi bi-search" viewBox="0 0 16 16">
                             <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
                         </svg>
                     </button>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+                </form>
+
+            </div>
+            <div class="table-item-rowS">
+                <div class="table-itemS">
+                    <li th:each="task : ${taskList}" class="notMarker">
+                        <br>
+                        <table class="taskTable">
+                            <tr valign="top">
+                                <td class="task-td-title"><span class="task-header" th:text="${task.taskName}"> </span>
+                                </td>
+                                <td rowspan="2" class="task-describe">
+                                    <div>
+                                        <ul class="tasks-status">
+                                            <li th:text="${task.author.firstname}"></li>
+                                            <li th:text="${task.author.lastname}"></li>
+                                            <li th:text="${task.author.middlename}"></li>
+                                            <li th:text="${task.regDate}"></li>
+
+                                            <li th:if="${task.taskStatus != null}"  th:switch="${task.taskStatus.ordinal()}" >
+                                                <span th:case=0>В обработке</span>
+                                                <span th:case=1>Решаемые</span>
+                                                <span th:case=2>Решённые</span>
+                                                <span th:case=3>Отменённые</span>
+                                            </li>
+
+                                            <li></li>
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="task-td-text">
+                                    <div class="taskText" th:text="${task.taskDescription}"></div>
+                                    <button class="task-text-button" id="height100"> читать</button>
+                                </td>
+                            </tr>
+                        </table>
+                    </li>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
-<footer th:insert="blocks/footer :: footer"></footer>
 
+<br> <br>
+<footer th:insert="blocks/footer :: footer"></footer>
 </body>
 </html>

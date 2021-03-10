@@ -1,0 +1,97 @@
+table.taskTable {
+  width: 80%;
+  height: 200px;
+  padding: 20px;
+  margin: 5px;
+  border-spacing: 10px; /* Расстояние между границ */
+  border-collapse: collapse;
+}
+
+table.taskTable td.task-td-text {
+  padding: 15px;
+  /*background-color: rgb(231, 245, 255);*/
+  /*background-color: rgba(17, 17, 17, 0.07);*/
+}
+table.taskTable td.task-td-title {
+  padding-left:  15px;
+  background-color: rgba( 0, 113 , 240, 0.7);
+}
+
+table.taskTable td.task-describe {
+  padding-top: 15px;
+  background-color: rgba( 0, 113 , 240, 0.7);
+  color: white;
+}
+
+
+span.task-header {
+  font-size: 30px;
+  font-weight: bold;
+  color: white;
+}
+
+table.taskTable td {
+  /*box-shadow: 0px 0px 5px 0px #000000;*/
+  background-color: #e9f2ff;
+  border-radius:5px;
+  margin: 5px;
+  /*border: 1px inset #69326D;*/
+  padding-left:  15px;
+}
+
+.tasks-status {
+  list-style:none;
+}
+
+td.task-td-text {
+  width: 70%;
+  height: 100%
+}
+
+div.taskText {
+  /*width: 100%;*/
+  /*display:inline-block;*/
+  height: 100px;
+  overflow:auto;
+  /*background-color: #a3b7d7;*/
+  /*border-radius:5px;*/
+  /*border: 1px inset #0086ff;*/
+}
+
+button.task-text-button{
+  width: 100%;
+  background-color: rgba( 0, 113 , 240, 0.7);
+  border-radius:5px;
+  border: 1px inset #0086ff;
+
+}
+
+::-webkit-scrollbar {
+  display: block;
+}
+
+li.notMarker {
+  list-style-type: none;
+}
+
+/*------------------*/
+
+.tableMain{
+  display: table;
+  width: 100%;
+  height: 250px;
+}
+.table-itemS{
+  display: table-cell;
+  vertical-align: top;
+  /*border: 1px solid #000;*/
+}
+
+.table-itemS2{
+  width: 200px;
+  display: table-cell;
+}
+
+.table-item-rowS{
+  display: table-row;
+}
