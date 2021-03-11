@@ -23,7 +23,7 @@
         <img th:src="${user.getUserImage()}" class="mb-4"/>
         <h4 class="mb-4" th:text="${user.getLastname() + ' ' + user.getFirstname() + ' ' + user.getMiddlename()}"/>
         <p th:text="'Дата регистрации: '+${user.dateToString(user.getRegDate())}"/>
-        <p th:if="${roleName} == 'Админ' or ${isEmp} or
+        <p th:if="${roleName} == 'Админ' or ${roleName} == 'Ответственный' or ${isEmp} or
         ${isCurUser} or ${#authentication.getPrincipal().getRole().getName()} == 'Админ'"
            th:text="'Электронная почта: '+${user.getEmail()}"/>
         <p th:if="${isEmp} or ${isCurUser} or ${#authentication.getPrincipal().getRole().getName()} == 'Админ'"

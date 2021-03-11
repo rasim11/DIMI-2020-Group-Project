@@ -8,12 +8,14 @@ const divIdHiddenAvatarMenu = "div-hidden-avatar-menu";
 const divIdDataPass = "div-data-pass";
 const divIdDataProblems = "div-data-problems";
 const divIdDialogWindow = "div-dialog-window";
+const divIdDataResponsible = "div-data-responsible";
 const btnIdDataBasic = "btn-data-basic";
 const btnIdDataPass = "btn-data-pass";
 const btnIdDataProblems = "btn-data-problems";
 const btnIdUpdate = "update-button";
 const btnIdReset = "reset-button";
 const btnIdDataAccount = "btn-data-account";
+const btnIdDataResponsible = "btn-data-responsible";
 const spanIdErrMsg = "err-msg";
 const inputIdPas = "pas-input";
 const inputIdConfPas = "conf-pas-input";
@@ -22,6 +24,7 @@ const imgIdAvatar = "img-avatar";
 const formIdDataAccount = "form-data-account";
 const formClassUpdate = "form-update";
 let curUser;
+let curUserJson;
 
 class User {
     constructor(lastname, firstname, middlename, email, phoneNumber, password, passwordConfirm, id, userImage) {
@@ -38,10 +41,11 @@ class User {
 }
 
 function getUserFromRequest() {
-    const user = getAllObjectsFromRequest(URL_GET_CUR_USER);
+    curUserJson = getAllObjectsFromRequest(URL_GET_CUR_USER);
 
-    curUser = new User(user.lastname, user.firstname, user.middlename, user.email,
-        user.phoneNumber, user.password, user.passwordConfirm, user.id, user.userImage);
+    curUser = new User(curUserJson.lastname, curUserJson.firstname, curUserJson.middlename, curUserJson.email,
+        curUserJson.phoneNumber, curUserJson.password, curUserJson.passwordConfirm,
+        curUserJson.id, curUserJson.userImage);
 }
 
 function putUser() {
@@ -166,7 +170,6 @@ function addDataUser(btnId) {
     btnReset.textContent = "Сбросить";
     btnReset.addEventListener("click", btnResetClick);
     divDataVar.appendChild(btnReset);
-
 }
 
 function addDataBasic(divDataBasic) {
@@ -293,7 +296,6 @@ function addDataProblems() {
     const divMainContent = document.getElementById(divIdMainContent);
 
     const divDataProblems = document.createElement("div");
-    divDataProblems.style.display = "inline-block";
     divDataProblems.style.width = "450px";
     divDataProblems.id = divIdDataProblems;
     divMainContent.appendChild(divDataProblems);
@@ -308,7 +310,6 @@ function addDataAccount() {
 
     const formDataAccount = document.createElement("form");
     formDataAccount.id = formIdDataAccount;
-    formDataAccount.style.display = "inline-block";
     formDataAccount.style.textAlign = "center";
     formDataAccount.method = "post";
     formDataAccount.action = "/logout";
@@ -343,6 +344,67 @@ function addDataAccount() {
     formDataAccount.appendChild(btnDelete);
 }
 
+function addDataResponsible() {
+    const divMainContent = document.getElementById(divIdMainContent);
+
+    const divDataResponsible = document.createElement("div");
+    divDataResponsible.style.width = "450px";
+    divDataResponsible.style.textAlign = "center";
+    divMainContent.appendChild(divDataResponsible);
+
+    const blockTitle = document.createElement("h3");
+    blockTitle.innerText = document.getElementById(btnIdDataResponsible).innerText;
+    divDataResponsible.appendChild(blockTitle);
+
+    if (curUserJson.region.responsible === null) {
+        blockTitle.innerText += " не назначен";
+        return;
+    }
+
+    let imgResponsibleAvatar = document.createElement("img");
+    imgResponsibleAvatar.src = curUserJson.region.responsible.userImage;
+    imgResponsibleAvatar.className = "mb-4";
+    divDataResponsible.appendChild(imgResponsibleAvatar);
+
+    const responsibleNames = document.createElement("h4");
+    responsibleNames.className = "mb-4";
+    responsibleNames.innerText = curUserJson.region.responsible.lastname + " " +
+        curUserJson.region.responsible.firstname + " " +
+        curUserJson.region.responsible.middlename;
+    divDataResponsible.appendChild(responsibleNames);
+
+    for (let i = 0; i < 5; i++) {
+        const pUserAtr = document.createElement("p");
+        switch (i) {
+            case 0:
+                let regDate = new Date(curUserJson.region.responsible.regDate);
+                pUserAtr.textContent = "Дата регистрации: " +
+                    ("0" + (regDate.getDate())).slice(-2) + "." +
+                    ("0" + (regDate.getMonth() + 1)).slice(-2) + "." +
+                    regDate.getFullYear();
+                break;
+            case 1:
+                pUserAtr.textContent = "Электронная почта: " + curUserJson.region.responsible.email;
+                break;
+            case 2:
+                pUserAtr.textContent = "Номер телефона: " + curUserJson.region.responsible.phoneNumber;
+                break;
+            case 3:
+                pUserAtr.textContent = "Решённых проблем: " + curUserJson.region.responsible.tasksCount;
+                break;
+            case 4:
+                pUserAtr.textContent = "Актуальные проблемы";
+
+                const aProblemsActual = document.createElement("a");
+                aProblemsActual.href = "#";
+                divDataResponsible.appendChild(aProblemsActual);
+                aProblemsActual.appendChild(pUserAtr);
+                continue;
+        }
+        divDataResponsible.appendChild(pUserAtr);
+    }
+}
+
 function loadDataBasic() {
     getUserFromRequest();
 
@@ -367,6 +429,9 @@ function selectData(btn) {
             break;
         case btnIdDataAccount:
             divTarget = document.getElementById(formIdDataAccount);
+            break;
+        case btnIdDataResponsible:
+            divTarget = document.getElementById(divIdDataResponsible);
             break;
     }
 
@@ -393,6 +458,9 @@ function divVarAdd(btnId) {
             break;
         case btnIdDataAccount:
             addDataAccount();
+            break;
+        case btnIdDataResponsible:
+            addDataResponsible();
             break;
     }
 }
@@ -424,8 +492,7 @@ function addErrMsg() {
 
     if (!errMsg) {
         const divDataBasic = document.getElementById(divIdDataBasic);
-        const targetElem = document.querySelector('.' + formClassUpdate).
-        querySelectorAll('.form-control')[3];
+        const targetElem = document.querySelector('.' + formClassUpdate).querySelectorAll('.form-control')[3];
 
         const spanErrMsg = document.createElement("span");
         spanErrMsg.textContent = "Пользователь с такой электронной почтой уже существует";
