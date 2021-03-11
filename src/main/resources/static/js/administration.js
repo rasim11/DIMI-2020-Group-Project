@@ -1,11 +1,11 @@
-const URL_GET_ALL_USER = SERVER + API + VERSION + USER_MANAGEMENT + ALL_USERS_GET;
-const URL_DELETE_USER = SERVER + API + VERSION + USER_MANAGEMENT + USER_DELETE;
-const URL_GET_ALL_ROLES = SERVER + API + VERSION + ROLE_MANAGEMENT + ALL_ROLES_GET;
+const LOCAL_URL_REGISTRATION_THROUGH_ADMIN = API + VERSION + ADMIN_MANAGEMENT + USER_REGISTRATION;
+const LOCAL_URL_USER_PROFILE = API + VERSION + USER_MANAGEMENT + USER_GET + BY_ID;
+const LOCAL_URL_USER_ROLE_EDIT = API + VERSION + ADMIN_MANAGEMENT + USER_ROLE_EDIT + BY_ID;
 
 const divClassUser = "div-user";
 const divClassFilterActions = "div-filter-actions";
 const divClassUserAttribute = "div-user-attribute";
-const divClassUserActivity = "div-user-activity";
+const formClassUserActivity = "div-user-activity";
 const divIdMainContent = "div-main-content";
 const divIdDataUsers = "div-data-users"
 const divIdListUsers = "div-list-users";
@@ -238,12 +238,14 @@ function addListUsers() {
     divListUsers.id = divIdListUsers;
     divDataUsers.appendChild(divListUsers);
 
-    const preData = document.createElement("div");
+    const preData = document.createElement("form");
     preData.className = "mb-2";
+    preData.action = LOCAL_URL_REGISTRATION_THROUGH_ADMIN;
+    preData.method = "get";
     divListUsers.appendChild(preData);
 
     const btnAddUser = document.createElement("button");
-    btnAddUser.type = "button";
+    btnAddUser.type = "submit";
     btnAddUser.className = "btn btn-outline-success";
     btnAddUser.textContent = "Добавить";
     preData.appendChild(btnAddUser);
@@ -263,9 +265,13 @@ function addListUsers() {
         divUser.className = divClassUser + " mb-4";
         divListUsers.appendChild(divUser);
 
+        const aProfile = document.createElement("a");
+        aProfile.href = LOCAL_URL_USER_PROFILE + "/" + users[i].id;
+        divUser.appendChild(aProfile);
+
         const imgUserAvatar = document.createElement("img");
         imgUserAvatar.src = users[i].userImage;
-        divUser.appendChild(imgUserAvatar);
+        aProfile.appendChild(imgUserAvatar);
 
         const divUserAttribute = document.createElement("div");
         divUserAttribute.className = divClassUserAttribute + " mr-4 ml-4";
@@ -304,53 +310,39 @@ function addListUsers() {
         hiddenRegDate.value = users[i].regDate;
         divUserAttribute.appendChild(hiddenRegDate);
 
-        const divUserActivity = document.createElement("div");
-        divUserActivity.className = divClassUserActivity;
-        divUserActivity.style.display = "inline-block";
-        divUserActivity.style.verticalAlign = "middle";
-        divUserActivity.style.float = "right";
-        divUser.appendChild(divUserActivity);
+        const formUserActivity = document.createElement("form");
+        formUserActivity.className = formClassUserActivity;
+        formUserActivity.action = LOCAL_URL_USER_ROLE_EDIT + "/" + users[i].id;
+        formUserActivity.method = "get";
+        formUserActivity.style.display = "inline-block";
+        formUserActivity.style.verticalAlign = "middle";
+        formUserActivity.style.float = "right";
+        divUser.appendChild(formUserActivity);
 
         for (let j = 0; j < 2; j++) {
             const btn = document.createElement("button");
-            btn.type = "button";
             btn.style.display = "block";
             btn.style.width = "100%";
 
             if (j === 0) {
+                btn.type = "submit";
                 btn.className = "btn btn-outline-primary mb-4";
                 btn.textContent = "Изменить роль";
             } else {
+                btn.type = "button";
                 btn.className = "btn btn-outline-danger";
                 btn.textContent = "Удалить";
                 btn.addEventListener("click", deleteUser.bind(null, divUser, divUserAttribute, spanCountUsers));
             }
 
-            divUserActivity.appendChild(btn);
+            formUserActivity.appendChild(btn);
         }
-    }
-}
-
-function getAllObjectsFromRequest(url) {
-    const xhr = new XMLHttpRequest();
-    xhr.open('GET', url, false);
-    xhr.send();
-
-    if (xhr.status !== 200) {
-        alert(xhr.status + ': ' + xhr.statusText);
-        return null;
-    } else {
-        return JSON.parse(xhr.responseText);
     }
 }
 
 function deleteUser(divUser, divUserAttribute, spanCountUsers) {
     const email = divUserAttribute.querySelectorAll("span")[1].innerText.split(" ");
-
-    const xhr = new XMLHttpRequest();
-    xhr.open("DELETE", URL_DELETE_USER + "/" + email[email.length - 1], true);
-    xhr.send();
-
+    deleteObject(URL_DELETE_USER + "/" + email[email.length - 1], true);
     divUser.remove();
 
     let newCount = spanCountUsers.innerText.split(" ");

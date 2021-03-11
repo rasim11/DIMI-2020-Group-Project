@@ -16,16 +16,15 @@ import static com.netcracker.project.url.UrlTemplates.*;
 public class LoginController {
     @Autowired
     private SecurityService securityService;
-
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
 
-    @GetMapping(API + VERSION + USER_MANAGEMENT + USER_LOGIN)
+    @GetMapping(LOCAL_URL_USER_LOGIN)
     public String loginGet(Model model) {
         return "login";
     }
 
-    @PostMapping(API + VERSION + USER_MANAGEMENT + USER_LOGIN)
+    @PostMapping(LOCAL_URL_USER_LOGIN)
     public String loginPost(@RequestParam String email, @RequestParam String password, Model model) {
         User user = userDetailsService.getUserByEmail(email);
         if (user == null) {

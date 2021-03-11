@@ -1,0 +1,27 @@
+const SERVER = "http://localhost:8080";
+const API = "/api";
+const VERSION = "/v1";
+const USER_MANAGEMENT = "/user-management";
+const USER_PUT = "/user-put";
+const USER_DELETE = "/user-delete";
+const ALL_USERS_GET = "/all-users-get";
+const CUR_USER_GET = "/current-user-get";
+const PERSONAL_ACCOUNT = "/personal-account";
+const ALL_ROLES_GET = "/all-roles-get";
+const ROLE_MANAGEMENT = "/role-management";
+const ADMIN_MANAGEMENT = "/admin-management";
+const USER_REGISTRATION = "/user-registration";
+const REGION_MANAGEMENT = "/region-management";
+const ALL_REGIONS_GET = "/all-regions-get";
+const EMAIL_FREE = "/email-free";
+const USER_GET = "/user-get";
+const BY_ID = "-by-id";
+const USER_ROLE_EDIT = "/user-role-edit";
+
+const URL_GET_ALL_USER = SERVER + API + VERSION + USER_MANAGEMENT + ALL_USERS_GET;
+const URL_DELETE_USER = SERVER + API + VERSION + USER_MANAGEMENT + USER_DELETE;
+const URL_GET_ALL_ROLES = SERVER + API + VERSION + ROLE_MANAGEMENT + ALL_ROLES_GET;
+const URL_GET_CUR_USER = SERVER + API + VERSION + USER_MANAGEMENT + CUR_USER_GET;
+const URL_PUT_USER = SERVER + API + VERSION + USER_MANAGEMENT + USER_PUT;
+const URL_GET_ALL_REGIONS = SERVER + API + VERSION + REGION_MANAGEMENT + ALL_REGIONS_GET;
+const URL_CHECK_EMAIL_FREE = SERVER + API + VERSION + USER_MANAGEMENT + EMAIL_FREE;

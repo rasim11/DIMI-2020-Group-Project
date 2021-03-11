@@ -7,13 +7,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class Region implements Cloneable {
-    private int id;
+public class Region {
+    private Long id;
     private String regionName;
-
-    @Override
-    public Region clone() throws CloneNotSupportedException{
-
-        return (Region) super.clone();
-    }
+    private User responsible;
 }

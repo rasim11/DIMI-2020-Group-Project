@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org/" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
     <meta charset="UTF-8">
-    <title>PM|Регистрация</title>
+    <title>TF|Регистрация</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link href="/css/password.css" rel="stylesheet">
     <link href="/css/validation.css" rel="stylesheet">
@@ -18,7 +18,7 @@
     <h3>
         Регистрационная информация
     </h3>
-    <form method="post" th:object="${userForm}" class="form-registration" onsubmit="return isNoEmpty(this)">
+    <form method="post" th:object="${userForm}" onsubmit="return isNoEmpty(this)">
         <div align="center" style="width: 450px">
             <input type="text" class="form-control mb-2" placeholder="Фамилия" name="lastname"
                    style="width: 100%"

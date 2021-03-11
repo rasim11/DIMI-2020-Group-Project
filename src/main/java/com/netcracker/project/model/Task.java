@@ -1,12 +1,16 @@
 package com.netcracker.project.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
+@AllArgsConstructor
+@NoArgsConstructor
 @Data
 public class Task {
     private Long id;
@@ -31,13 +35,5 @@ public class Task {
         LocalDateTime now = LocalDateTime.now();
         this.regDate = dtf.format(now) ;
         this.author = author;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 }

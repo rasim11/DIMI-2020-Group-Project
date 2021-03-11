@@ -1,14 +1,13 @@
-function isNoEmpty(form) {
-    var formClass = "." + form.classList.item(0);
-    var formElements = document.querySelector(formClass).querySelectorAll('.form-control');
+function isNoEmpty(form, elementClassName = "form-control") {
+    const formElements = form.querySelectorAll("." + elementClassName);
 
-    for (var i = 0; i < formElements.length; i++) {
+    for (let i = 0; i < formElements.length; i++) {
         if (!formElements[i].value) {
             setInvalidFormat(formElements[i], "Заполните обязательное поле");
         }
     }
 
-    for (var i = 0; i < formElements.length; i++) {
+    for (let i = 0; i < formElements.length; i++) {
         if (!formElements[i].checkValidity()) {
             return false;
         }
@@ -25,12 +24,12 @@ function checkInvalidFormat(element, reg) {
 }
 
 function setInvalidFormat(element, msg) {
-    element.classList.add('customInvalid');
+    element.classList.add("customInvalid");
     element.setCustomValidity(msg);
     element.reportValidity();
 }
 
 function setValidFormat(element) {
-    element.classList.remove('customInvalid');
+    element.classList.remove("customInvalid");
     element.setCustomValidity("");
 }

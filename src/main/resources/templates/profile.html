@@ -2,10 +2,10 @@
 <html xmlns:th="http://www.thymeleaf.org/" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
     <meta charset="UTF-8">
-    <title>PM|Профиль</title>
+    <title>TF|Профиль</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link href="/css/imgProfile.css" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link href="/css/imgProfile.css" rel="stylesheet">
 </head>
 
 <body>
@@ -17,16 +17,25 @@
         <h2 class="text-primary" th:text="${msgErr}"/>
     </div>
     <div sec:authorize="isAuthenticated()">
+        <h3>
+            Профиль пользователя
+        </h3>
         <img th:src="${user.getUserImage()}" class="mb-4"/>
-        <h4 class="mb-4" th:text="${user.getFirstname() + ' ' + user.getMiddlename() + ' ' + user.getLastname() }"/>
+        <h4 class="mb-4" th:text="${user.getLastname() + ' ' + user.getFirstname() + ' ' + user.getMiddlename()}"/>
         <p th:text="'Дата регистрации: '+${user.dateToString(user.getRegDate())}"/>
-        <div th:if="${isCurUser}">
-            <p th:text="'Электронная почта: '+${user.getEmail()}"/>
-            <p th:text="'Номер телефона: '+${user.getPhoneNumber()}"/>
-        </div>
-        <div th:if="${roleName} == 'Пользователь'">
-            <p th:text="'Опубликованных проблем: '+${user.getTasksCount()}"/>
-            <a href="#"><p>Проблемы пользователя</p></a>
+        <p th:if="${roleName} == 'Админ' or ${roleName} == 'Ответственный' or ${isEmp} or
+        ${isCurUser} or ${#authentication.getPrincipal().getRole().getName()} == 'Админ'"
+           th:text="'Электронная почта: '+${user.getEmail()}"/>
+        <p th:if="${isEmp} or ${isCurUser} or ${#authentication.getPrincipal().getRole().getName()} == 'Админ'"
+           th:text="'Номер телефона: '+${user.getPhoneNumber()}"/>
+        <div th:if="${roleName} != 'Админ'">
+            <div th:if="${roleName} == 'Пользователь'">
+                <p th:text="'Опубликованных проблем: '+${user.getTasksCount()}"/>
+            </div>
+            <div th:if="${roleName} != 'Пользователь'">
+                <p th:text="'Решённых проблем: '+${user.getTasksCount()}"/>
+            </div>
+            <a href="#"><p>Актуальные проблемы</p></a>
         </div>
     </div>
 </div>

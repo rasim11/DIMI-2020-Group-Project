@@ -22,13 +22,13 @@ public class TaskController {
     @Autowired
     private EntityService entityService;
 
-    @GetMapping(API + VERSION + TASK_MANAGEMENT + TASK_POST)
+    @GetMapping(LOCAL_URL_POST_TASK)
     public String getAddTaskForm(Model model) {
         model.addAttribute("taskForm", new Task());
         return "taskAddForm";
     }
 
-    @PostMapping(API + VERSION + TASK_MANAGEMENT + TASK_POST)
+    @PostMapping(LOCAL_URL_POST_TASK)
     public String addNewTask(@ModelAttribute("taskForm") Task task,
                              @RequestParam("image") MultipartFile file) throws IOException {
         if (!file.isEmpty()) {

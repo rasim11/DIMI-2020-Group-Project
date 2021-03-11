@@ -27,6 +27,10 @@
                 <a href="/api/v1/admin-management" sec:authorize="hasAuthority('Админ')" style="text-decoration: none">
                     <span class="text-white" style="font-weight: bold; font-size: 24px">Администрирование</span>
                 </a>
+                <a href="#" sec:authorize="hasAnyAuthority('Соц. работник','Ответственный')"
+                   style="text-decoration: none">
+                    <span class="text-white" style="font-weight: bold; font-size: 24px">Актуальные проблемы</span>
+                </a>
                 <div id="div-hidden-login-menu" style="display: inline-block;">
                     <button style="background: none;border: none;" onclick="showLoginMenu()">
                         <img th:src="${#authentication.getPrincipal().getUserImage()}"
@@ -36,7 +40,7 @@
                     <form method="post" th:action="@{/logout}" id="form-login-menu"
                           class="dropdown-content">
                         <div align="center">
-                            <a th:href="'/api/v1/user-management/user-get/id'+ ${#authentication.getPrincipal().getId()}"
+                            <a th:href="'/api/v1/user-management/user-get-by-id/'+ ${#authentication.getPrincipal().getId()}"
                                class="btn btn-outline-primary mt-1 mb-1">
                                 <span>Мой профиль</span>
                             </a>
