@@ -68,7 +68,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         user.setUserImage(DEFAULT_AVATAR);
         if (roleName.equals("Ответственный")) {
-            user.dataExtension(role);
+            user.dataExtension(role, null);
 
             user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
             restTemplate.postForLocation(URL_POST_USER, user);

@@ -42,7 +42,7 @@ public class TaskController {
     }
 
     @GetMapping(API + VERSION + TASK_MANAGEMENT + TASK_GET + BY_ID + "/{id}")
-    public String getTask(@PathVariable("id") Long id, Model model) {
+    public String getTask(@PathVariable Long id, Model model) {
         model.addAttribute("task", entityService.getTaskByID(id));
         return "taskEditForm";
     }

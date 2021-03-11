@@ -27,7 +27,6 @@ public class Task {
     private Status progressStatus;
     private String completeDate;
     private Feedback feedBack;
-
     private TaskStatus taskStatus;
 
     public void dataExtension(User author) {

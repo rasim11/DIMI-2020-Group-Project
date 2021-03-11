@@ -13,21 +13,16 @@ import java.util.Arrays;
 import java.util.List;
 
 import static com.netcracker.project.url.UrlTemplates.*;
-import static com.netcracker.project.url.UrlTemplates.GET_TASK_LIST;
 
 @Controller
-@RequestMapping(API + VERSION)
 public class MainController {
-    @GetMapping(MAIN_PAGE)
+    @GetMapping(LOCAL_URL_MAIN_PAGE)
     public String mainPageGet(Model model) {
-        String url = SERVER + API + VERSION + GET_TASK_LIST;
-        System.out.println(url);
-
         RestTemplate restTemplate = new RestTemplate();
         List<Task> listTask;
         ResponseEntity<Task[]> response =
                 restTemplate.getForEntity(
-                        SERVER + API + VERSION + GET_TASK_LIST,
+                        URL_GET_TASK_LIST,
                         Task[].class);
         Task[] taskArray = response.getBody();
         listTask = Arrays.asList(taskArray);
@@ -36,18 +31,15 @@ public class MainController {
         return "main";
     }
 
-    @PostMapping(FIND)
+    @PostMapping(API + VERSION + FIND)
     public String find(@RequestParam(required = false, defaultValue = "") String find, Model model) {
-
-        System.out.println("filter = " + find);
-
         model.addAttribute("find", find);
 
         RestTemplate restTemplate = new RestTemplate();
         List<Task> listTask;
         ResponseEntity<Task[]> response =
                 restTemplate.getForEntity(
-                        SERVER + API + VERSION + GET_TASK_LIST + "/" + find,
+                        URL_GET_TASK_LIST + "/" + find,
                         Task[].class);
         Task[] taskArray = response.getBody();
         listTask = Arrays.asList(taskArray);
@@ -56,7 +48,7 @@ public class MainController {
         return "main";
     }
 
-    @PostMapping(FILTER)
+    @PostMapping(API + VERSION + FILTER)
     public String findByStatus(@ModelAttribute("IN_CREATING") String IN_CREATING,
                                @ModelAttribute("IN_PROCESSING") String IN_PROCESSING,
                                @ModelAttribute("RESOLVED") String RESOLVED,
@@ -93,13 +85,13 @@ public class MainController {
         RestTemplate restTemplate = new RestTemplate();
 
         if (filterWork) {
-            String url = SERVER + API + VERSION + GET_TASK_LIST + FILTER;
+            String url = URL_GET_TASK_LIST + FILTER;
             Task[] response = restTemplate.postForObject(url, (Object) filterParam, Task[].class);
             listTask = Arrays.asList(response);
         } else {
             ResponseEntity<Task[]> response =
                     restTemplate.getForEntity(
-                            SERVER + API + VERSION + GET_TASK_LIST,
+                            URL_GET_TASK_LIST,
                             Task[].class);
             Task[] taskArray = response.getBody();
             listTask = Arrays.asList(taskArray);

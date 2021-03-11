@@ -29,28 +29,9 @@ public final class UrlTemplates {
     public static final String USER_DELETE = "/user-delete";
     public static final String ALL_USERS_GET = "/all-users-get";
     public static final String ALL_ROLES_GET = "/all-roles-get";
-
-
-
-
-
-
-
-
-    public static final String GET_TASK_LIST = "/get-task-list";
+    public static final String TASK_LIST_GET = "/task-list-get";
     public static final String FIND = "/find";
     public static final String FILTER = "/filter";
-
-
-
-
-
-
-
-
-
-
-
     public static final String REGION_MANAGEMENT = "/region-management";
     public static final String ALL_REGIONS_GET = "/all-regions-get";
     public static final String EMAIL_FREE = "/email-free";
@@ -98,4 +79,5 @@ public final class UrlTemplates {
             REGION_MANAGEMENT + REGION_GET + "-by-responsible";
     public static final String URL_GET_TASKS_BY_AUTHOR = SERVER + API + VERSION +
             TASK_MANAGEMENT + TASK_GET + "-by-author";
+    public static final String URL_GET_TASK_LIST = SERVER + API + VERSION + TASK_LIST_GET;
 }
