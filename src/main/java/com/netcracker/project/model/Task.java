@@ -1,11 +1,15 @@
 package com.netcracker.project.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
+@AllArgsConstructor
+@NoArgsConstructor
 @Data
 public class Task {
     private Long id;
@@ -18,13 +22,13 @@ public class Task {
     private User author;
     private User responsible;
     private User socWorker;
-    private String regDate;
+    private LocalDate regDate;
     private Status progressStatus;
-    private String completeDate;
+    private LocalDate completeDate;
     private Feedback feedBack;
 
     public void dataExtension(User author) {
-        this.regDate = LocalDate.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+        this.regDate = LocalDate.now();
         this.author = author;
     }
 }

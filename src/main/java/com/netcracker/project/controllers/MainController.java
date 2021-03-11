@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class MainController {
 
-    @GetMapping(API + VERSION + MAIN_PAGE)
+    @GetMapping(LOCAL_URL_MAIN_PAGE)
     public String mainPageGet(Model model) {
         return "main";
     }

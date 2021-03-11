@@ -17,10 +17,8 @@ import static com.netcracker.project.url.UrlTemplates.*;
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-
     @Autowired
     private UserDetailsServiceImpl userService;
-
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
@@ -32,19 +30,23 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf()
                 .disable()
                 .authorizeRequests()
-                .antMatchers(API + VERSION + USER_MANAGEMENT + USER_LOGIN,
-                        API + VERSION + USER_MANAGEMENT + USER_REGISTRATION).not().fullyAuthenticated()
-                .antMatchers(API + VERSION + TASK_MANAGEMENT + TASK_POST).hasAuthority("Пользователь")
-                .antMatchers(API + VERSION + ADMIN_MANAGEMENT,
-                        API + VERSION + ADMIN_MANAGEMENT + USER_MANAGEMENT + USER_REGISTRATION).hasAuthority("Админ")
-                .antMatchers(API + VERSION + PERSONAL_ACCOUNT).hasAnyAuthority("Пользователь",
-                "Админ")
-                .antMatchers("/resources/**", API + VERSION + MAIN_PAGE,
-                        API + VERSION + USER_MANAGEMENT + USER_GET + "/id").permitAll()
+                .antMatchers(
+                        LOCAL_URL_USER_LOGIN,
+                        LOCAL_URL_USER_REGISTRATION).not().fullyAuthenticated()
+                .antMatchers(LOCAL_URL_POST_TASK).hasAuthority("Пользователь")
+                .antMatchers(
+                        LOCAL_URL_ADMINISTRATION,
+                        LOCAL_URL_USER_ROLE_EDIT,
+                        LOCAL_URL_USER_REGISTRATION_ADMIN).hasAuthority("Админ")
+                .antMatchers(LOCAL_URL_PERSONAL_ACCOUNT).fullyAuthenticated()
+                .antMatchers(
+                        "/resources/**",
+                        LOCAL_URL_MAIN_PAGE,
+                        LOCAL_URL_USER_PROFILE).permitAll()
                 .and()
                 .logout()
                 .permitAll()
-                .logoutSuccessUrl(API + VERSION + MAIN_PAGE);
+                .logoutSuccessUrl(LOCAL_URL_MAIN_PAGE);
     }
 
     @Bean

@@ -1,6 +1,5 @@
 package com.netcracker.project.model;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -64,6 +63,13 @@ public class User implements UserDetails {
         this.regDate = LocalDate.now();
         this.tasksCount = 0L;
         this.role = role;
+    }
+
+    public void dataExtension(Role role, Region region) {
+        this.regDate = LocalDate.now();
+        this.tasksCount = 0L;
+        this.role = role;
+        this.region = region;
     }
 
     public void update(User user) {

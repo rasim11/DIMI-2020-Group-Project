@@ -3,6 +3,7 @@ package com.netcracker.project.service;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.netcracker.project.model.Region;
 import com.netcracker.project.model.Role;
 import com.netcracker.project.model.Task;
 import com.netcracker.project.model.User;
@@ -14,12 +15,6 @@ import static com.netcracker.project.url.UrlTemplates.*;
 
 @Service
 public class EntityService {
-    public static final String URL_GET_ROLE_BY_NAME = SERVER + API + VERSION + ROLE_MANAGEMENT + ROLE_GET +
-            BY_NAME + "/{name}";
-    public static final String URL_POST_TASK = SERVER + API + VERSION + TASK_MANAGEMENT + TASK_POST;
-    public static final String URL_GET_ALL_ROLES = SERVER + API + VERSION + ROLE_MANAGEMENT + ALL_ROLES_GET;
-    public static final String URL_GET_TASK_BY_ID = SERVER + API + VERSION + TASK_MANAGEMENT + TASK_GET + BY_ID + "/{id}";
-
     @Autowired
     private RestTemplate restTemplate;
     @Autowired
@@ -41,7 +36,40 @@ public class EntityService {
                 }
         );
     }
-    public Task getTaskByID(Long id){
-        return restTemplate.getForObject(URL_GET_TASK_BY_ID,Task.class,id);
+
+    public Task getTaskByID(Long id) {
+        return restTemplate.getForObject(URL_GET_TASK_BY_ID, Task.class, id);
+    }
+
+    public <T> Iterable<T> getAllObjects(String url) {
+        JsonNode objects = restTemplate.getForObject(url, JsonNode.class);
+        return mapper.convertValue(objects,
+                new TypeReference<Iterable<T>>() {
+                }
+        );
+    }
+
+    public Region getRegionById(Long id) {
+        return restTemplate.getForObject(URL_GET_REGION_BY_ID, Region.class, id);
+    }
+
+    public void putRegion(Region region) {
+        restTemplate.put(URL_PUT_REGION, region);
+    }
+
+    public Region getRegionByResponsible(User user) {
+        return restTemplate.postForObject(URL_GET_REGION_BY_RESPONSIBLE, user, Region.class);
+    }
+
+    public Iterable<Task> getTasksByAuthor(User user) {
+        JsonNode objects = restTemplate.postForObject(URL_GET_TASKS_BY_AUTHOR, user, JsonNode.class);
+        return mapper.convertValue(objects,
+                new TypeReference<Iterable<Task>>() {
+                }
+        );
+    }
+
+    public void putTask(Task task) {
+        restTemplate.postForLocation(URL_POST_TASK, task);
     }
 }

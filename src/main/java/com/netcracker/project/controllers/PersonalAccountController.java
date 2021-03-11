@@ -1,5 +1,6 @@
 package com.netcracker.project.controllers;
 
+import com.netcracker.project.model.Region;
 import com.netcracker.project.model.User;
 import com.netcracker.project.service.SecurityService;
 import com.netcracker.project.service.impl.UserDetailsServiceImpl;
@@ -13,19 +14,17 @@ import static com.netcracker.project.url.UrlTemplates.*;
 
 @Controller
 public class PersonalAccountController {
-
     @Autowired
     private SecurityService securityService;
-
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
 
-    @GetMapping(API + VERSION + PERSONAL_ACCOUNT)
+    @GetMapping(LOCAL_URL_PERSONAL_ACCOUNT)
     public String personalAccountGet(Model model) {
         return "personal-account";
     }
 
-    @GetMapping(API + VERSION + USER_MANAGEMENT + USER_GET + "/id{id}")
+    @GetMapping(LOCAL_URL_USER_PROFILE)
     public String showProfile(@PathVariable Long id, Model model) {
         if (!securityService.isAuthenticated()) {
             model.addAttribute("msgErr", "Профили может просматривать только зарегистрированный пользователь!");
@@ -45,6 +44,25 @@ public class PersonalAccountController {
         } else {
             model.addAttribute("user", user);
             model.addAttribute("roleName", user.getRole().getName());
+        }
+
+        Region curUserRegion = curUser.getRegion();
+        Region targetUserRegion = user.getRegion();
+
+        if (curUserRegion != null && targetUserRegion != null) {
+            if (curUserRegion.getRegionName().equals(targetUserRegion.getRegionName())) {
+                model.addAttribute("isEmp", true);
+            }
+        } else if (curUserRegion != null && curUserRegion.getResponsible() != null) {
+            Long regionResponsibleId = curUserRegion.getResponsible().getId();
+            if (regionResponsibleId.equals(user.getId())) {
+                model.addAttribute("isEmp", true);
+            }
+        } else if (targetUserRegion != null && targetUserRegion.getResponsible() != null) {
+            Long regionResponsibleId = targetUserRegion.getResponsible().getId();
+            if (regionResponsibleId.equals(curUser.getId())) {
+                model.addAttribute("isEmp", true);
+            }
         }
 
         return "profile";

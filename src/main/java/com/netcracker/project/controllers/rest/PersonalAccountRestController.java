@@ -1,6 +1,9 @@
-package com.netcracker.project.controllers;
+package com.netcracker.project.controllers.rest;
 
+import com.netcracker.project.model.Region;
+import com.netcracker.project.model.Task;
 import com.netcracker.project.model.User;
+import com.netcracker.project.service.EntityService;
 import com.netcracker.project.service.SecurityService;
 import com.netcracker.project.service.impl.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,12 +18,12 @@ public class PersonalAccountRestController {
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
 
-    @GetMapping(API + VERSION + USER_MANAGEMENT + CURRENT_USER_GET)
+    @GetMapping(LOCAL_URL_GET_CURRENT_USER)
     public User getCurUser() {
         return securityService.getCurrentUser();
     }
 
-    @PutMapping(API + VERSION + USER_MANAGEMENT + USER_PUT)
+    @PutMapping(LOCAL_URL_PUT_USER)
     public String putUser(@RequestBody User userReq) {
         if (userReq.getPassword() == null) {
             User user = userDetailsService.getUserByEmail(userReq.getEmail());
@@ -42,8 +45,10 @@ public class PersonalAccountRestController {
         return "";
     }
 
-    @DeleteMapping(API + VERSION + USER_MANAGEMENT + USER_DELETE + "/{email}")
+    @DeleteMapping(LOCAL_URL_DELETE_USER)
     public void deleteUser(@PathVariable String email) {
-        userDetailsService.deleteUser(email);
+        User user = userDetailsService.getUserByEmail(email);
+
+        userDetailsService.deleteUser(user);
     }
 }

@@ -2,21 +2,24 @@
 <html xmlns:th="http://www.thymeleaf.org/" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
     <meta charset="UTF-8">
-    <title>PM|Регистрация</title>
+    <title>TF|Регистрация</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <link href="/css/password.css" rel="stylesheet">
     <link href="/css/validation.css" rel="stylesheet">
+    <script src="/js/urlTemplates.js"></script>
+    <script src="/js/requests.js"></script>
     <script src=/js/password.js></script>
     <script src=/js/validation.js></script>
+    <script src="/js/rolesAndRegionsValidation.js"></script>
     <script src="/js/registrationThroughAdmin.js"></script>
 </head>
 
-<body>
+<body onload="loadFormRegistrationThroughAdmin()">
 
 <header th:insert="blocks/header :: header"></header>
 
-<form class="container pt-4 pb-4" method="post" th:object="${userForm}" style="width: 450px; text-align: center;"
-      onsubmit="return isValid(this)">
+<form id="form-reg" class="container pt-4 pb-4" method="post" th:object="${userForm}" style="width: 480px; text-align: center;">
     <h3>
         Регистрационная информация
     </h3>
@@ -29,7 +32,6 @@
     <input type="text" class="form-control input-ctrl mb-2" placeholder="Отчество" name="middlename"
            style="width: 100%"
            oninput="checkInvalidFormat(this,/^[A-z|А-я]+$/)" th:value="${userForm.getMiddlename()}">
-    <span th:if="${errorEmail!=null}" style="color: red; float: left;" th:text="${errorEmail}"/>
     <input type="text" class="form-control input-ctrl mb-2" placeholder="Адрес электронной почты" name="email"
            style="width: 100%"
            oninput="checkInvalidFormat(this, /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/)"
@@ -37,10 +39,10 @@
     <input type="text" class="form-control input-ctrl mb-2" placeholder="Номер телефона" name="phoneNumber"
            style="width: 100%" oninput="checkInvalidFormat(this, /^(8|\+7)\d{10}$/)"
            th:value="${userForm.getPhoneNumber()}">
-    <select id="select-roles" class="form-control mb-2" onchange="roleChecked(this)">
+    <select name="role.name" id="select-roles" class="form-control mb-2" onchange="roleChecked(this)">
         <option value="" disabled selected>Роль</option>
         <div th:each="role : ${roles}">
-            <option th:value="${role.getId()}" th:text="${role.getName()}"/>
+            <option th:value="${role.getName()}" th:text="${role.getName()}"/>
         </div>
     </select>
     <div class="pas mb-2" style="width: 100%">
@@ -59,7 +61,7 @@
                 onclick="showPas(this, 'conf-pas-input')"></button>
     </div>
     <button type="submit" id="registrationButton" class="btn btn-primary">
-        Зарегистрироваться
+        Зарегистрировать
     </button>
 </form>
 
