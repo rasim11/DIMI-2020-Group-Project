@@ -3,13 +3,14 @@ package com.netcracker.project.service;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.netcracker.project.model.Region;
-import com.netcracker.project.model.Role;
-import com.netcracker.project.model.Task;
-import com.netcracker.project.model.User;
+import com.netcracker.project.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.Arrays;
+import java.util.List;
 
 import static com.netcracker.project.url.UrlTemplates.*;
 
@@ -71,5 +72,17 @@ public class EntityService {
 
     public void putTask(Task task) {
         restTemplate.postForLocation(URL_POST_TASK, task);
+    }
+
+    public void postComment(Comment comment) {
+        restTemplate.postForLocation(URL_POST_COMMENT, comment);
+    }
+
+    public Iterable<Comment> getCommentByTaskId(Long id) {
+        JsonNode objects = restTemplate.getForObject(URL_GET_COMMENT_BY_TASK_ID, JsonNode.class, id);
+        return mapper.convertValue(objects,
+                new TypeReference<Iterable<Comment>>() {
+                }
+        );
     }
 }

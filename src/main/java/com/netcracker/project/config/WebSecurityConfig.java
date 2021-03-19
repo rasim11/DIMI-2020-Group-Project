@@ -33,7 +33,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(
                         LOCAL_URL_USER_LOGIN,
                         LOCAL_URL_USER_REGISTRATION).not().fullyAuthenticated()
-                .antMatchers(LOCAL_URL_POST_TASK).hasAuthority("Пользователь")
+                .antMatchers(LOCAL_URL_POST_TASK,LOCAL_URL_UPDATE_TASK_BY_ID).hasAuthority("Пользователь")
                 .antMatchers(
                         LOCAL_URL_ADMINISTRATION,
                         LOCAL_URL_USER_ROLE_EDIT,
@@ -42,7 +42,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(
                         "/resources/**",
                         LOCAL_URL_MAIN_PAGE,
-                        LOCAL_URL_USER_PROFILE).permitAll()
+                        LOCAL_URL_USER_PROFILE,
+                        LOCAL_URL_GET_TASK_BY_ID).permitAll()
                 .and()
                 .logout()
                 .permitAll()

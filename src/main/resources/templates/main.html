@@ -131,7 +131,7 @@
                             <tr>
                                 <td class="task-td-text">
                                     <div class="taskText" th:text="${task.taskDescription}"></div>
-                                    <button class="task-text-button" id="height100"> читать</button>
+                                    <a th:href="${urls + '/' + task.id}" class="task-text-button" id="height100"> читать</a>
                                 </td>
                             </tr>
                         </table>

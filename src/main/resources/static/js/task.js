@@ -39,30 +39,38 @@ function formDelError(input){
 	small.innerText='';
 }
 /*Отображение выбранного изображения*/
-let taskImage = document.getElementById("taskImage");
-let preview = document.getElementById("imgPrev");
+let taskImage = document.getElementById("loadImage");
+let preview = document.getElementById("taskImage");
 let delBtn = document.getElementById("delImage");
-let imgPreview = document.querySelector(".imagePreview")
-delBtn.style.display="none";
+let inputImage = document.getElementById("currentImg");
+let imgPreview = document.querySelector(".imagePreview");
 imgPreview.style.display="none";
-taskImage.addEventListener('change',()=>{
+if(inputImage!==null) {
+	if (preview.getAttribute('src').split(",")[1] !== 'null') {
+		inputImage.value = preview.getAttribute('src').split(",")[1];
+		imgPreview.style.display = "block";
+		delBtn.style.display = "block"
+	}
+}
+taskImage.addEventListener('change', () => {
 	imagePreview(taskImage.files[0]);
 })
-function imagePreview(file){
+function imagePreview(file) {
 	var reader = new FileReader();
-	reader.onload =  function (e){
-		preview.setAttribute("src",e.target.result);
-		imgPreview.style.display="block";
-		delBtn.style.display="block"
+	reader.onload = function (e) {
+		preview.setAttribute("src", e.target.result);
+		imgPreview.style.display = "block";
+		delBtn.style.display = "block"
 	};
 	reader.readAsDataURL(file);
 }
+
 /*Удаление выбранного изображения*/
-delBtn.addEventListener('click',e=>{
-	preview.setAttribute("src","");
-	taskImage.value=null;
+delBtn.addEventListener('click', e => {
+	preview.setAttribute("src", "");
+	taskImage.value = null;
 	e.preventDefault();
-	imgPreview.style.display="none";
+	imgPreview.style.display = "none";
 })
 
 

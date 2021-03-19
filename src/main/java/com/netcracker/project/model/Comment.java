@@ -3,11 +3,16 @@ package com.netcracker.project.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class Status {
+public class Comment {
+
     private Long id;
-    private String statusName;
+    private Task task;
+    private String comment;
+    private LocalDateTime publishDate;
+    private User author;
 }

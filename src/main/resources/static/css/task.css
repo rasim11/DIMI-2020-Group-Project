@@ -2,19 +2,28 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height:80vh;
+  padding: 10px 0px 10px 0px;
 }
 .task_form{
+
   width:800px;
   padding: 32px;
   border-radius: 5px;
-  box-shadow: 0 4px 16px #ccc;
+  border: 1px solid darkgray;
+  /*box-shadow: 0 4px 16px #ccc;*/
   font-family:sans-serif;
   letter-spacing: 1px;
   outline:none;
 }
 .header{
   padding-bottom: 10px;
+}
+.btn-link{
+  padding: 0;
+  text-decoration: none;
+}
+.bi-paperclip{
+  vertical-align: middle;
 }
 #taskImage{
   border-radius: 15px;
@@ -28,4 +37,10 @@
 }
 small{
   color: #ff0000;
+}
+.comment-author-img{
+  width:40px;
+  height:40px;
+  border-radius:100%;
+  vertical-align: top;
 }
