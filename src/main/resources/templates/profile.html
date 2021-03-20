@@ -33,6 +33,7 @@
                 <p th:text="'Опубликованных проблем: '+${user.getTasksCount()}"/>
             </div>
             <div th:if="${roleName} != 'Пользователь'">
+                <p th:text="'Регион: '+${region}"/>
                 <p th:text="'Решённых проблем: '+${user.getTasksCount()}"/>
             </div>
             <a href="#"><p>Актуальные проблемы</p></a>

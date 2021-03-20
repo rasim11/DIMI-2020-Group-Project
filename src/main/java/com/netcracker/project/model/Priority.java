@@ -1,6 +1,13 @@
 package com.netcracker.project.model;
 
-public class Priority {
-    private Long id;
-    private String priorityName;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@AllArgsConstructor
+@Getter
+public enum Priority {
+    CRITICAL("Критический"), HIGH("Высокий"),
+    MEDIUM("Средний"), LOW( "Низкий");
+
+    private final String name;
 }

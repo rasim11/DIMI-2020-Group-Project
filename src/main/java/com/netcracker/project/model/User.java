@@ -10,6 +10,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -28,6 +29,7 @@ public class User implements UserDetails {
     private LocalDate regDate;
     private Long tasksCount;
     private Region region;
+    private Set<Task> activeTasks;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -83,5 +85,15 @@ public class User implements UserDetails {
 
     public String dateToString(LocalDate localDate) {
         return localDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+    }
+
+    public int calculateActiveTask() {
+        int count = 0;
+        for (Task task : activeTasks) {
+            if (task.getStatus().equals(Status.IN_CREATING) || task.getStatus().equals(Status.IN_PROCESSING)) {
+                count++;
+            }
+        }
+        return count;
     }
 }

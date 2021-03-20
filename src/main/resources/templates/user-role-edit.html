@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org/" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
     <meta charset="UTF-8">
-    <title>TF|Редактирование роли</title>
+    <title>TF|Изменение роли</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <link href="/css/imgProfile.css" rel="stylesheet">
@@ -10,7 +10,6 @@
     <script src="/js/urlTemplates.js"></script>
     <script src="/js/requests.js"></script>
     <script src=/js/validation.js></script>
-    <script src="/js/rolesAndRegionsValidation.js"></script>
     <script src="/js/userRoleEdit.js"></script>
 </head>
 
@@ -25,19 +24,19 @@
     </h3>
     <img th:src="${user.getUserImage()}" class="mb-4"/>
     <h4 class="mb-4" th:text="${user.getLastname() + ' ' + user.getFirstname() + ' ' + user.getMiddlename()}"/>
-    <p th:text="'Электронная почта: '+${user.getEmail()}"/>
-    <p id="p-phone-number" th:text="'Номер телефона: '+${user.getPhoneNumber()}"/>
+    <input type="text" class="form-control mb-2" th:value="${user.getEmail()}" readonly>
+    <input type="text" class="form-control mb-2" id="input-phone-number" th:value="${user.getPhoneNumber()}" readonly>
     <input type="hidden" id="input-cur-role-name" th:value="${user.getRole().getName()}">
     <input type="hidden" id="input-user-id" th:value="${user.getId()}">
     <input type="hidden" id="input-region-id" th:if="${user.getRegion()} != null"
            th:value="${user.getRegion().getId()}">
     <div id="div-btn-actions" class="mt-4">
-    <button type="submit" class="btn btn-primary mr-2" disabled>
-        Изменить
-    </button>
-    <button type="button" class="btn btn-danger" disabled onclick="resetBtn()">
-        Сбросить
-    </button>
+        <button type="submit" class="btn btn-primary mr-2" disabled>
+            Изменить
+        </button>
+        <button type="button" class="btn btn-danger" disabled onclick="resetBtn()">
+            Сбросить
+        </button>
     </div>
 </form>
 

@@ -2,6 +2,7 @@ package com.netcracker.project.controllers;
 
 import com.netcracker.project.model.Region;
 import com.netcracker.project.model.User;
+import com.netcracker.project.service.EntityService;
 import com.netcracker.project.service.SecurityService;
 import com.netcracker.project.service.impl.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,8 @@ public class PersonalAccountController {
     private SecurityService securityService;
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
+    @Autowired
+    private EntityService entityService;
 
     @GetMapping(LOCAL_URL_PERSONAL_ACCOUNT)
     public String personalAccountGet(Model model) {
@@ -31,38 +34,30 @@ public class PersonalAccountController {
             return "profile";
         }
 
-        User user = userDetailsService.getUserById(id);
-        if (user == null) {
+        User targetUser = userDetailsService.getUserById(id);
+        if (targetUser == null) {
             return REDIRECT_ON_MAIN_PAGE;
         }
 
         User curUser = securityService.getCurrentUser();
         if (curUser.getId().equals(id)) {
             model.addAttribute("isCurUser", true);
-            model.addAttribute("user", curUser);
-            model.addAttribute("roleName", curUser.getRole().getName());
-        } else {
-            model.addAttribute("user", user);
-            model.addAttribute("roleName", user.getRole().getName());
+        }
+        model.addAttribute("user", targetUser);
+        model.addAttribute("roleName", targetUser.getRole().getName());
+
+        Region curUserRegion = curUser.getRegion() != null ? curUser.getRegion() :
+                entityService.getRegionByResponsibleEmail(curUser.getEmail());
+        Region targetUserRegion = targetUser.getRegion() != null ? targetUser.getRegion() :
+                entityService.getRegionByResponsibleEmail(targetUser.getEmail());
+
+        if (targetUserRegion != null) {
+            model.addAttribute("region", targetUserRegion.getRegionName());
         }
 
-        Region curUserRegion = curUser.getRegion();
-        Region targetUserRegion = user.getRegion();
-
-        if (curUserRegion != null && targetUserRegion != null) {
-            if (curUserRegion.getRegionName().equals(targetUserRegion.getRegionName())) {
-                model.addAttribute("isEmp", true);
-            }
-        } else if (curUserRegion != null && curUserRegion.getResponsible() != null) {
-            Long regionResponsibleId = curUserRegion.getResponsible().getId();
-            if (regionResponsibleId.equals(user.getId())) {
-                model.addAttribute("isEmp", true);
-            }
-        } else if (targetUserRegion != null && targetUserRegion.getResponsible() != null) {
-            Long regionResponsibleId = targetUserRegion.getResponsible().getId();
-            if (regionResponsibleId.equals(curUser.getId())) {
-                model.addAttribute("isEmp", true);
-            }
+        if (curUserRegion != null && targetUserRegion != null &&
+                curUserRegion.getRegionName().equals(targetUserRegion.getRegionName())) {
+            model.addAttribute("isEmp", true);
         }
 
         return "profile";

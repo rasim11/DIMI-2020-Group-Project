@@ -39,6 +39,10 @@ public final class UrlTemplates {
     public static final String REGION_PUT = "/region-put";
     public static final String USER_ROLE_EDIT = "/user-role-edit";
     public static final String REDIRECT_ON_ADMINISTRATION = "redirect:" + API + VERSION + ADMIN_MANAGEMENT;
+    public static final String TASK_PUT = "/task-put";
+    public static final String TASK_SOCIAL_WORKERS_MANAGEMENT = "/task-social-workers-management";
+    public static final String SOCIAL_WORKERS_GET = "/social-workers-get";
+    public static final String ACTIVE_TASKS_GET = "/active-tasks-get";
 
     public static final String LOCAL_URL_ADMINISTRATION = API + VERSION + ADMIN_MANAGEMENT;
     public static final String LOCAL_URL_USER_ROLE_EDIT = API + VERSION + ADMIN_MANAGEMENT +
@@ -57,6 +61,12 @@ public final class UrlTemplates {
     public static final String LOCAL_URL_USER_PROFILE = API + VERSION + USER_MANAGEMENT + USER_GET + BY_ID + "/{id}";
     public static final String LOCAL_URL_USER_REGISTRATION = API + VERSION + USER_MANAGEMENT + USER_REGISTRATION;
     public static final String LOCAL_URL_POST_TASK = API + VERSION + TASK_MANAGEMENT + TASK_POST;
+    public static final String LOCAL_URL_RESPONSIBLE_PUT_TASK = API + VERSION + TASK_MANAGEMENT +
+            TASK_PUT + BY_ID + "-by-responsible/{id}";
+    public static final String ACTIVE_TASK_DELETE = "/active-task-delete";
+    public static final String ACTIVE_TASK_POST = "/active-task-post";
+    public static final String FEEDBACK_MANAGEMENT = "/feedback-management";
+    public static final String FEEDBACK_POST = "/feedback-post";
 
     public static final String URL_GET_ALL_ROLES = SERVER + LOCAL_URL_GET_ALL_ROLES;
     public static final String URL_GET_ALL_REGIONS = SERVER + LOCAL_URL_GET_ALL_REGIONS;
@@ -75,9 +85,21 @@ public final class UrlTemplates {
     public static final String URL_GET_REGION_BY_ID = SERVER + API + VERSION +
             REGION_MANAGEMENT + REGION_GET + BY_ID + "/{id}";
     public static final String URL_PUT_REGION = SERVER + API + VERSION + REGION_MANAGEMENT + REGION_PUT;
-    public static final String URL_GET_REGION_BY_RESPONSIBLE = SERVER + API + VERSION +
-            REGION_MANAGEMENT + REGION_GET + "-by-responsible";
-    public static final String URL_GET_TASKS_BY_AUTHOR = SERVER + API + VERSION +
-            TASK_MANAGEMENT + TASK_GET + "-by-author";
+    public static final String URL_GET_REGION_BY_RESPONSIBLE_EMAIL = SERVER + API + VERSION +
+            REGION_MANAGEMENT + REGION_GET + "-by-responsible" + BY_EMAIL + "/{email}";
+    public static final String URL_GET_TASKS_BY_AUTHORS_EMAIL = SERVER + API + VERSION +
+            TASK_MANAGEMENT + TASK_GET + "-by-author" + BY_EMAIL + "/{email}";
     public static final String URL_GET_TASK_LIST = SERVER + API + VERSION + TASK_LIST_GET;
+    public static final String URL_GET_USERS_BY_REGION_ID = URL_GET_ALL_USERS + "-by-region" + BY_ID + "/{id}";
+    public static final String URL_GET_WORKERS_BY_TASK_ID = SERVER + API + VERSION + TASK_SOCIAL_WORKERS_MANAGEMENT +
+            SOCIAL_WORKERS_GET + "-by-active-task" + BY_ID + "/{id}";
+    public static final String URL_GET_TASKS_BY_WORKER_ID = SERVER + API + VERSION + TASK_SOCIAL_WORKERS_MANAGEMENT +
+            ACTIVE_TASKS_GET + "-by-social-worker" + BY_ID + "/{id}";
+    public static final String URL_DELETE_ACTIVE_TASK_BY_TASK_ID = SERVER + API + VERSION +
+            TASK_SOCIAL_WORKERS_MANAGEMENT + ACTIVE_TASK_DELETE + "-by-task" + BY_ID + "/{id}";
+    public static final String URL_DELETE_ACTIVE_TASK_BY_WORKER_ID = SERVER + API + VERSION +
+            TASK_SOCIAL_WORKERS_MANAGEMENT + ACTIVE_TASK_DELETE + "-by-worker" + BY_ID + "/{id}";
+    public static final String URL_POST_ACTIVE_TASK = SERVER + API + VERSION + TASK_SOCIAL_WORKERS_MANAGEMENT +
+            ACTIVE_TASK_POST;
+    public static final String URL_POST_FEEDBACK = SERVER + API + VERSION + FEEDBACK_MANAGEMENT + FEEDBACK_POST;
 }

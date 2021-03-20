@@ -1,7 +1,7 @@
 package com.netcracker.project.controllers;
 
+import com.netcracker.project.model.Status;
 import com.netcracker.project.model.Task;
-import com.netcracker.project.model.TaskStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -60,24 +60,24 @@ public class MainController {
 
         if (IN_CREATING.contains("on")) {
             filterWork = true;
-            filterParam.add(TaskStatus.IN_CREATING.ordinal());
+            filterParam.add(Status.IN_CREATING.ordinal());
             model.addAttribute("IN_CREATING", true);
         } else model.addAttribute("IN_CREATING", false);
 
         if (IN_PROCESSING.contains("on")) {
             filterWork = true;
-            filterParam.add(TaskStatus.IN_PROCESSING.ordinal());
+            filterParam.add(Status.IN_PROCESSING.ordinal());
             model.addAttribute("IN_PROCESSING", true);
         } else model.addAttribute("IN_PROCESSING", false);
 
         if (RESOLVED.contains("on")) {
             filterWork = true;
-            filterParam.add(TaskStatus.RESOLVED.ordinal());
+            filterParam.add(Status.RESOLVED.ordinal());
             model.addAttribute("RESOLVED", true);
         } else model.addAttribute("RESOLVED", false);
         if (CANCELED.contains("on")) {
             filterWork = true;
-            filterParam.add(TaskStatus.CANCELED.ordinal());
+            filterParam.add(Status.CANCELED.ordinal());
             model.addAttribute("CANCELED", true);
         } else model.addAttribute("CANCELED", false);
 
