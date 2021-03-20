@@ -4,10 +4,7 @@ package com.netcracker.project.service.impl;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.netcracker.project.model.Region;
-import com.netcracker.project.model.Role;
-import com.netcracker.project.model.Task;
-import com.netcracker.project.model.User;
+import com.netcracker.project.model.*;
 import com.netcracker.project.service.EntityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,6 +13,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+
+import java.time.LocalDateTime;
 
 import static com.netcracker.project.url.UrlTemplates.*;
 
@@ -104,6 +103,23 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public void deleteUser(User user) {
         severTies(user);
 
+        if (user.getRole().getName().equals("Соц. работник")) {
+            entityService.deleteActiveTask(user.getId(), URL_DELETE_ACTIVE_TASK_BY_WORKER_ID);
+        } else if (user.getRole().getName().equals("Пользователь")) {
+            Iterable<Task> tasks = entityService.getTasksByAuthorsEmail(user.getEmail());
+
+            for (Task task : tasks) {
+                task.setStatus(Status.CANCELED);
+                task.setAuthor(null);
+                task.setCompleteDate(LocalDateTime.now());
+                entityService.putTask(task);
+
+                Feedback feedback = new Feedback();
+                feedback.dataExtension(task);
+                entityService.postFeedback(feedback);
+            }
+        }
+
         restTemplate.delete(URL_DELETE_USER, user.getEmail());
     }
 
@@ -156,18 +172,23 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
 
     public void severTies(User user) {
-        if (user.getRole().getName().equals("Пользователь")) {
-            Iterable<Task> tasks = entityService.getTasksByAuthor(user);
-
-            for (Task task : tasks) {
-                task.setAuthor(null);
-                entityService.putTask(task);
-            }
-        } else if (user.getRole().getName().equals("Ответственный")) {
-            Region region = entityService.getRegionByResponsible(user);
+        if (user.getRole().getName().equals("Ответственный")) {
+            Region region = entityService.getRegionByResponsibleEmail(user.getEmail());
 
             region.setResponsible(null);
             entityService.putRegion(region);
         }
+    }
+
+    public Iterable<User> getUsersByRegionId(Long id) {
+        JsonNode users = restTemplate.getForObject(URL_GET_USERS_BY_REGION_ID, JsonNode.class, id);
+        return mapper.convertValue(users,
+                new TypeReference<Iterable<User>>() {
+                }
+        );
+    }
+
+    public void putUser(User user) {
+        restTemplate.postForLocation(URL_POST_USER, user);
     }
 }

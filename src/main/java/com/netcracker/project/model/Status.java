@@ -1,13 +1,14 @@
 package com.netcracker.project.model;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
 
 @AllArgsConstructor
-@NoArgsConstructor
-@Data
-public class Status {
-    private Long id;
-    private String statusName;
+@Getter
+public enum Status {
+    IN_CREATING(0, "В обработке"), IN_PROCESSING(1, "Решаемые"),
+    RESOLVED(2, "Решённые"), CANCELED(3, "Отменённые");
+
+    private final int value;
+    private final String name;
 }

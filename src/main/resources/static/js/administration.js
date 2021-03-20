@@ -2,11 +2,13 @@ const LOCAL_URL_REGISTRATION_THROUGH_ADMIN = API + VERSION + ADMIN_MANAGEMENT + 
 const LOCAL_URL_USER_PROFILE = API + VERSION + USER_MANAGEMENT + USER_GET + BY_ID;
 const LOCAL_URL_USER_ROLE_EDIT = API + VERSION + ADMIN_MANAGEMENT + USER_ROLE_EDIT + BY_ID;
 
+const maxCountUsers = 10;
 const divClassUser = "div-user";
 const divClassFilterActions = "div-filter-actions";
 const divClassUserAttribute = "div-user-attribute";
 const formClassUserActivity = "div-user-activity";
 const divIdMainContent = "div-main-content";
+const divUsersId = "div-users";
 const divIdDataUsers = "div-data-users"
 const divIdListUsers = "div-list-users";
 const divIdFilterRole = "div-filter-role";
@@ -180,9 +182,12 @@ function addDataUsers() {
     blockTitle.innerText = document.getElementById(btnIdDataUsers).innerText;
     divDataUsers.appendChild(blockTitle);
 
+    const divFilterSearchString = document.createElement("div");
+    divDataUsers.appendChild(divFilterSearchString);
+
     const divSearchString = document.createElement("div");
     divSearchString.className = "search-string";
-    divDataUsers.appendChild(divSearchString);
+    divFilterSearchString.appendChild(divSearchString);
 
     const inputSearchString = document.createElement("input");
     inputSearchString.id = inputIdSearchString;
@@ -190,7 +195,9 @@ function addDataUsers() {
     inputSearchString.className = "form-control";
     inputSearchString.style.width = "100%";
     inputSearchString.placeholder = "Введите критерий поиска";
-    inputSearchString.addEventListener("input", filterSearchStringActive.bind(null, inputSearchString));
+    inputSearchString.addEventListener("input",
+        filterSearchStringActive.bind(null, inputSearchString, divUsersId, inputIdSearchNames,
+            spanIdCountUsers, "block"));
     divSearchString.appendChild(inputSearchString);
 
     const btnClearSearchString = document.createElement("button");
@@ -199,16 +206,13 @@ function addDataUsers() {
     btnClearSearchString.className = "clear-search-string";
     btnClearSearchString.addEventListener("click", function () {
         inputSearchString.value = "";
-        filterSearchStringInactive();
+        filterSearchStringInactive(divUsersId, spanIdCountUsers, "block");
     });
     divSearchString.appendChild(btnClearSearchString);
 
-    const divSearchBar = document.createElement("div");
-    divSearchBar.className = "mb-2";
-    divDataUsers.appendChild(divSearchBar);
-
     const divSearchCriterion = document.createElement("div");
-    divSearchBar.appendChild(divSearchCriterion);
+    divSearchCriterion.className = "mb-2";
+    divFilterSearchString.appendChild(divSearchCriterion);
 
     const labelSearchCriterion = document.createElement("label");
     labelSearchCriterion.textContent = "Критерий поиска:";
@@ -260,16 +264,22 @@ function addListUsers() {
     const hrElement = document.createElement("hr");
     divListUsers.appendChild(hrElement);
 
+    const divUsers = document.createElement("div");
+    divUsers.id = divUsersId;
+    divUsers.style.overflow = "auto";
+    divListUsers.appendChild(divUsers);
+
     for (let i = 0; i < users.length; i++) {
         const divUser = document.createElement("div");
-        divUser.className = divClassUser + " mb-4";
-        divListUsers.appendChild(divUser);
+        divUser.className = divClassUser + " pb-4";
+        divUsers.appendChild(divUser);
 
         const aProfile = document.createElement("a");
         aProfile.href = LOCAL_URL_USER_PROFILE + "/" + users[i].id;
         divUser.appendChild(aProfile);
 
         const imgUserAvatar = document.createElement("img");
+        imgUserAvatar.className = "img-users-list";
         imgUserAvatar.src = users[i].userImage;
         aProfile.appendChild(imgUserAvatar);
 
@@ -332,17 +342,25 @@ function addListUsers() {
                 btn.type = "button";
                 btn.className = "btn btn-outline-danger";
                 btn.textContent = "Удалить";
-                btn.addEventListener("click", deleteUser.bind(null, divUser, divUserAttribute, spanCountUsers));
+                btn.addEventListener("click", function () {
+                    deleteUser(divUser, divUserAttribute, spanCountUsers);
+                    const divUsersElements = document.querySelectorAll("#" + divUsersId + "> *");
+                    activationScrollBar(divUsersId, maxCountUsers, divClassUser, divUsersElements.length);
+                    users = getAllObjectsFromRequest(URL_GET_ALL_USER);
+                });
             }
 
             formUserActivity.appendChild(btn);
         }
     }
+
+    const divUsersElements = document.querySelectorAll("#" + divUsersId + "> *");
+    activationScrollBar(divUsersId, maxCountUsers, divClassUser, divUsersElements.length);
 }
 
 function deleteUser(divUser, divUserAttribute, spanCountUsers) {
     const email = divUserAttribute.querySelectorAll("span")[1].innerText.split(" ");
-    deleteObject(URL_DELETE_USER + "/" + email[email.length - 1], true);
+    deleteObject(URL_DELETE_USER + "/" + email[email.length - 1], false);
     divUser.remove();
 
     let newCount = spanCountUsers.innerText.split(" ");
@@ -475,8 +493,8 @@ function anotherFiltersActive(divFilter) {
         }
     }
 
-    filterSearchStringActive(document.getElementById(inputIdSearchString));
-
+    filterSearchStringActive(document.getElementById(inputIdSearchString),
+        divUsersId, inputIdSearchNames, spanIdCountUsers, "block");
 }
 
 function filterRoleActive(divFilter) {
@@ -545,7 +563,8 @@ function filtersResetAll() {
     removeListUsers();
     document.getElementById(divIdDataFilters).remove();
     addDataFilters();
-    filterSearchStringActive(document.getElementById(inputIdSearchString));
+    filterSearchStringActive(document.getElementById(inputIdSearchString),
+        divUsersId, inputIdSearchNames, spanIdCountUsers, "block");
 }
 
 function filtersApplyAll() {
@@ -569,48 +588,4 @@ function filtersApplyAll() {
 function removeListUsers() {
     document.getElementById(divIdListUsers).remove();
     addListUsers();
-}
-
-function filterSearchStringActive(inputSearchString) {
-    if (!inputSearchString.value) {
-        filterSearchStringInactive();
-        return;
-    }
-
-    const allUsers = document.querySelectorAll("." + divClassUser);
-    const radioNames = document.getElementById(inputIdSearchNames);
-
-    for (let i = 0; i < allUsers.length; i++) {
-        const criterionArr = radioNames.checked ?
-            allUsers[i].querySelectorAll("span")[0].innerText.split(":") :
-            allUsers[i].querySelectorAll("span")[1].innerText.split(" ");
-        const criterion = criterionArr[criterionArr.length - 1];
-        allUsers[i].style.display = criterion.indexOf(inputSearchString.value) === -1 ? "none" : "block";
-    }
-
-    calculateUsersCountSearchString()
-}
-
-function filterSearchStringInactive() {
-    const allUsers = document.querySelectorAll("." + divClassUser);
-
-    for (let i = 0; i < allUsers.length; i++) {
-        allUsers[i].style.display = "block";
-    }
-
-    calculateUsersCountSearchString();
-}
-
-function calculateUsersCountSearchString() {
-    const allUsers = document.querySelectorAll("." + divClassUser);
-
-    let usersCount = 0;
-    for (let i = 0; i < allUsers.length; i++) {
-        usersCount += allUsers[i].style.display === "block" ? 1 : 0;
-    }
-
-    let spanCountUsers = document.getElementById(spanIdCountUsers);
-    let newCount = spanCountUsers.innerText.split(" ");
-    newCount[newCount.length - 1] = (usersCount).toString();
-    spanCountUsers.textContent = newCount.join(" ");
 }

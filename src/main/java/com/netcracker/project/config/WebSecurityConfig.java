@@ -38,6 +38,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         LOCAL_URL_ADMINISTRATION,
                         LOCAL_URL_USER_ROLE_EDIT,
                         LOCAL_URL_USER_REGISTRATION_ADMIN).hasAuthority("Админ")
+                .antMatchers(LOCAL_URL_RESPONSIBLE_PUT_TASK).hasAuthority("Ответственный")
                 .antMatchers(LOCAL_URL_PERSONAL_ACCOUNT).fullyAuthenticated()
                 .antMatchers(
                         "/resources/**",

@@ -6,11 +6,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netcracker.project.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import static com.netcracker.project.url.UrlTemplates.*;
 
@@ -26,6 +28,12 @@ public class EntityService {
     }
 
     public void postTask(User user, Task task) {
+        Region region = getRegionById(1L);
+        if (region == null) {
+            throw new UsernameNotFoundException("DB fatal error. User Region not found!");
+        }
+        task.setRegion(region);
+
         task.dataExtension(user);
         restTemplate.postForLocation(URL_POST_TASK, task);
     }
@@ -38,16 +46,12 @@ public class EntityService {
         );
     }
 
-    public Task getTaskByID(Long id) {
+    public Task getTaskById(Long id) {
         return restTemplate.getForObject(URL_GET_TASK_BY_ID, Task.class, id);
     }
 
-    public <T> Iterable<T> getAllObjects(String url) {
-        JsonNode objects = restTemplate.getForObject(url, JsonNode.class);
-        return mapper.convertValue(objects,
-                new TypeReference<Iterable<T>>() {
-                }
-        );
+    public JsonNode getAllObjects(String url) {
+        return restTemplate.getForObject(url, JsonNode.class);
     }
 
     public Region getRegionById(Long id) {
@@ -58,12 +62,12 @@ public class EntityService {
         restTemplate.put(URL_PUT_REGION, region);
     }
 
-    public Region getRegionByResponsible(User user) {
-        return restTemplate.postForObject(URL_GET_REGION_BY_RESPONSIBLE, user, Region.class);
+    public Region getRegionByResponsibleEmail(String email) {
+        return restTemplate.getForObject(URL_GET_REGION_BY_RESPONSIBLE_EMAIL, Region.class, email);
     }
 
-    public Iterable<Task> getTasksByAuthor(User user) {
-        JsonNode objects = restTemplate.postForObject(URL_GET_TASKS_BY_AUTHOR, user, JsonNode.class);
+    public Iterable<Task> getTasksByAuthorsEmail(String email) {
+        JsonNode objects = restTemplate.getForObject(URL_GET_TASKS_BY_AUTHORS_EMAIL, JsonNode.class, email);
         return mapper.convertValue(objects,
                 new TypeReference<Iterable<Task>>() {
                 }
@@ -84,5 +88,34 @@ public class EntityService {
                 new TypeReference<Iterable<Comment>>() {
                 }
         );
+    }
+
+    public Set<User> getSocialWorkersByActiveTaskId(Long id) {
+        JsonNode objects = restTemplate.getForObject(URL_GET_WORKERS_BY_TASK_ID, JsonNode.class, id);
+        return mapper.convertValue(objects,
+                new TypeReference<Set<User>>() {
+                }
+        );
+    }
+
+    public Set<Task> getActiveTaskBySocialWorkersId(Long id) {
+        JsonNode objects = restTemplate.getForObject(URL_GET_TASKS_BY_WORKER_ID, JsonNode.class, id);
+        return mapper.convertValue(objects,
+                new TypeReference<Set<Task>>() {
+                }
+        );
+    }
+
+    public void deleteActiveTask(Long id, String url) {
+        restTemplate.delete(url, id);
+    }
+
+    public void postActiveTask(Long taskId, Long userId) {
+        Long[] ids = {taskId, userId};
+        restTemplate.postForLocation(URL_POST_ACTIVE_TASK, ids);
+    }
+
+    public void postFeedback(Feedback feedback) {
+        restTemplate.postForLocation(URL_POST_FEEDBACK, feedback);
     }
 }

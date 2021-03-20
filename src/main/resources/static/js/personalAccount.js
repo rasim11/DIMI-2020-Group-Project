@@ -373,7 +373,7 @@ function addDataResponsible() {
         curUserJson.region.responsible.middlename;
     divDataResponsible.appendChild(responsibleNames);
 
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 6; i++) {
         const pUserAtr = document.createElement("p");
         switch (i) {
             case 0:
@@ -393,6 +393,9 @@ function addDataResponsible() {
                 pUserAtr.textContent = "Решённых проблем: " + curUserJson.region.responsible.tasksCount;
                 break;
             case 4:
+                pUserAtr.textContent = "Регион: " + curUserJson.region.regionName;
+                break;
+            case 5:
                 pUserAtr.textContent = "Актуальные проблемы";
 
                 const aProblemsActual = document.createElement("a");

@@ -47,7 +47,7 @@ function addBegData() {
 }
 
 function addRolesSelect() {
-    const targetElement = document.getElementById("p-phone-number");
+    const targetElement = document.getElementById("input-phone-number");
 
     const selectRoles = document.createElement("select");
     selectRoles.id = selectIdRoles;

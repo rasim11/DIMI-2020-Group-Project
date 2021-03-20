@@ -116,7 +116,7 @@
                                             <li th:text="${task.author.middlename}"></li>
                                             <li th:text="${task.regDate}"></li>
 
-                                            <li th:if="${task.taskStatus != null}"  th:switch="${task.taskStatus.ordinal()}" >
+                                            <li th:if="${task.getStatus != null}" th:switch="${task.getStatus.ordinal()}" >
                                                 <span th:case=0>В обработке</span>
                                                 <span th:case=1>Решаемые</span>
                                                 <span th:case=2>Решённые</span>

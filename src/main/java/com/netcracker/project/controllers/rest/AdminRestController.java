@@ -1,5 +1,6 @@
 package com.netcracker.project.controllers.rest;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.netcracker.project.model.Region;
 import com.netcracker.project.model.Role;
 import com.netcracker.project.model.User;
@@ -20,7 +21,7 @@ public class AdminRestController {
     @Autowired
     private EntityService entityService;
 
-    @GetMapping(LOCAL_URL_GET_ALL_USERS )
+    @GetMapping(LOCAL_URL_GET_ALL_USERS)
     public Iterable<User> getAllUsers() {
         Iterable<User> users = userDetailsService.getAllUsers();
         for (User user : users) {
@@ -30,12 +31,12 @@ public class AdminRestController {
     }
 
     @GetMapping(LOCAL_URL_GET_ALL_ROLES)
-    public Iterable<Role> getAllRoles() {
+    public JsonNode getAllRoles() {
         return entityService.getAllObjects(URL_GET_ALL_ROLES);
     }
 
     @GetMapping(LOCAL_URL_GET_ALL_REGIONS)
-    public Iterable<Region> getAllRegions() {
+    public JsonNode getAllRegions() {
         return entityService.getAllObjects(URL_GET_ALL_REGIONS);
     }
 
