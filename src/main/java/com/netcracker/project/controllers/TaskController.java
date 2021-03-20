@@ -1,9 +1,6 @@
 package com.netcracker.project.controllers;
 
-import com.netcracker.project.model.Priority;
-import com.netcracker.project.model.Status;
-import com.netcracker.project.model.Task;
-import com.netcracker.project.model.User;
+import com.netcracker.project.model.*;
 import com.netcracker.project.service.EntityService;
 import com.netcracker.project.service.SecurityService;
 import com.netcracker.project.service.impl.UserDetailsServiceImpl;
@@ -59,18 +56,19 @@ public class TaskController {
                 return "specificTask";
             }
 
-            User currentUser = securityService.getCurrentUser();
+            User curUser = securityService.getCurrentUser();
+            Region curRegion = entityService.getRegionByResponsibleEmail(curUser.getEmail());
             Predicate<String> userRole = str -> str.equals("Пользователь") || str.equals("Соц. работник");
             Predicate<Status> taskStatus = x -> x.equals(Status.RESOLVED);
 
-            if (userRole.test(currentUser.getRole().getName())) {
+            if (userRole.test(curUser.getRole().getName())) {
                 User author = task.getAuthor();
-                if (author.getEmail().equals(currentUser.getEmail())) {
+                if (author.getEmail().equals(curUser.getEmail())) {
                     String param = taskStatus.test(task.getStatus()) ? "isFeedback" : "isEditAuthor";
                     model.addAttribute(param, true);
                 }
-            } else if (currentUser.getRole().getName().equals("Ответственный") && !taskStatus.test(task.getStatus()) &&
-                    task.getRegion().getRegionName().equals(currentUser.getRegion().getRegionName())) {
+            } else if (curUser.getRole().getName().equals("Ответственный") && !taskStatus.test(task.getStatus()) &&
+                    task.getRegion().getRegionName().equals(curRegion.getRegionName())) {
                 model.addAttribute("isEditResponsible", true);
             }
         }
