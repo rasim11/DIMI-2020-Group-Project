@@ -47,35 +47,40 @@ public class TaskController {
         return REDIRECT_ON_MAIN_PAGE;
     }
 
-    @GetMapping(LOCAL_URL_GET_TASK_BY_ID + "/{id}")
+    @GetMapping(LOCAL_URL_GET_TASK_BY_ID)
     public String getTask(@PathVariable Long id, Model model) {
-        Task task = entityService.getTaskByID(id);
+        Task task = entityService.getTaskById(id);
         model.addAttribute("task", task);
-        model.addAttribute("urls", API + VERSION + TASK_MANAGEMENT + TASK_UPDATE + BY_ID);
+
         if (securityService.isAuthenticated()) {
             model.addAttribute("commentPermission", true);
+
+            if (task.getStatus().equals(Status.CANCELED)) {
+                return "specificTask";
+            }
+
             User currentUser = securityService.getCurrentUser();
             Predicate<String> userRole = str -> str.equals("Пользователь") || str.equals("Соц. работник");
-            Predicate<Status> taskStatus = x -> x.equals(Status.RESOLVED) || x.equals(Status.CANCELED);
+            Predicate<Status> taskStatus = x -> x.equals(Status.RESOLVED);
+
             if (userRole.test(currentUser.getRole().getName())) {
                 User author = task.getAuthor();
                 if (author.getEmail().equals(currentUser.getEmail())) {
-                    if (!taskStatus.test(task.getStatus())) {
-                        model.addAttribute("isEditAuthor", true);
-                    } else if (task.getTaskStatus().equals(Status.RESOLVED)) {
-                        model.addAttribute("isFeedback", true);
-                    }
+                    String param = taskStatus.test(task.getStatus()) ? "isFeedback" : "isEditAuthor";
+                    model.addAttribute(param, true);
                 }
-            } else if (currentUser.getRole().getName().equals("Ответственный") && !taskStatus.test(task.getTaskStatus())) {
+            } else if (currentUser.getRole().getName().equals("Ответственный") && !taskStatus.test(task.getStatus()) &&
+                    task.getRegion().getRegionName().equals(currentUser.getRegion().getRegionName())) {
                 model.addAttribute("isEditResponsible", true);
             }
         }
+
         return "specificTask";
     }
 
-    @GetMapping(API + VERSION + TASK_MANAGEMENT + TASK_UPDATE + BY_ID + "/{id}")
+    @GetMapping(LOCAL_URL_AUTHOR_PUT_TASK)
     public String updateTask(@PathVariable Long id, Model model) {
-        model.addAttribute("task", entityService.getTaskByID(id));
+        model.addAttribute("task", entityService.getTaskById(id));
         return "taskEditForm";
     }
 

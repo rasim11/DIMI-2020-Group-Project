@@ -105,21 +105,21 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         if (user.getRole().getName().equals("Соц. работник")) {
             entityService.deleteActiveTask(user.getId(), URL_DELETE_ACTIVE_TASK_BY_WORKER_ID);
-        } else if (user.getRole().getName().equals("Пользователь")) {
-            Iterable<Task> tasks = entityService.getTasksByAuthorsEmail(user.getEmail());
-
-            for (Task task : tasks) {
-                task.setStatus(Status.CANCELED);
-                task.setAuthor(null);
-                task.setCompleteDate(LocalDateTime.now());
-                entityService.putTask(task);
-
-                Feedback feedback = new Feedback();
-                feedback.dataExtension(task);
-                entityService.postFeedback(feedback);
-            }
         }
 
+        Iterable<Task> tasks = entityService.getTasksByAuthorsEmail(user.getEmail());
+        for (Task task : tasks) {
+            task.setStatus(Status.CANCELED);
+            task.setAuthor(null);
+            task.setCompleteDate(LocalDateTime.now());
+            entityService.putTask(task);
+
+            Feedback feedback = new Feedback();
+            feedback.dataExtension(task);
+            entityService.postFeedback(feedback);
+        }
+
+        restTemplate.delete(URL_DELETE_COMMENT_BY_AUTHOR_ID, user.getId());
         restTemplate.delete(URL_DELETE_USER, user.getEmail());
     }
 

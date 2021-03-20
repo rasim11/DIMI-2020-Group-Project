@@ -86,7 +86,6 @@ function setDefaultValue() {
         activationScrollBar(divUsersId, maxCountUsers, divUnassignedUserClass,
             divDesignatedUsersLength + divUnassignedUsersLength);
     }
-
 }
 
 function isNoDuplicate(name = null) {

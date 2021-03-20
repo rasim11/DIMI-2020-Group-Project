@@ -27,7 +27,6 @@ public class MainController {
         Task[] taskArray = response.getBody();
         listTask = Arrays.asList(taskArray);
         model.addAttribute("taskList", listTask);
-        model.addAttribute("urls",LOCAL_URL_GET_TASK_BY_ID);
 
         return "main";
     }

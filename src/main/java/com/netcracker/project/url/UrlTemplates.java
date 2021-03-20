@@ -18,7 +18,6 @@ public final class UrlTemplates {
     public static final String ADMIN_MANAGEMENT = "/admin-management";
     public static final String TASK_MANAGEMENT = "/task-management";
     public static final String TASK_GET = "/task-get";
-    public static final String TASK_UPDATE = "/task-update";
     public static final String TASK_POST = "/task-post";
     public static final String ROLE_MANAGEMENT = "/role-management";
     public static final String ROLE_GET = "/role-get";
@@ -41,7 +40,7 @@ public final class UrlTemplates {
     public static final String REGION_PUT = "/region-put";
     public static final String USER_ROLE_EDIT = "/user-role-edit";
     public static final String REDIRECT_ON_ADMINISTRATION = "redirect:" + API + VERSION + ADMIN_MANAGEMENT;
-    public static final String POST_COMMENT = "/post-comment";
+    public static final String COMMENT_POST = "/comment-post";
     public static final String COMMENT_MANAGEMENT = "/comment-management";
     public static final String TASK_PUT = "/task-put";
     public static final String TASK_SOCIAL_WORKERS_MANAGEMENT = "/task-social-workers-management";
@@ -51,6 +50,7 @@ public final class UrlTemplates {
     public static final String FEEDBACK_MANAGEMENT = "/feedback-management";
     public static final String FEEDBACK_POST = "/feedback-post";
     public static final String ACTIVE_TASKS_GET = "/active-tasks-get";
+    public static final String COMMENT_DELETE = "/comment-delete";
 
     public static final String LOCAL_URL_ADMINISTRATION = API + VERSION + ADMIN_MANAGEMENT;
     public static final String LOCAL_URL_USER_ROLE_EDIT = API + VERSION + ADMIN_MANAGEMENT +
@@ -69,10 +69,12 @@ public final class UrlTemplates {
     public static final String LOCAL_URL_USER_PROFILE = API + VERSION + USER_MANAGEMENT + USER_GET + BY_ID + "/{id}";
     public static final String LOCAL_URL_USER_REGISTRATION = API + VERSION + USER_MANAGEMENT + USER_REGISTRATION;
     public static final String LOCAL_URL_POST_TASK = API + VERSION + TASK_MANAGEMENT + TASK_POST;
-    public static final String LOCAL_URL_GET_TASK_BY_ID = API + VERSION + TASK_MANAGEMENT + TASK_GET + BY_ID;
-    public static final String LOCAL_URL_UPDATE_TASK_BY_ID = API + VERSION + TASK_MANAGEMENT + TASK_UPDATE + BY_ID + "/{id}";
-    public static final String LOCAL_URL_POST_COMMENT = API + VERSION + COMMENT_MANAGEMENT + POST_COMMENT;
-    public static final String LOCAL_URL_GET_COMMENT_BY_TASK_ID = API + VERSION + COMMENT_MANAGEMENT + COMMENT_GET + "-by-task/{id}";
+    public static final String LOCAL_URL_GET_TASK_BY_ID = API + VERSION + TASK_MANAGEMENT + TASK_GET + BY_ID + "/{id}";
+    public static final String LOCAL_URL_AUTHOR_PUT_TASK = API + VERSION + TASK_MANAGEMENT + TASK_PUT +
+            BY_ID + "-by-author/{id}";
+    public static final String LOCAL_URL_POST_COMMENT = API + VERSION + COMMENT_MANAGEMENT + COMMENT_POST;
+    public static final String LOCAL_URL_GET_COMMENT_BY_TASK_ID = API + VERSION + COMMENT_MANAGEMENT +
+            COMMENT_GET + "-by-task/{id}";
     public static final String LOCAL_URL_RESPONSIBLE_PUT_TASK = API + VERSION + TASK_MANAGEMENT +
             TASK_PUT + BY_ID + "-by-responsible/{id}";
 
@@ -88,7 +90,7 @@ public final class UrlTemplates {
     public static final String URL_GET_ROLE_BY_NAME = SERVER + API + VERSION + ROLE_MANAGEMENT + ROLE_GET +
             BY_NAME + "/{name}";
     public static final String URL_POST_TASK = SERVER + API + VERSION + TASK_MANAGEMENT + TASK_POST;
-    public static final String URL_GET_TASK_BY_ID = SERVER + LOCAL_URL_GET_TASK_BY_ID + "/{id}";
+    public static final String URL_GET_TASK_BY_ID = SERVER + LOCAL_URL_GET_TASK_BY_ID;
     public static final String URL_GET_REGION_BY_ID = SERVER + API + VERSION +
             REGION_MANAGEMENT + REGION_GET + BY_ID + "/{id}";
     public static final String URL_PUT_REGION = SERVER + API + VERSION + REGION_MANAGEMENT + REGION_PUT;
@@ -111,6 +113,8 @@ public final class UrlTemplates {
     public static final String URL_POST_FEEDBACK = SERVER + API + VERSION + FEEDBACK_MANAGEMENT + FEEDBACK_POST;
     public static final String URL_POST_COMMENT = SERVER + LOCAL_URL_POST_COMMENT;
     public static final String URL_GET_COMMENT_BY_TASK_ID = SERVER + LOCAL_URL_GET_COMMENT_BY_TASK_ID;
+    public static final String URL_DELETE_COMMENT_BY_AUTHOR_ID = SERVER + API + VERSION + COMMENT_MANAGEMENT +
+            COMMENT_DELETE + "-by-author/{id}";
 
 
 }
