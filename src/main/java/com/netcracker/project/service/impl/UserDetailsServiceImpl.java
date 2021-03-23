@@ -43,10 +43,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
 
     public void addUser(User user) {
-        Role role = entityService.getRoleByName("Пользователь");
-        if (role == null) {
-            throw new UsernameNotFoundException("DB fatal error. User Role not found!");
-        }
+        Role role = Role.USER;
 
         user.setUserImage(DEFAULT_AVATAR);
         user.dataExtension(role);
@@ -54,19 +51,14 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         restTemplate.postForLocation(URL_POST_USER, user);
     }
 
-    public void addWorkerOrResponsible(User user, String roleName, Long idRegion) {
-        Role role = entityService.getRoleByName(roleName);
-        if (role == null) {
-            throw new UsernameNotFoundException("DB fatal error. User Role not found!");
-        }
-
+    public void addWorkerOrResponsible(User user, Role role, Long idRegion) {
         Region region = entityService.getRegionById(idRegion);
         if (region == null) {
             throw new UsernameNotFoundException("DB fatal error. User Region not found!");
         }
 
         user.setUserImage(DEFAULT_AVATAR);
-        if (roleName.equals("Ответственный")) {
+        if (role.equals(Role.RESPONSIBLE)) {
             user.dataExtension(role, null);
 
             user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
@@ -103,10 +95,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public void deleteUser(User user) {
         severTies(user);
 
-        if (user.getRole().getName().equals("Соц. работник")) {
-            entityService.deleteActiveTask(user.getId(), URL_DELETE_ACTIVE_TASK_BY_WORKER_ID);
-        }
-
         Iterable<Task> tasks = entityService.getTasksByAuthorsEmail(user.getEmail());
         for (Task task : tasks) {
             task.setStatus(Status.CANCELED);
@@ -131,35 +119,26 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         );
     }
 
-    public Boolean isWorker(String roleName) {
-        return roleName.equals("Ответственный") || roleName.equals("Соц. работник");
+    public Boolean isWorker(Role role) {
+        return role.equals(Role.RESPONSIBLE) || role.equals(Role.SOCIAL_WORKER);
     }
 
     public void editUser(User user) {
-        Role role = entityService.getRoleByName("Пользователь");
-        if (role == null) {
-            throw new UsernameNotFoundException("DB fatal error. User Role not found!");
-        }
-
+        Role role = Role.USER;
         user.setRole(role);
         user.setRegion(null);
 
         restTemplate.postForLocation(URL_POST_USER, user);
     }
 
-    public void editWorkerOrResponsible(User user, String roleName, Long idRegion) {
-        Role role = entityService.getRoleByName(roleName);
-        if (role == null) {
-            throw new UsernameNotFoundException("DB fatal error. User Role not found!");
-        }
-
+    public void editWorkerOrResponsible(User user, Role role, Long idRegion) {
         Region region = entityService.getRegionById(idRegion);
         if (region == null) {
             throw new UsernameNotFoundException("DB fatal error. User Region not found!");
         }
 
         user.setRole(role);
-        if (roleName.equals("Ответственный")) {
+        if (role.equals(Role.RESPONSIBLE)) {
             user.setRegion(null);
             restTemplate.postForLocation(URL_POST_USER, user);
 
@@ -172,11 +151,13 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
 
     public void severTies(User user) {
-        if (user.getRole().getName().equals("Ответственный")) {
+        if (user.getRole().equals(Role.RESPONSIBLE)) {
             Region region = entityService.getRegionByResponsibleEmail(user.getEmail());
 
             region.setResponsible(null);
             entityService.putRegion(region);
+        } else if (user.getRole().equals(Role.SOCIAL_WORKER)) {
+            entityService.deleteActiveTask(user.getId(), URL_DELETE_ACTIVE_TASK_BY_WORKER_ID);
         }
     }
 

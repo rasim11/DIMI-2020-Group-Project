@@ -17,7 +17,7 @@
 <div class="tableMain">
     <div class="table-itemS2">
 
-        <form th:method="post" th:action="filter" >
+        <form th:method="post" th:action="filter">
             <ul id="sidebarMenu" class="nav flex-column bg-light" style="min-width: max-content">
                 <li class="nav-item">
                     <span style="font-size: larger">Фильтры</span>
@@ -32,25 +32,29 @@
                         <div class="card card-body" style="background: none;border: none">
                             <div class="my-3">
                                 <div class="form-check" onclick="atLeastOneChecked()">
-                                    <input id="inProgress" name="IN_CREATING"   th:checked="*{IN_CREATING}"   type="checkbox" class="form-check-input">
+                                    <input id="inProgress" name="IN_CREATING" th:checked="*{IN_CREATING}"
+                                           type="checkbox" class="form-check-input">
 
                                     <label class="form-check-label" for="inProgress" style="font-size: large">В
                                         обработке</label>
                                 </div>
                                 <div class="form-check" onclick="atLeastOneChecked()">
-                                    <input id="solved" name="IN_PROCESSING"  th:checked="*{IN_PROCESSING}"  type="checkbox" class="form-check-input">
+                                    <input id="solved" name="IN_PROCESSING" th:checked="*{IN_PROCESSING}"
+                                           type="checkbox" class="form-check-input">
 
                                     <label class="form-check-label" for="solved"
                                            style="font-size: large">Решаемые</label>
                                 </div>
                                 <div class="form-check" onclick="atLeastOneChecked()">
-                                    <input id="resolved" name="RESOLVED" th:checked="*{RESOLVED}" type="checkbox" class="form-check-input">
+                                    <input id="resolved" name="RESOLVED" th:checked="*{RESOLVED}" type="checkbox"
+                                           class="form-check-input">
 
                                     <label class="form-check-label" for="resolved"
                                            style="font-size: large">Решённые</label>
                                 </div>
                                 <div class="form-check" onclick="atLeastOneChecked()">
-                                    <input id="canceled" name="CANCELED" th:checked="*{CANCELED}"  type="checkbox" class="form-check-input">
+                                    <input id="canceled" name="CANCELED" th:checked="*{CANCELED}" type="checkbox"
+                                           class="form-check-input">
 
                                     <label class="form-check-label" for="canceled"
                                            style="font-size: large">Отменённые</label>
@@ -65,7 +69,7 @@
                                     </a>
                                     <br>
                                     <br>
-                                    <button class="btn btn-primary"  th:type="submit" > Применить</button>
+                                    <button class="btn btn-primary" th:type="submit"> Применить</button>
 
                                 </div>
 
@@ -89,9 +93,10 @@
     <div class="table-itemS">
         <div class="tableMain">
             <div class="table-item-rowS">
-                <form th:method="post" th:action="find"     >
-                    <input th:type="text" th:name="find" placeholder="Название проблемы" th:value="${find}" style="width: 80%;"  />
-                    <button class="btn btn-primary" th:type="submit"  >
+                <form th:method="post" th:action="find">
+                    <input th:type="text" th:name="find" placeholder="Название проблемы" th:value="${find}"
+                           style="width: 80%;"/>
+                    <button class="btn btn-primary" th:type="submit">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                              class="bi bi-search" viewBox="0 0 16 16">
                             <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
@@ -116,7 +121,8 @@
                                             <li th:text="${task.author.middlename}"></li>
                                             <li th:text="${task.regDate}"></li>
 
-                                            <li th:if="${task.getStatus() != null}" th:switch="${task.getStatus().ordinal()}" >
+                                            <li th:if="${task.getStatus() != null}"
+                                                th:switch="${task.getStatus().ordinal()}">
                                                 <span th:case=0>В обработке</span>
                                                 <span th:case=1>Решаемые</span>
                                                 <span th:case=2>Решённые</span>
@@ -131,7 +137,8 @@
                             <tr>
                                 <td class="task-td-text">
                                     <div class="taskText" th:text="${task.taskDescription}"></div>
-                                    <a th:href="'/api/v1/task-management/task-get-by-id/' + ${task.getId()}"
+                                    <a th:with="url=${T(com.netcracker.project.url.UrlTemplates).
+                                    LOCAL_URL_GET_TASK_BY_ID}" th:href="@{${url}(id=${task.getId()})}"
                                        class="task-text-button" id="height100"> читать</a>
                                 </td>
                             </tr>

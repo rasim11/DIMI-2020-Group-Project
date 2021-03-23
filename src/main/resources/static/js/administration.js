@@ -7,7 +7,7 @@ const divClassUser = "div-user";
 const divClassFilterActions = "div-filter-actions";
 const divClassUserAttribute = "div-user-attribute";
 const formClassUserActivity = "div-user-activity";
-const divIdMainContent = "div-main-content";
+const divContentId = "div-content";
 const divUsersId = "div-users";
 const divIdDataUsers = "div-data-users"
 const divIdListUsers = "div-list-users";
@@ -23,25 +23,32 @@ const inputIdSearchString = "input-search-string";
 const inputIdSearchEmail = "input-search-email";
 const inputIdSearchNames = "input-search-names";
 const spanIdCountUsers = "span-count-users";
+let divUserAtrMaxWidth = "";
 let users;
 let roles;
+let rolesNames = [];
 
 function loadDataUsers() {
     users = getAllObjectsFromRequest(URL_GET_ALL_USER);
     roles = getAllObjectsFromRequest(URL_GET_ALL_ROLES);
+
+    for (let i = 0; i < roles.length; i++) {
+        rolesNames[i] = getRoleName(roles[i]);
+    }
 
     addDataUsers();
     addDataFilters();
 }
 
 function addDataFilters() {
-    const divMainContent = document.getElementById(divIdMainContent);
+    const divContent = document.getElementById(divContentId);
 
     const divDataFilters = document.createElement("div");
     divDataFilters.id = divIdDataFilters;
     divDataFilters.style.display = "inline-block";
     divDataFilters.style.verticalAlign = "top";
-    divMainContent.appendChild(divDataFilters);
+    divDataFilters.style.marginLeft = "40px";
+    divContent.appendChild(divDataFilters);
 
     const spanFilters = document.createElement("span");
     spanFilters.className = "mb-2";
@@ -114,7 +121,7 @@ function addDataFilters() {
                     labelFilterElement.setAttribute("for", checkedBtnIdRole + j);
                     labelFilterElement.className = "form-check-label";
                     labelFilterElement.style.fontSize = "large";
-                    labelFilterElement.textContent = roles[j].name;
+                    labelFilterElement.textContent = rolesNames[j];
                     divFilterElement.appendChild(labelFilterElement);
                 }
                 break;
@@ -168,14 +175,14 @@ function addDataFilters() {
 }
 
 function addDataUsers() {
-    const divMainContent = document.getElementById(divIdMainContent);
+    const divContent = document.getElementById(divContentId);
 
     const divDataUsers = document.createElement("div");
     divDataUsers.id = divIdDataUsers;
+    divDataUsers.className = "form-data internal-cont";
     divDataUsers.style.display = "inline-block";
-    divDataUsers.style.marginRight = "80px";
     divDataUsers.style.minWidth = "450px";
-    divMainContent.appendChild(divDataUsers);
+    divContent.appendChild(divDataUsers);
 
     const blockTitle = document.createElement("h3");
     blockTitle.style.textAlign = "center";
@@ -229,7 +236,7 @@ function addDataUsers() {
             "<input id='" + inputIdSearchEmail + "' type='radio' name='searchCriterion' checked " +
             "style='vertical-align: middle'> Email |" :
             "<input id='" + inputIdSearchNames + "' type='radio' name='searchCriterion' " +
-            "style='vertical-align: middle'> ФИО";
+            "style='vertical-align: middle'> ФИ";
     }
 
     addListUsers();
@@ -272,11 +279,18 @@ function addListUsers() {
     for (let i = 0; i < users.length; i++) {
         const divUser = document.createElement("div");
         divUser.className = divClassUser + " pb-4";
+        divUser.style.display = "table";
+        divUser.style.width = "100%";
         divUsers.appendChild(divUser);
+
+        const divTableCell = document.createElement("div");
+        divTableCell.style.display = "table-cell";
+        divUser.appendChild(divTableCell);
 
         const aProfile = document.createElement("a");
         aProfile.href = LOCAL_URL_USER_PROFILE + "/" + users[i].id;
-        divUser.appendChild(aProfile);
+        aProfile.className = "pr-4";
+        divTableCell.appendChild(aProfile);
 
         const imgUserAvatar = document.createElement("img");
         imgUserAvatar.className = "img-users-list";
@@ -284,24 +298,25 @@ function addListUsers() {
         aProfile.appendChild(imgUserAvatar);
 
         const divUserAttribute = document.createElement("div");
-        divUserAttribute.className = divClassUserAttribute + " mr-4 ml-4";
+        divUserAttribute.className = divClassUserAttribute;
         divUserAttribute.style.display = "inline-block";
         divUserAttribute.style.verticalAlign = "middle";
-        divUser.appendChild(divUserAttribute);
+        divUserAttribute.style.overflow = "hidden";
+        divUserAttribute.style.maxWidth = divUserAtrMaxWidth;
+        divTableCell.appendChild(divUserAttribute);
 
         for (let j = 0; j < 4; j++) {
             const spanUserAttribute = document.createElement("span");
             spanUserAttribute.style.display = "block";
             switch (j) {
                 case 0:
-                    spanUserAttribute.textContent = "ФИО: " + users[i].lastname + " " + users[i].firstname + " " +
-                        users[i].middlename;
+                    spanUserAttribute.textContent = "ФИ: " + users[i].lastname + " " + users[i].firstname;
                     break;
                 case 1:
                     spanUserAttribute.textContent = "Email: " + users[i].email;
                     break;
                 case 2:
-                    spanUserAttribute.textContent = "Роль: " + users[i].role.name;
+                    spanUserAttribute.textContent = "Роль: " + getRoleName(users[i].role);
                     break;
                 case 3:
                     let regDate = new Date(users[i].regDate);
@@ -321,12 +336,12 @@ function addListUsers() {
         divUserAttribute.appendChild(hiddenRegDate);
 
         const formUserActivity = document.createElement("form");
-        formUserActivity.className = formClassUserActivity;
+        formUserActivity.className = formClassUserActivity + " pl-4";
         formUserActivity.action = LOCAL_URL_USER_ROLE_EDIT + "/" + users[i].id;
         formUserActivity.method = "get";
-        formUserActivity.style.display = "inline-block";
+        formUserActivity.style.width = "162px";
+        formUserActivity.style.display = "table-cell";
         formUserActivity.style.verticalAlign = "middle";
-        formUserActivity.style.float = "right";
         divUser.appendChild(formUserActivity);
 
         for (let j = 0; j < 2; j++) {
@@ -336,7 +351,7 @@ function addListUsers() {
 
             if (j === 0) {
                 btn.type = "submit";
-                btn.className = "btn btn-outline-primary mb-4";
+                btn.className = "btn btn-outline-primary mb-3";
                 btn.textContent = "Изменить роль";
             } else {
                 btn.type = "button";
@@ -588,4 +603,28 @@ function filtersApplyAll() {
 function removeListUsers() {
     document.getElementById(divIdListUsers).remove();
     addListUsers();
+}
+
+function setDivUserAtrWidth() {
+    const divMainContent = document.getElementById(divMainContentId);
+    const divDataFilters = document.getElementById(divIdDataFilters);
+    const divDataUsers = document.getElementById(divIdDataUsers);
+    const divAnyUser = document.querySelector("." + divClassUser);
+
+    let maxWidth = parseFloat(window.getComputedStyle(divMainContent, null).width) -
+        parseFloat(window.getComputedStyle(divDataFilters, null).width) -
+        parseFloat(window.getComputedStyle(divDataFilters, null).marginLeft) - 20;
+    divDataUsers.style.maxWidth = maxWidth + 10 + "px";
+
+    maxWidth -= parseFloat(window.getComputedStyle(divDataUsers, null).paddingLeft) * 2 +
+        parseFloat(window.getComputedStyle(divAnyUser.querySelector("img"), null).width) +
+        parseFloat(window.getComputedStyle(divAnyUser.querySelector("a"), null).paddingRight) +
+        parseFloat(window.getComputedStyle(divAnyUser.querySelector("." + formClassUserActivity),
+            null).width) + 8;
+    divUserAtrMaxWidth = maxWidth + "px";
+
+    const divUsersAtr = document.querySelectorAll("." + divClassUserAttribute);
+    for (let i = 0; i < divUsersAtr.length; i++) {
+        divUsersAtr[i].style.maxWidth = divUserAtrMaxWidth;
+    }
 }

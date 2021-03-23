@@ -7,9 +7,11 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <link href="/css/imgProfile.css" rel="stylesheet">
     <link href="/css/validation.css" rel="stylesheet">
+    <link href="/css/formData.css" rel="stylesheet">
     <script src="/js/urlTemplates.js"></script>
     <script src="/js/requests.js"></script>
     <script src=/js/validation.js></script>
+    <script src=/js/jointFunctions.js></script>
     <script src="/js/userRoleEdit.js"></script>
 </head>
 
@@ -17,28 +19,31 @@
 
 <header th:insert="blocks/header :: header"></header>
 
-<form id="form-user-role-edit" method="post" th:object="${user}" class="container pt-4 pb-4"
-      style="width: 480px; text-align: center;">
-    <h3>
-        Изменение роли
-    </h3>
-    <img th:src="${user.getUserImage()}" class="mb-4"/>
-    <h4 class="mb-4" th:text="${user.getLastname() + ' ' + user.getFirstname() + ' ' + user.getMiddlename()}"/>
-    <input type="text" class="form-control mb-2" th:value="${user.getEmail()}" readonly>
-    <input type="text" class="form-control mb-2" id="input-phone-number" th:value="${user.getPhoneNumber()}" readonly>
-    <input type="hidden" id="input-cur-role-name" th:value="${user.getRole().getName()}">
-    <input type="hidden" id="input-user-id" th:value="${user.getId()}">
-    <input type="hidden" id="input-region-id" th:if="${user.getRegion()} != null"
-           th:value="${user.getRegion().getId()}">
-    <div id="div-btn-actions" class="mt-4">
-        <button type="submit" class="btn btn-primary mr-2" disabled>
-            Изменить
-        </button>
-        <button type="button" class="btn btn-danger" disabled onclick="resetBtn()">
-            Сбросить
-        </button>
-    </div>
-</form>
+<div class="external-cont">
+    <form id="form-user-role-edit" method="post" th:object="${user}" class="form-data"
+          style="width: 600px; text-align: center;">
+        <h3>
+            Изменение роли
+        </h3>
+        <img th:src="${user.getUserImage()}" class="mb-4"/>
+        <h4 class="mb-4" th:text="${user.getLastname() + ' ' + user.getFirstname() + ' ' + user.getMiddlename()}"/>
+        <input type="text" class="form-control mb-2" th:value="${user.getEmail()}" readonly>
+        <input type="text" class="form-control mb-2" id="input-phone-number" th:value="${user.getPhoneNumber()}"
+               readonly>
+        <input type="hidden" id="input-cur-role-name" th:value="${user.getRole()}">
+        <input type="hidden" id="input-user-id" th:value="${user.getId()}">
+        <input type="hidden" id="input-region-id" th:if="${user.getRegion()} != null"
+               th:value="${user.getRegion().getId()}">
+        <div id="div-btn-actions" class="mt-4">
+            <button type="submit" class="btn btn-primary mr-2" disabled>
+                Изменить
+            </button>
+            <button type="button" class="btn btn-danger" disabled onclick="resetBtn()">
+                Сбросить
+            </button>
+        </div>
+    </form>
+</div>
 
 <footer th:insert="blocks/footer :: footer"></footer>
 

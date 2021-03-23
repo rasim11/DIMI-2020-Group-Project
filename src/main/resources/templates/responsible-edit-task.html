@@ -2,12 +2,13 @@
 <html xmlns:th="http://www.thymeleaf.org/" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
     <meta charset="UTF-8">
-    <title>TF|Редакитрование проблемы</title>
+    <title>TF|Редакитрование проблемы ответственным</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <link href="/css/administration.css" rel="stylesheet">
     <link href="/css/validation.css" rel="stylesheet">
     <link href="/css/searchString.css" rel="stylesheet">
+    <link href="/css/formData.css" rel="stylesheet">
     <script src=/js/validation.js></script>
     <script src=/js/jointFunctions.js></script>
     <script src="/js/responsibleEditTask.js"></script>
@@ -16,14 +17,15 @@
 
 <header th:insert="blocks/header :: header"></header>
 
-<div class="container mb-4 mt-4" style="min-width: max-content;">
-    <form th:object="${task}" method="post" onsubmit="return isValid()">
+<div class="external-cont">
+    <form class="form-data" th:object="${task}" method="post" onsubmit="return isValid()"
+          style="width: 800px;">
         <div class="mb-4">
             <h3 style="text-align: center">
                 Редакитрование проблемы
             </h3>
             <input type="text" class="form-control mb-2" th:value="${task.getTaskName()}" readonly>
-            <textarea class="form-control mb-2" th:text="${task.getTaskDescription()}" readonly/>
+            <textarea class="form-control mb-2" th:text="${task.getTaskDescription()}" readonly style="height: 200px"/>
             <select name="status" class="form-control mb-2" onchange="isNoDuplicate(this.name)">
                 <option value="" disabled>Статус</option>
                 <option th:value="${task.getStatus()}" th:text="${task.getStatus().getName()}" selected/>
@@ -48,8 +50,6 @@
             <h4 class="mb-2" style="text-align: center">
                 Назначение сотрудников
             </h4>
-
-
             <div>
                 <div class="search-string">
                     <input id="input-search-string" type="text" class="form-control"
@@ -72,18 +72,18 @@
                     </label>
                 </div>
             </div>
-
-
             <div id="div-users" style="overflow: auto;">
-                <span id="span-designated-users"
+                <span id="span-designated-users" style="text-align: center;display: block;"
                       th:text="'Назначено сотрудников: ' + ${task.getSocialWorkers().size()} "/>
                 <hr>
-                <div id="div-designated-users">
+                <div id="div-designated-users" class="mb-4">
                     <div class="div-designated-user pb-4" th:id="'div-user-data'+${iter.index}"
-                         th:each="socialWorker, iter : ${task.getSocialWorkers()}" style="display: table;width: 100%">
+                         th:each="socialWorker, iter : ${task.getSocialWorkers()}"
+                         style="display: table;width: 100%">
                         <input type="hidden" name="email" th:value="${socialWorker.getEmail()}">
                         <div style="display: table-cell">
-                            <a th:href="'/api/v1/user-management/user-get-by-id/'+${socialWorker.getId()}">
+                            <a th:with="url=${T(com.netcracker.project.url.UrlTemplates).LOCAL_URL_USER_PROFILE}"
+                               th:href="@{${url}(id=${socialWorker.getId()})}">
                                 <img class="img-users-list" th:src="${socialWorker.getUserImage()}">
                             </a>
                             <div class="mr-4 ml-4" style="display: inline-block; vertical-align: middle;">
@@ -113,8 +113,8 @@
                         </div>
                     </div>
                 </div>
-                <hr>
-                <span id="span-unassigned-users" th:text="'Не назначено сотрудников: ' + ${socialWorkers.size()} "/>
+                <span id="span-unassigned-users" style="text-align: center;display: block;"
+                      th:text="'Не назначено сотрудников: ' + ${socialWorkers.size()} "/>
                 <hr class="mb-4">
                 <div id="div-unassigned-users">
                     <div class="div-unassigned-user pb-4"
@@ -122,7 +122,8 @@
                          th:each="socialWorker, iter : ${socialWorkers}" style="display: table;width: 100%">
                         <input type="hidden" th:value="${socialWorker.getEmail()}">
                         <div style="display: table-cell">
-                            <a th:href="'/api/v1/user-management/user-get-by-id/'+${socialWorker.getId()}">
+                            <a th:with="url=${T(com.netcracker.project.url.UrlTemplates).LOCAL_URL_USER_PROFILE}"
+                               th:href="@{${url}(id=${socialWorker.getId()})}">
                                 <img class="img-users-list" th:src="${socialWorker.getUserImage()}">
                             </a>
                             <div class="mr-4 ml-4" style="display: inline-block; vertical-align: middle;">
@@ -161,7 +162,6 @@
         </div>
     </form>
 </div>
-
 <footer th:insert="blocks/footer :: footer"></footer>
 
 </body>

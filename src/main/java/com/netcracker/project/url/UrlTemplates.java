@@ -20,10 +20,8 @@ public final class UrlTemplates {
     public static final String TASK_GET = "/task-get";
     public static final String TASK_POST = "/task-post";
     public static final String ROLE_MANAGEMENT = "/role-management";
-    public static final String ROLE_GET = "/role-get";
     public static final String BY_ID = "-by-id";
     public static final String BY_EMAIL = "-by-email";
-    public static final String BY_NAME = "-by-name";
     public static final String COMMENT_GET = "/comment-get";
     public static final String SERVER = "http://localhost:8082";
     public static final String USER_POST = "/user-post";
@@ -78,7 +76,6 @@ public final class UrlTemplates {
     public static final String LOCAL_URL_RESPONSIBLE_PUT_TASK = API + VERSION + TASK_MANAGEMENT +
             TASK_PUT + BY_ID + "-by-responsible/{id}";
 
-    public static final String URL_GET_ALL_ROLES = SERVER + LOCAL_URL_GET_ALL_ROLES;
     public static final String URL_GET_ALL_REGIONS = SERVER + LOCAL_URL_GET_ALL_REGIONS;
     public static final String URL_GET_ALL_USERS = SERVER + LOCAL_URL_GET_ALL_USERS;
     public static final String URL_POST_USER = SERVER + API + VERSION + USER_MANAGEMENT + USER_POST;
@@ -87,8 +84,6 @@ public final class UrlTemplates {
             USER_GET + BY_EMAIL + "/{email}";
     public static final String URL_GET_USER_BY_ID = SERVER + API + VERSION + USER_MANAGEMENT +
             USER_GET + BY_ID + "/{id}";
-    public static final String URL_GET_ROLE_BY_NAME = SERVER + API + VERSION + ROLE_MANAGEMENT + ROLE_GET +
-            BY_NAME + "/{name}";
     public static final String URL_POST_TASK = SERVER + API + VERSION + TASK_MANAGEMENT + TASK_POST;
     public static final String URL_GET_TASK_BY_ID = SERVER + LOCAL_URL_GET_TASK_BY_ID;
     public static final String URL_GET_REGION_BY_ID = SERVER + API + VERSION +

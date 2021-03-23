@@ -7,6 +7,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <link href="/css/password.css" rel="stylesheet">
     <link href="/css/validation.css" rel="stylesheet">
+    <link href="/css/formData.css" rel="stylesheet">
     <script src="/js/urlTemplates.js"></script>
     <script src="/js/requests.js"></script>
     <script src=/js/password.js></script>
@@ -18,7 +19,8 @@
 
 <header th:insert="blocks/header :: header"></header>
 
-<form id="form-reg" class="container pt-4 pb-4" method="post" th:object="${userForm}" style="width: 480px; text-align: center;">
+<form id="form-reg" class="form-data" method="post" th:object="${userForm}"
+      style="width: 600px; margin: auto; text-align: center;">
     <h3>
         Регистрационная информация
     </h3>
@@ -38,10 +40,10 @@
     <input type="text" class="form-control input-ctrl mb-2" placeholder="Номер телефона" name="phoneNumber"
            style="width: 100%" oninput="checkInvalidFormat(this, /^(8|\+7)\d{10}$/)"
            th:value="${userForm.getPhoneNumber()}">
-    <select name="role.name" id="select-roles" class="form-control mb-2" onchange="roleChecked(this)">
+    <select name="role" id="select-roles" class="form-control mb-2" onchange="roleChecked(this)">
         <option value="" disabled selected>Роль</option>
         <div th:each="role : ${roles}">
-            <option th:value="${role.getName()}" th:text="${role.getName()}"/>
+            <option th:value="${role}" th:text="${role.getName()}"/>
         </div>
     </select>
     <div class="pas mb-2" style="width: 100%">

@@ -1,3 +1,7 @@
+const divMainContentId = "div-main-content";
+const mainBlockId = "main-block";
+
+
 function filterSearchStringActive(inputSearchString, divUsersId, inputIdSearchNames, spanIdCountUsers,
                                   displayType) {
     if (!inputSearchString.value) {
@@ -50,4 +54,58 @@ function calculateUsersCountSearchString(divUsersId, spanIdCountUsers, displayTy
     let newCount = spanCountUsers.innerText.split(" ");
     newCount[newCount.length - 1] = (usersCount).toString();
     spanCountUsers.textContent = newCount.join(" ");
+}
+
+function setMainContentWidth() {
+    const mainBlock = document.getElementById(mainBlockId);
+    const divMainContent = document.getElementById(divMainContentId);
+    const navPanel = mainBlock.querySelector("nav");
+
+    divMainContent.style.width = parseFloat(window.getComputedStyle(mainBlock, null).width) -
+        parseFloat(window.getComputedStyle(mainBlock, null).paddingLeft) * 2 - 5 -
+        parseFloat(window.getComputedStyle(navPanel, null).width) + "px";
+}
+
+function compress(inputImgSrc) {
+    let width = inputImgSrc.naturalWidth;
+    let height = inputImgSrc.naturalHeight;
+    const maxWidth = 640;
+    const maxHeight = 480;
+
+    if (width > height) {
+        if (width > maxWidth) {
+            height = Math.round((height *= maxWidth / width));
+            width = maxWidth;
+        }
+    } else {
+        if (height > maxHeight) {
+            width = Math.round((width *= maxHeight / height));
+            height = maxHeight;
+        }
+    }
+
+    let resImg = new Image();
+    let cvs = document.createElement("canvas");
+
+    cvs.width = width;
+    cvs.height = height;
+
+    const ctx = cvs.getContext("2d");
+    ctx.drawImage(inputImgSrc, 0, 0, width, height);
+
+    resImg.src = cvs.toDataURL("image/jpeg", 1.0);
+    return resImg;
+}
+
+function getRoleName(role) {
+    switch (role) {
+        case "USER":
+            return "Пользователь";
+        case "SOCIAL_WORKER":
+            return "Соц. работник";
+        case "RESPONSIBLE":
+            return "Ответственный";
+        default:
+            return "Ошибка";
+    }
 }

@@ -1,22 +1,27 @@
 const selectIdRoles = "select-roles";
 const selectIdRegions = "select-regions";
 
-let roles = [];
-let regions = [];
+let roles;
+let regions;
+let rolesNames = [];
 let targetUserId;
-let targetUserRoleName;
+let targetUserRole;
 let targetUserRegionId;
 
 function loadFormUserRoleEdit() {
     roles = getAllObjectsFromRequest(URL_GET_ALL_ROLES);
     regions = getAllObjectsFromRequest(URL_GET_ALL_REGIONS);
 
+    for (let i = 0; i < roles.length; i++) {
+        rolesNames[i] = getRoleName(roles[i]);
+    }
+
     let elem = document.getElementById("input-user-id");
     targetUserId = elem.value;
     elem.remove();
 
     elem = document.getElementById("input-cur-role-name");
-    targetUserRoleName = elem.value;
+    targetUserRole = elem.value;
     elem.remove();
 
     elem = document.getElementById("input-region-id");
@@ -51,7 +56,7 @@ function addRolesSelect() {
 
     const selectRoles = document.createElement("select");
     selectRoles.id = selectIdRoles;
-    selectRoles.name = "role.name";
+    selectRoles.name = "role";
     selectRoles.className = "form-control mb-2";
     selectRoles.addEventListener("change", roleChecked.bind(null, selectRoles, false));
     selectRoles.addEventListener("change", isNoDuplicate);
@@ -65,11 +70,11 @@ function addRolesSelect() {
 
     for (let i = 0; i < roles.length; i++) {
         const optionRole = document.createElement("option");
-        optionRole.value = roles[i].name;
-        optionRole.textContent = optionRole.value;
+        optionRole.value = roles[i];
+        optionRole.textContent = rolesNames[i];
         selectRoles.appendChild(optionRole);
 
-        if (optionRole.value === targetUserRoleName) {
+        if (optionRole.value === targetUserRole) {
             optionRole.selected = true;
         }
     }
@@ -83,7 +88,7 @@ function roleChecked(selectRoles, isFirstLoad) {
         selectRegion.remove();
     }
 
-    if (selectRoles.value !== "Пользователь") {
+    if (selectRoles.value !== "USER") {
         const selectRegion = document.createElement("select");
         selectRegion.className = "form-control mb-2";
         selectRegion.id = selectIdRegions;
@@ -96,7 +101,7 @@ function roleChecked(selectRoles, isFirstLoad) {
 
         const selectTitle = document.createElement("option");
         selectTitle.value = "";
-        selectTitle.textContent = selectRoles.value === "Соц. работник" ? "Регион | Ответственный" : "Регион";
+        selectTitle.textContent = selectRoles.value === "SOCIAL_WORKER" ? "Регион | Ответственный" : "Регион";
         selectTitle.selected = true;
         selectTitle.disabled = true;
         selectRegion.appendChild(selectTitle);
@@ -104,7 +109,7 @@ function roleChecked(selectRoles, isFirstLoad) {
         for (let i = 0; i < regions.length; i++) {
             const regionName = document.createElement("option");
 
-            if (selectRoles.value === "Соц. работник") {
+            if (selectRoles.value === "SOCIAL_WORKER") {
                 if (regions[i].id.toString() === targetUserRegionId && isFirstLoad) {
                     selectTitle.selected = false;
                     regionName.selected = true;
@@ -137,13 +142,13 @@ function isNoDuplicate() {
     const selectRegion = document.getElementById(selectIdRegions);
 
     if (!selectRegion) {
-        if (selectRoles.value === targetUserRoleName) {
+        if (selectRoles.value === targetUserRole) {
             setBtnActionsStates(true);
         } else {
             setBtnActionsStates(false);
         }
     } else {
-        if (selectRoles.value === targetUserRoleName && selectRegion.value === targetUserRegionId) {
+        if (selectRoles.value === targetUserRole && selectRegion.value === targetUserRegionId) {
             setBtnActionsStates(true);
         } else {
             setBtnActionsStates(false);

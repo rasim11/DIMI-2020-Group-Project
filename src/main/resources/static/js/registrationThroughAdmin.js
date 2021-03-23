@@ -26,7 +26,7 @@ function roleChecked(selectRoles) {
         selectRegion.remove();
     }
 
-    if (selectRoles.value !== "Пользователь") {
+    if (selectRoles.value !== "USER") {
         const selectRegion = document.createElement("select");
         selectRegion.className = "form-control mb-2";
         selectRegion.id = selectIdRegions;
@@ -38,19 +38,19 @@ function roleChecked(selectRoles) {
 
         const selectTitle = document.createElement("option");
         selectTitle.value = "";
-        selectTitle.textContent = selectRoles.value === "Соц. работник" ? "Регион | Ответственный" : "Регион";
+        selectTitle.textContent = selectRoles.value === "SOCIAL_WORKER" ? "Регион | Ответственный" : "Регион";
         selectTitle.disabled = true;
         selectTitle.selected = true;
         selectRegion.appendChild(selectTitle);
 
         for (let i = 0; i < regions.length; i++) {
-            if (selectRoles.value !== "Соц. работник" && regions[i].responsible) {
+            if (selectRoles.value !== "SOCIAL_WORKER" && regions[i].responsible) {
                 continue;
             }
 
             const regionName = document.createElement("option");
 
-            if (selectRoles.value === "Соц. работник") {
+            if (selectRoles.value === "SOCIAL_WORKER") {
                 regionName.textContent = regions[i].responsible ? regions[i].regionName + " | " +
                     regions[i].responsible.lastname + " " +
                     regions[i].responsible.firstname + " " +

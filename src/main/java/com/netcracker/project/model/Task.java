@@ -17,7 +17,7 @@ public class Task {
     private String taskDescription;
     private String taskLocation;
     private Priority priority;
-    private boolean commentAllow;
+    private Boolean commentAllow;
     private String taskImage;
     private User author;
     private Region region;
@@ -31,13 +31,28 @@ public class Task {
         LocalDateTime now = LocalDateTime.now();
         this.regDate = dtf.format(now);
         this.author = author;
-        this.author.setTasksCount(this.author.getTasksCount() + 1);
         this.status = Status.IN_CREATING;
+    }
+
+    public void dataExtension(Task task) {
+        this.taskName = task.taskName;
+        this.taskDescription = task.taskDescription;
+        this.taskLocation = task.taskLocation;
+        this.taskImage = task.taskImage;
     }
 
     public void dataExtension(Status status, Priority priority) {
         this.status = status;
         this.priority = priority;
         this.completeDate = status.equals(Status.RESOLVED) ? LocalDateTime.now() : null;
+    }
+
+    public void trim() {
+        this.taskName = this.taskName.trim();
+        this.taskDescription = this.taskDescription.trim();
+    }
+
+    public String dateToString(LocalDateTime localDateTime) {
+        return localDateTime.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"));
     }
 }

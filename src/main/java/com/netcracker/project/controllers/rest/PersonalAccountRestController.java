@@ -1,9 +1,6 @@
 package com.netcracker.project.controllers.rest;
 
-import com.netcracker.project.model.Region;
-import com.netcracker.project.model.Task;
 import com.netcracker.project.model.User;
-import com.netcracker.project.service.EntityService;
 import com.netcracker.project.service.SecurityService;
 import com.netcracker.project.service.impl.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;

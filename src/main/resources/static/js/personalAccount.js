@@ -119,7 +119,10 @@ function addDataUser(btnId) {
     const formDataUser = document.createElement("form");
     formDataUser.method = "get";
     formDataUser.action = LOCAL_URL_PERSONAL_ACCOUNT;
-    formDataUser.className = formClassUpdate;
+    formDataUser.className = formClassUpdate + " form-data";
+    formDataUser.style.width = "450px";
+    formDataUser.style.margin = "auto";
+    formDataUser.style.textAlign = "center";
     formDataUser.addEventListener("submit", function (e) {
         e.preventDefault();
         switch (isValid(formDataUser)) {
@@ -137,9 +140,6 @@ function addDataUser(btnId) {
     divMainContent.appendChild(formDataUser);
 
     const divDataVar = document.createElement("div");
-    divDataVar.className = "mb-4";
-    divDataVar.style.width = "450px";
-    divDataVar.style.textAlign = "center";
     formDataUser.appendChild(divDataVar);
 
     const blockTitle = document.createElement("h3");
@@ -297,6 +297,8 @@ function addDataProblems() {
 
     const divDataProblems = document.createElement("div");
     divDataProblems.style.width = "450px";
+    divDataProblems.className = "form-data";
+    divDataProblems.style.margin = "auto";
     divDataProblems.id = divIdDataProblems;
     divMainContent.appendChild(divDataProblems);
 
@@ -313,8 +315,9 @@ function addDataAccount() {
     formDataAccount.style.textAlign = "center";
     formDataAccount.method = "post";
     formDataAccount.action = "/logout";
-    formDataAccount.className = "mb-4";
     formDataAccount.style.width = "450px";
+    formDataAccount.className = "form-data";
+    formDataAccount.style.margin = "auto";
     formDataAccount.addEventListener("submit", function (e) {
         e.preventDefault();
 
@@ -348,13 +351,20 @@ function addDataResponsible() {
     const divMainContent = document.getElementById(divIdMainContent);
 
     const divDataResponsible = document.createElement("div");
-    divDataResponsible.style.width = "450px";
+    divDataResponsible.id = divIdDataResponsible;
+    divDataResponsible.style.width = "600px";
     divDataResponsible.style.textAlign = "center";
+    divDataResponsible.className = "form-data";
+    divDataResponsible.style.margin = "auto";
     divMainContent.appendChild(divDataResponsible);
+
+    const divInternalCont = document.createElement("div");
+    divInternalCont.className = "internal-cont";
+    divDataResponsible.appendChild(divInternalCont);
 
     const blockTitle = document.createElement("h3");
     blockTitle.innerText = document.getElementById(btnIdDataResponsible).innerText;
-    divDataResponsible.appendChild(blockTitle);
+    divInternalCont.appendChild(blockTitle);
 
     if (curUserJson.region.responsible === null) {
         blockTitle.innerText += " не назначен";
@@ -364,14 +374,14 @@ function addDataResponsible() {
     let imgResponsibleAvatar = document.createElement("img");
     imgResponsibleAvatar.src = curUserJson.region.responsible.userImage;
     imgResponsibleAvatar.className = "mb-4";
-    divDataResponsible.appendChild(imgResponsibleAvatar);
+    divInternalCont.appendChild(imgResponsibleAvatar);
 
     const responsibleNames = document.createElement("h4");
     responsibleNames.className = "mb-4";
     responsibleNames.innerText = curUserJson.region.responsible.lastname + " " +
         curUserJson.region.responsible.firstname + " " +
         curUserJson.region.responsible.middlename;
-    divDataResponsible.appendChild(responsibleNames);
+    divInternalCont.appendChild(responsibleNames);
 
     for (let i = 0; i < 6; i++) {
         const pUserAtr = document.createElement("p");
@@ -400,11 +410,11 @@ function addDataResponsible() {
 
                 const aProblemsActual = document.createElement("a");
                 aProblemsActual.href = "#";
-                divDataResponsible.appendChild(aProblemsActual);
+                divInternalCont.appendChild(aProblemsActual);
                 aProblemsActual.appendChild(pUserAtr);
                 continue;
         }
-        divDataResponsible.appendChild(pUserAtr);
+        divInternalCont.appendChild(pUserAtr);
     }
 }
 
@@ -510,13 +520,8 @@ function addChangeSucMsg() {
     const formDataUser = document.querySelector('.' + formClassUpdate);
     const formDataAccount = document.getElementById(formIdDataAccount);
 
-    const divChangeSucMsg = document.createElement("div");
-    divChangeSucMsg.className = "mb-4";
-    divChangeSucMsg.style.width = "450px";
-
-    const textChangeSucMsg = document.createElement("h3");
+    const textChangeSucMsg = document.createElement("h4");
     textChangeSucMsg.style.textAlign = "center";
-    textChangeSucMsg.className = "text-success";
 
     let targetForm;
     if (formDataUser) {
@@ -529,8 +534,7 @@ function addChangeSucMsg() {
     }
     targetForm.innerHTML = "";
 
-    targetForm.appendChild(divChangeSucMsg);
-    divChangeSucMsg.appendChild(textChangeSucMsg);
+    targetForm.appendChild(textChangeSucMsg);
 }
 
 function btnResetClick() {
@@ -579,6 +583,7 @@ function addDialogWindow(btn) {
 
     const buttonWindowClose = document.createElement("button");
     buttonWindowClose.className = "close-custom";
+    buttonWindowClose.style.outline = "none";
     buttonWindowClose.title = "Закрыть";
     buttonWindowClose.innerText = "X";
     buttonWindowClose.addEventListener("click", function () {
@@ -649,37 +654,6 @@ function hideAvatarMenu(e) {
         && mainDiv.has(e.target).length === 0) {
         div.hide();
     }
-}
-
-function compress(inputImgSrc) {
-    let width = inputImgSrc.naturalWidth;
-    let height = inputImgSrc.naturalHeight;
-    const maxWidth = 800;
-    const maxHeight = 600;
-
-    if (width > height) {
-        if (width > maxWidth) {
-            height = Math.round((height *= maxWidth / width));
-            width = maxWidth;
-        }
-    } else {
-        if (height > maxHeight) {
-            width = Math.round((width *= maxHeight / height));
-            height = maxHeight;
-        }
-    }
-
-    let resImg = new Image();
-    let cvs = document.createElement("canvas");
-
-    cvs.width = width;
-    cvs.height = height;
-
-    const ctx = cvs.getContext("2d");
-    ctx.drawImage(inputImgSrc, 0, 0, width, height);
-
-    resImg.src = cvs.toDataURL("image/jpeg", 1.0);
-    return resImg;
 }
 
 function isNoDuplicateAvatar() {

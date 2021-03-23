@@ -2,7 +2,6 @@ package com.netcracker.project.controllers;
 
 import com.netcracker.project.model.Role;
 import com.netcracker.project.model.User;
-import com.netcracker.project.service.EntityService;
 import com.netcracker.project.service.impl.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -12,14 +11,16 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import static com.netcracker.project.url.UrlTemplates.*;
 
 @Controller
 public class AdminController {
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
-    @Autowired
-    private EntityService entityService;
 
     @GetMapping(LOCAL_URL_ADMINISTRATION)
     public String administrationGet(Model model) {
@@ -28,7 +29,8 @@ public class AdminController {
 
     @GetMapping(LOCAL_URL_USER_REGISTRATION_ADMIN)
     public String registrationThroughAdminGet(Model model) {
-        Iterable<Role> roles = entityService.getAllRoles();
+        List<Role> roles = Arrays.stream(Role.values()).collect(Collectors.toList());
+        roles.remove(Role.ADMIN);
 
         model.addAttribute("roles", roles);
         model.addAttribute("userForm", new User());
@@ -37,12 +39,12 @@ public class AdminController {
 
     @PostMapping(LOCAL_URL_USER_REGISTRATION_ADMIN)
     public String registrationThroughAdminPost(@ModelAttribute("userForm") User userForm) {
-        String curRoleName = userForm.getRole().getName();
+        Role curRole = userForm.getRole();
 
-        if (curRoleName.equals("Пользователь")) {
+        if (curRole.equals(Role.USER)) {
             userDetailsService.addUser(userForm);
         } else {
-            userDetailsService.addWorkerOrResponsible(userForm, curRoleName, userForm.getRegion().getId());
+            userDetailsService.addWorkerOrResponsible(userForm, curRole, userForm.getRegion().getId());
         }
 
         return REDIRECT_ON_ADMINISTRATION;
@@ -62,19 +64,19 @@ public class AdminController {
     @PostMapping(LOCAL_URL_USER_ROLE_EDIT)
     public String userEditPost(@PathVariable Long id, @ModelAttribute("user") User userForm) {
         User user = userDetailsService.getUserById(id);
-        String newRoleName = userForm.getRole().getName();
-        String curRoleName = user.getRole().getName();
+        Role newRole = userForm.getRole();
+        Role curRole = user.getRole();
 
         userDetailsService.severTies(user);
 
-        if (!userDetailsService.isWorker(curRoleName).equals(userDetailsService.isWorker(newRoleName))) {
+        if (!userDetailsService.isWorker(curRole).equals(userDetailsService.isWorker(newRole))) {
             user.setTasksCount(0L);
         }
 
-        if (newRoleName.equals("Пользователь")) {
+        if (newRole.equals(Role.USER)) {
             userDetailsService.editUser(user);
         } else {
-            userDetailsService.editWorkerOrResponsible(user, newRoleName, userForm.getRegion().getId());
+            userDetailsService.editWorkerOrResponsible(user, newRole, userForm.getRegion().getId());
         }
 
         return REDIRECT_ON_ADMINISTRATION;

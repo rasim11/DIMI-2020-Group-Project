@@ -42,7 +42,7 @@ function isRoleChecked() {
         return false;
     }
 
-    if (selectRoles.value !== "Пользователь") {
+    if (selectRoles.value !== "USER") {
         const selectRegion = document.getElementById(selectIdRegions);
         if (!selectRegion.value) {
             setInvalidFormat(selectRegion, "Регион не выбран");

@@ -1,46 +1,27 @@
-.body{
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 10px 0px 10px 0px;
+.del-img {
+    padding: 0;
+    background: #606061;
+    color: #FFFFFF;
+    line-height: 25px;
+    position: absolute;
+    right: -3px;
+    text-align: center;
+    top: -5px;
+    width: 24px;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 12px;
+    box-shadow: 1px 1px 3px #000;
+    border: 0;
 }
-.task_form{
 
-  width:800px;
-  padding: 32px;
-  border-radius: 5px;
-  border: 1px solid darkgray;
-  /*box-shadow: 0 4px 16px #ccc;*/
-  font-family:sans-serif;
-  letter-spacing: 1px;
-  outline:none;
+.comment-author-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 100%;
+    vertical-align: top;
 }
-.header{
-  padding-bottom: 10px;
-}
-.btn-link{
-  padding: 0;
-  text-decoration: none;
-}
-.bi-paperclip{
-  vertical-align: middle;
-}
-#taskImage{
-  border-radius: 15px;
-  padding-bottom: 5px;
-}
-.red{
- color: #ff0000;
-}
-.error{
-  border-color: red;
-}
-small{
-  color: #ff0000;
-}
-.comment-author-img{
-  width:40px;
-  height:40px;
-  border-radius:100%;
-  vertical-align: top;
+
+.task-attr {
+    display: block;
 }

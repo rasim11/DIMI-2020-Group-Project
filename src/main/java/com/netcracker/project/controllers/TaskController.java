@@ -9,9 +9,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.*;
 import java.util.function.Predicate;
 
@@ -30,56 +28,79 @@ public class TaskController {
     @GetMapping(LOCAL_URL_POST_TASK)
     public String getAddTaskForm(Model model) {
         model.addAttribute("taskForm", new Task());
-        return "taskAddForm";
+        return "task-add";
     }
 
     @PostMapping(LOCAL_URL_POST_TASK)
-    public String addNewTask(@ModelAttribute("task") Task task,
-                             @RequestParam("image") MultipartFile file) throws IOException {
-        if (!file.isEmpty()) {
-            task.setTaskImage(Base64.getEncoder().encodeToString(file.getBytes()));
-        }
+    public String addNewTask(@ModelAttribute("taskForm") Task taskForm) {
         User user = securityService.getCurrentUser();
-        entityService.postTask(user, task);
+        user.setTasksCount(user.getTasksCount() + 1);
+        userDetailsService.putUser(user);
+
+        entityService.postTask(user, taskForm);
+        securityService.autoLogin(user.getEmail(), user.getPasswordConfirm());
+
         return REDIRECT_ON_MAIN_PAGE;
     }
 
     @GetMapping(LOCAL_URL_GET_TASK_BY_ID)
     public String getTask(@PathVariable Long id, Model model) {
         Task task = entityService.getTaskById(id);
+        String[] taskImages = task.getTaskImage().length() != 0 ? task.getTaskImage().split(" ") : null;
+
         model.addAttribute("task", task);
+        model.addAttribute("taskImages", taskImages);
 
         if (securityService.isAuthenticated()) {
             model.addAttribute("commentPermission", true);
 
             if (task.getStatus().equals(Status.CANCELED)) {
-                return "specificTask";
+                return "specific-task";
             }
 
             User curUser = securityService.getCurrentUser();
             Region curRegion = entityService.getRegionByResponsibleEmail(curUser.getEmail());
-            Predicate<String> userRole = str -> str.equals("Пользователь") || str.equals("Соц. работник");
+            Predicate<Role> userRole = x -> x.equals(Role.USER) || x.equals(Role.SOCIAL_WORKER);
             Predicate<Status> taskStatus = x -> x.equals(Status.RESOLVED);
 
-            if (userRole.test(curUser.getRole().getName())) {
+            if (userRole.test(curUser.getRole())) {
                 User author = task.getAuthor();
                 if (author.getEmail().equals(curUser.getEmail())) {
                     String param = taskStatus.test(task.getStatus()) ? "isFeedback" : "isEditAuthor";
                     model.addAttribute(param, true);
                 }
-            } else if (curUser.getRole().getName().equals("Ответственный") && !taskStatus.test(task.getStatus()) &&
+            } else if (curUser.getRole().equals(Role.RESPONSIBLE) && !taskStatus.test(task.getStatus()) &&
                     task.getRegion().getRegionName().equals(curRegion.getRegionName())) {
                 model.addAttribute("isEditResponsible", true);
             }
+        } else {
+            model.addAttribute("commentForbidden",
+                    "Комментировать может только зарегистрированный пользователь!");
         }
 
-        return "specificTask";
+        return "specific-task";
     }
 
     @GetMapping(LOCAL_URL_AUTHOR_PUT_TASK)
-    public String updateTask(@PathVariable Long id, Model model) {
-        model.addAttribute("task", entityService.getTaskById(id));
-        return "taskEditForm";
+    public String updateTaskGet(@PathVariable Long id, Model model) {
+        Task task = entityService.getTaskById(id);
+        String[] taskImages = task.getTaskImage().length() != 0 ? task.getTaskImage().split(" ") : null;
+
+        model.addAttribute("taskForm", task);
+        model.addAttribute("taskImages", taskImages);
+
+        return "author-edit-task";
+    }
+
+    @PostMapping(LOCAL_URL_AUTHOR_PUT_TASK)
+    public String updateTaskPost(@PathVariable Long id, @ModelAttribute("taskForm") Task taskForm) {
+        Task task = entityService.getTaskById(id);
+
+        taskForm.trim();
+        task.dataExtension(taskForm);
+        entityService.putTask(task);
+
+        return REDIRECT_ON_MAIN_PAGE;
     }
 
     @GetMapping(LOCAL_URL_RESPONSIBLE_PUT_TASK)

@@ -8,17 +8,18 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <link href="/css/administration.css" rel="stylesheet">
     <link href="/css/searchString.css" rel="stylesheet">
+    <link href="/css/formData.css" rel="stylesheet">
     <script src="/js/urlTemplates.js"></script>
     <script src="/js/requests.js"></script>
     <script src=/js/jointFunctions.js></script>
     <script src=/js/administration.js></script>
 </head>
-<body onload="loadDataUsers();">
+<body onload="loadDataUsers(); setMainContentWidth(); setDivUserAtrWidth();">
 
 <header th:insert="blocks/header :: header"></header>
 
 <div id="main-block" class="container pt-4 pb-4" style="min-width: max-content;">
-    <div style="display: inline-block;margin-right: 80px;vertical-align: top;">
+    <div style="display: inline-block;vertical-align: top;">
         <nav class="nav flex-column" style="width: max-content;">
             <button id="btn-data-users" type="button" class="btn btn-outline-primary mb-2 nav-btn">
                 <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-person-lines-fill" viewBox="0 0 16 16">
@@ -29,6 +30,8 @@
         </nav>
     </div>
     <div id="div-main-content" style="display: inline-block">
+        <div id="div-content" style="width: max-content;margin-left: auto;">
+        </div>
     </div>
 </div>
 

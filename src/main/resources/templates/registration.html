@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link href="/css/password.css" rel="stylesheet">
     <link href="/css/validation.css" rel="stylesheet">
+    <link href="/css/formData.css" rel="stylesheet">
     <script src=/js/registration.js></script>
     <script src=/js/password.js></script>
     <script src=/js/validation.js></script>
@@ -14,57 +15,62 @@
 
 <header th:insert="blocks/header :: header"></header>
 
-<div align="center" class="container pt-4 pb-4">
-    <h3>
-        Регистрационная информация
-    </h3>
-    <form method="post" th:object="${userForm}" onsubmit="return isNoEmpty(this)">
-        <div align="center" style="width: 450px">
-            <input type="text" class="form-control mb-2" placeholder="Фамилия" name="lastname"
-                   style="width: 100%"
-                   oninput="checkInvalidFormat(this,/^[A-z|А-я]+$/)" th:value="${userForm.getLastname()}">
-            <input type="text" class="form-control mb-2" placeholder="Имя" name="firstname"
-                   style="width: 100%"
-                   oninput="checkInvalidFormat(this,/^[A-z|А-я]+$/)" th:value="${userForm.getFirstname()}">
-            <input type="text" class="form-control mb-2" placeholder="Отчество" name="middlename"
-                   style="width: 100%"
-                   oninput="checkInvalidFormat(this,/^[A-z|А-я]+$/)" th:value="${userForm.getMiddlename()}">
-            <span th:if="${errorEmail!=null}" style="color: red; float: left;" th:text="${errorEmail}"/>
-            <input type="text" class="form-control mb-2" placeholder="Адрес электронной почты" name="email"
-                   style="width: 100%"
-                   oninput="checkInvalidFormat(this, /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/)"
-                   th:value="${userForm.getEmail()}">
-            <input type="text" class="form-control mb-2" placeholder="Номер телефона" name="phoneNumber"
-                   style="width: 100%" oninput="checkInvalidFormat(this, /^(8|\+7)\d{10}$/)"
-                   th:value="${userForm.getPhoneNumber()}">
-            <div class="pas mb-2" style="width: 100%">
-                <input type="password" class="form-control" id="pas-input" placeholder="Пароль" name="password"
-                       oninput="checkPassFormat()"
-                       th:value="${userForm.getPassword()}">
-                <button type="button" class="pas-control" style="outline: none;"
-                        onclick="showPas(this, 'pas-input')"></button>
+<div class="external-cont">
+    <div class="form-data" style="width: 800px; text-align: center;">
+        <h3>
+            Регистрационная информация
+        </h3>
+        <form method="post" th:object="${userForm}" onsubmit="return isNoEmpty(this, 'input-ctrl')">
+            <div style="width: 450px; margin: 0 auto">
+                <input type="text" class="form-control input-ctrl mb-2" placeholder="Фамилия" name="lastname"
+                       style="width: 100%"
+                       oninput="checkInvalidFormat(this,/^[A-z|А-я]+$/)" th:value="${userForm.getLastname()}">
+                <input type="text" class="form-control input-ctrl mb-2" placeholder="Имя" name="firstname"
+                       style="width: 100%"
+                       oninput="checkInvalidFormat(this,/^[A-z|А-я]+$/)" th:value="${userForm.getFirstname()}">
+                <input type="text" class="form-control input-ctrl mb-2" placeholder="Отчество" name="middlename"
+                       style="width: 100%"
+                       oninput="checkInvalidFormat(this,/^[A-z|А-я]+$/)" th:value="${userForm.getMiddlename()}">
+                <span th:if="${errorEmail!=null}" style="color: red; float: left;" th:text="${errorEmail}"/>
+                <input type="text" class="form-control input-ctrl mb-2" placeholder="Адрес электронной почты"
+                       name="email"
+                       style="width: 100%;"
+                       oninput="checkInvalidFormat(this, /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/)"
+                       th:value="${userForm.getEmail()}">
+                <input type="text" class="form-control input-ctrl mb-2" placeholder="Номер телефона" name="phoneNumber"
+                       style="width: 100%" oninput="checkInvalidFormat(this, /^(8|\+7)\d{10}$/)"
+                       th:value="${userForm.getPhoneNumber()}">
+                <div class="pas mb-2" style="width: 100%">
+                    <input type="password" class="form-control input-ctrl" id="pas-input" placeholder="Пароль"
+                           name="password"
+                           oninput="checkPassFormat()"
+                           th:value="${userForm.getPassword()}">
+                    <button type="button" class="pas-control" style="outline: none;"
+                            onclick="showPas(this, 'pas-input')"></button>
+                </div>
+                <div class="pas mb-4">
+                    <input type="password" class="form-control input-ctrl" id="conf-pas-input"
+                           placeholder="Повторите пароль"
+                           name="passwordConfirm"
+                           oninput="checkPassConfirm(this)"
+                           th:value="${userForm.getPasswordConfirm()}">
+                    <button type="button" class="pas-control" style="outline: none;"
+                            onclick="showPas(this, 'conf-pas-input')"></button>
+                </div>
             </div>
-            <div class="pas mb-4">
-                <input type="password" class="form-control" id="conf-pas-input" placeholder="Повторите пароль"
-                       name="passwordConfirm"
-                       oninput="checkPassConfirm(this)"
-                       th:value="${userForm.getPasswordConfirm()}">
-                <button type="button" class="pas-control" style="outline: none;"
-                        onclick="showPas(this, 'conf-pas-input')"></button>
-            </div>
-        </div>
-        <b>Пользовательское соглашение</b>
-        <textarea readonly style="resize: none;width: 100%;height: 200px;">
+            <b>Пользовательское соглашение</b>
+            <textarea class="form-control" readonly style="resize: none;width: 100%;height: 200px;overflow: auto;">
                 Здесь будут условия пользования
-        </textarea>
-        <div class="form-check mb-4" onclick="isUserAgreement()">
-            <input id="userAgreement" type="checkbox" class="form-check-input" required="">
-            <label class="form-check-label" for="userAgreement"><b>Я согласен с условиями</b></label>
-        </div>
-        <button type="submit" id="registrationButton" class="btn btn-primary" disabled>
-            Зарегистрироваться
-        </button>
-    </form>
+            </textarea>
+            <div class="form-check mb-4" onclick="isUserAgreement()">
+                <input id="userAgreement" type="checkbox" class="form-check-input" required="">
+                <label class="form-check-label" for="userAgreement"><b>Я согласен с условиями</b></label>
+            </div>
+            <button type="submit" id="registrationButton" class="btn btn-primary" disabled>
+                Зарегистрироваться
+            </button>
+        </form>
+    </div>
 </div>
 
 <footer th:insert="blocks/footer :: footer"></footer>
