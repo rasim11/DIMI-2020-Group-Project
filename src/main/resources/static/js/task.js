@@ -18,15 +18,6 @@ let defaultTaskLocation;
 let defaultTaskCommentAllow;
 let isImgDefault = true;
 
-
-function isEmpty(element) {
-    if ((!element.value) || (element.value.trim() !== "")) {
-        setValidFormat(element);
-    } else {
-        setInvalidFormat(element, "Введено некорректное значение");
-    }
-}
-
 function isCommentAllowChecked() {
     const inputCommentAllow = document.getElementsByName(inputTaskCommentAllowName);
     if (inputCommentAllow[0].checked || inputCommentAllow[1].checked) {

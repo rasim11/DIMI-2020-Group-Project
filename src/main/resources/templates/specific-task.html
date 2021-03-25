@@ -7,15 +7,26 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <link href="/css/formData.css" rel="stylesheet">
     <link href="/css/task.css" rel="stylesheet">
+    <link href="/css/closeCustom.css" rel="stylesheet">
+    <link href="/css/validation.css" rel="stylesheet">
     <script src="/js/urlTemplates.js"></script>
+    <script src=/js/validation.js></script>
     <script src=/js/jointFunctions.js></script>
     <script src="/js/specificTask.js"></script>
 </head>
 <body onload="calledOnLoad();">
 <header th:insert="blocks/header :: header"></header>
 <div class="external-cont">
-    <div class="form-data mb-4" style="width: 800px;">
+    <div id="div-main-block" class="form-data mb-4" style="width: 900px;">
         <input id="input-task-id" type="hidden" th:value="${task.getId()}">
+        <div id="div-feedback" th:if="${task.getFeedback()}!=null">
+            <input type="hidden" th:value="${task.getFeedback().getFeedback()}">
+            <input type="hidden" th:value="${task.getFeedback().getPublishDate()}">
+        </div>
+        <div id="div-author" th:if="${task.getAuthor()}!=null" style="display: none;">
+            <input type="hidden" th:value="${task.getAuthor().getUserImage()}">
+            <input type="hidden" th:value="${task.getAuthor().getFirstname()}">
+        </div>
         <h3 style="text-align: center;" th:text="${task.getTaskName()}"/>
         <div style="display: table; width: 100%">
             <div class="pr-3" style="display: table-cell">
@@ -31,18 +42,22 @@
                 <span class="task-attr mb-2" th:text="'Адрес: '+${task.getTaskLocation()}"/>
                 <label class="task-attr mb-2">
                     Автор:
-                    <a th:text="' ' + ${task.getAuthor().getLastname() + ' ' + task.getAuthor().getFirstname()}"
+                    <a th:if="${task.getAuthor()}!=null"
+                       th:text="${task.getAuthor().getLastname() + ' ' + task.getAuthor().getFirstname()}"
                        th:with="url=${T(com.netcracker.project.url.UrlTemplates).LOCAL_URL_USER_PROFILE}"
                        th:href="@{${url}(id=${task.getAuthor().getId()})}"/>
+                    <span th:if="${task.getAuthor()}==null">Аккаунт был удалён</span>
                 </label>
                 <label class="task-attr mb-2">
                     Ответственный:
                     <a th:if="${task.getRegion().getResponsible()}!=null"
-                       th:text="' ' + ${task.getRegion().getResponsible().getLastname() + ' ' +
+                       th:text="${task.getRegion().getResponsible().getLastname() + ' ' +
                task.getRegion().getResponsible().getFirstname()}"
                        th:with="url=${T(com.netcracker.project.url.UrlTemplates).LOCAL_URL_USER_PROFILE}"
                        th:href="@{${url}(id=${task.getRegion().getResponsible().getId()})}"/>
-                    <span th:if="${task.getRegion().getResponsible()}==null">У данного региона ответственный не назначен</span>
+                    <span th:if="${task.getRegion().getResponsible()}==null">
+                        У данного региона ответственный не назначен
+                    </span>
                 </label>
                 <span class="task-attr" th:text="'Создана: '+${task.getRegDate()}"/>
                 <span th:if="${task.getStatus().getName()} == 'Решённые'" class="task-attr mt-2"
@@ -65,25 +80,44 @@
                    th:href="@{${url}(id=${task.getId()})}" class="btn btn-primary">
                     Редактировать
                 </a>
-                <a href="#" class="btn btn-danger">Отменить</a>
+                <button type="button" id="btn-cancel-task" class="btn btn-danger"
+                        onclick="showFeedbackWindow(this, 'Отмена проблемы')">
+                    Отменить
+                </button>
             </div>
             <a th:with="url=${T(com.netcracker.project.url.UrlTemplates).LOCAL_URL_RESPONSIBLE_PUT_TASK}"
                th:href="@{${url}(id=${task.getId()})}" class="btn btn-primary" th:if="${isEditResponsible}!=null">
                 Редактировать
             </a>
-            <a href="#" class="btn btn-success" th:if="${isFeedback}!=null">Оставить отзыв</a>
+            <button type="button" id="btn-save-feedback" class="btn btn-success"
+                    onclick="showFeedbackWindow(this, 'Добавление отзыва')"
+                    th:if="${isFeedback} != null and ${task.getFeedback()} == null">
+                Оставить отзыв
+            </button>
+            <div th:if="${task.getFeedback()} != null">
+                <button type="button" id="btn-show-feedback" class="btn btn-success"
+                        onclick="showFeedbackWindow(this, 'Отзыв автора проблемы')"
+                        th:if="${task.getStatus().getValue()} == 2">
+                    Посмотреть отзыв
+                </button>
+                <button type="button" id="btn-cancellation-reason" class="btn btn-success"
+                        onclick="showFeedbackWindow(this, 'Причина отмены проблемы')"
+                        th:if="${task.getStatus().getValue()} == 3">
+                    Посмотреть причину отмены
+                </button>
+            </div>
         </div>
     </div>
-    <div class="form-data" style="width: 800px; text-align: center;">
+    <div class="form-data" style="width: 900px; text-align: center;">
         <span class="task-attr" th:if="${task.commentAllow}==false">Комментарии отключены</span>
         <div th:if="${task.commentAllow}==true" id="div-comment-box">
             <h4 class="mb-3">Всего комментариев:</h4>
-            <span class="task-attr mb-4" th:text="${commentForbidden}"/>
-            <div class="comment mb-4" th:if="${commentPermission}!=null" style="text-align: start;">
+            <span th:if="${commentForbidden}!=null" class="task-attr mb-4" th:text="${commentForbidden}"/>
+            <div class="comment mb-4" th:if="${commentPermission}!=null">
                 <img th:src="${#authentication.getPrincipal().getUserImage()}" class="comment-author-img">
-                <div style="display: inline-block;margin-left: 10px;">
+                <div style="display: inline-block;margin-left: 10px;text-align: start;">
                     <span class="font-weight-bold" th:text="${#authentication.getPrincipal().getFirstname()}"/>
-                    <textarea class="form-control" style="width: 675px;" id="textarea-comment-text"
+                    <textarea class="form-control" style="width: 675px; min-height: 70px;" id="textarea-comment-text"
                               placeholder="Оставьте комментарий"></textarea>
                 </div>
                 <hr>
@@ -95,7 +129,7 @@
                     <button type="button" class="btn btn-outline-danger" onclick="cancelCommentBtn()">Отмена</button>
                 </div>
             </div>
-            <div id="div-print-comments" style="overflow: auto;text-align: start;">
+            <div id="div-print-comments" style="overflow: auto;">
             </div>
         </div>
     </div>

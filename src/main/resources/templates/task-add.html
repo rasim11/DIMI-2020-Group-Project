@@ -20,11 +20,11 @@
             Создание проблемы
         </h3>
         <form id="form-task" method="post" th:object="${taskForm}">
-            <input type="text" class="form-control mb-3" placeholder="Название" name="taskName" oninput="isEmpty(this)">
+            <input type="text" class="form-control mb-3" placeholder="Название" name="taskName" oninput="checkEmpty(this)">
             <textarea class="form-control mb-3" placeholder="Описание" name="taskDescription"
-                      style="height: 200px;" oninput="isEmpty(this)"></textarea>
+                      style="height: 200px;" oninput="checkEmpty(this)"></textarea>
             <input type="text" class="form-control mb-3" placeholder="Адрес проблемы" name="taskLocation"
-                   oninput="isEmpty(this)">
+                   oninput="checkEmpty(this)">
             <div class="div-comment-allow mb-2">
                 <label>Возможность комментирования:</label>
                 <label>

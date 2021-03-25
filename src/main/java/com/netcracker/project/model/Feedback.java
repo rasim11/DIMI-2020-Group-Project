@@ -15,9 +15,9 @@ public class Feedback {
     private LocalDateTime publishDate;
     private Task task;
 
-    public void dataExtension(Task task) {
+    public void dataExtension(Task task, String feedback) {
         this.task = task;
         this.publishDate = LocalDateTime.now();
-        this.feedback = "Связанный с данной проблемой аккаунт был удалён!";
+        this.feedback = feedback.trim();
     }
 }

@@ -46,6 +46,7 @@ public class TaskController {
     @GetMapping(LOCAL_URL_GET_TASK_BY_ID)
     public String getTask(@PathVariable Long id, Model model) {
         Task task = entityService.getTaskById(id);
+        task.setFeedback(entityService.getFeedbackByTaskId(task.getId()));
         String[] taskImages = task.getTaskImage().length() != 0 ? task.getTaskImage().split(" ") : null;
 
         model.addAttribute("task", task);

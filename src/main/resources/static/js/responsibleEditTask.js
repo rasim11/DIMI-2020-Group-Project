@@ -1,4 +1,4 @@
-const btnEditId = "btn-edit";
+const btnSaveId = "btn-save";
 const spanDesignatedUsersId = "span-designated-users";
 const spanUnassignedUsersId = "span-unassigned-users";
 const divDesignatedUsersId = "div-designated-users";
@@ -88,31 +88,25 @@ function setDefaultValue() {
     }
 }
 
-function isNoDuplicate(name = null) {
-    const btnEdit = document.getElementById(btnEditId);
+function isNoDuplicate() {
+    const btnSave = document.getElementById(btnSaveId);
 
-    switch (name) {
-        case selectStatusName:
-            btnEdit.disabled = defaultStatus === document.getElementsByName(selectStatusName)[0].value;
-            break;
-        case selectPriorityName:
-            btnEdit.disabled = defaultStatus === document.getElementsByName(selectPriorityName)[0].value;
-            break;
-        case null:
-            const inputEmails = document.getElementById(divDesignatedUsersId).querySelectorAll("input");
-            if (inputEmails.length !== defaultAssignmentUser.length) {
-                btnEdit.disabled = false;
-                break;
-            }
+    btnSave.disabled = !(defaultStatus !== document.getElementsByName(selectStatusName)[0].value ||
+        defaultPriority !== document.getElementsByName(selectPriorityName)[0].value);
 
-            for (let i = 0; i < inputEmails.length; i++) {
-                if (!defaultAssignmentUser.includes(inputEmails[i].value)) {
-                    btnEdit.disabled = false;
-                    return;
-                }
+    if (btnSave.disabled) {
+        const inputEmails = document.getElementById(divDesignatedUsersId).querySelectorAll("input");
+        if (inputEmails.length !== defaultAssignmentUser.length) {
+            btnSave.disabled = false;
+            return;
+        }
+
+        for (let i = 0; i < inputEmails.length; i++) {
+            if (!defaultAssignmentUser.includes(inputEmails[i].value)) {
+                btnSave.disabled = false;
+                return;
             }
-            btnEdit.disabled = true;
-            break;
+        }
     }
 }
 

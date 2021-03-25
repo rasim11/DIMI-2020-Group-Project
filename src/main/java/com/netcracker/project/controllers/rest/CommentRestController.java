@@ -22,7 +22,7 @@ public class CommentRestController {
 
     @PostMapping(LOCAL_URL_POST_COMMENT)
     public void addComment(@RequestBody String commentStr) {
-        String[] commentBody = commentStr.split("&");
+        String[] commentBody = commentStr.split("&&&");
         Task task = entityService.getTaskById(Long.parseLong(commentBody[1]));
         User curUser = securityService.getCurrentUser();
 

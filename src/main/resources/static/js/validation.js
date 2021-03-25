@@ -52,3 +52,11 @@ function isRoleChecked() {
 
     return true;
 }
+
+function checkEmpty(element) {
+    if ((!element.value) || (element.value.trim() !== "")) {
+        setValidFormat(element);
+    } else {
+        setInvalidFormat(element, "Введено некорректное значение");
+    }
+}

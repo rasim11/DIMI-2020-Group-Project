@@ -26,14 +26,14 @@
             </h3>
             <input type="text" class="form-control mb-2" th:value="${task.getTaskName()}" readonly>
             <textarea class="form-control mb-2" th:text="${task.getTaskDescription()}" readonly style="height: 200px"/>
-            <select name="status" class="form-control mb-2" onchange="isNoDuplicate(this.name)">
+            <select name="status" class="form-control mb-2" onchange="isNoDuplicate()">
                 <option value="" disabled>Статус</option>
                 <option th:value="${task.getStatus()}" th:text="${task.getStatus().getName()}" selected/>
                 <div th:each="status : ${statuses}">
                     <option th:value="${status}" th:text="${status.getName()}"/>
                 </div>
             </select>
-            <select name="priority" class="form-control" onchange="isNoDuplicate(this.name);setValidFormat(this)">
+            <select name="priority" class="form-control" onchange="isNoDuplicate();setValidFormat(this)">
                 <div th:if="${task.getPriority()} == null">
                     <option value="" disabled selected>Приоритет</option>
                 </div>
@@ -156,8 +156,8 @@
             </div>
         </div>
         <div style="text-align: center;">
-            <button id="btn-edit" type="submit" class="btn btn-primary" disabled>
-                Редактировать
+            <button id="btn-save" type="submit" class="btn btn-primary" disabled>
+                Сохранить
             </button>
         </div>
     </form>

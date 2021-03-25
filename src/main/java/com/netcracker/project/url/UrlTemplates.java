@@ -49,6 +49,7 @@ public final class UrlTemplates {
     public static final String FEEDBACK_POST = "/feedback-post";
     public static final String ACTIVE_TASKS_GET = "/active-tasks-get";
     public static final String COMMENT_DELETE = "/comment-delete";
+    public static final String FEEDBACK_GET = "/feedback-get";
 
     public static final String LOCAL_URL_ADMINISTRATION = API + VERSION + ADMIN_MANAGEMENT;
     public static final String LOCAL_URL_USER_ROLE_EDIT = API + VERSION + ADMIN_MANAGEMENT +
@@ -75,6 +76,7 @@ public final class UrlTemplates {
             COMMENT_GET + "-by-task/{id}";
     public static final String LOCAL_URL_RESPONSIBLE_PUT_TASK = API + VERSION + TASK_MANAGEMENT +
             TASK_PUT + BY_ID + "-by-responsible/{id}";
+    public static final String LOCAL_URL_POST_FEEDBACK = API + VERSION + FEEDBACK_MANAGEMENT + FEEDBACK_POST;
 
     public static final String URL_GET_ALL_REGIONS = SERVER + LOCAL_URL_GET_ALL_REGIONS;
     public static final String URL_GET_ALL_USERS = SERVER + LOCAL_URL_GET_ALL_USERS;
@@ -105,11 +107,12 @@ public final class UrlTemplates {
             TASK_SOCIAL_WORKERS_MANAGEMENT + ACTIVE_TASK_DELETE + "-by-worker" + BY_ID + "/{id}";
     public static final String URL_POST_ACTIVE_TASK = SERVER + API + VERSION + TASK_SOCIAL_WORKERS_MANAGEMENT +
             ACTIVE_TASK_POST;
-    public static final String URL_POST_FEEDBACK = SERVER + API + VERSION + FEEDBACK_MANAGEMENT + FEEDBACK_POST;
+    public static final String URL_POST_FEEDBACK = SERVER + LOCAL_URL_POST_FEEDBACK;
     public static final String URL_POST_COMMENT = SERVER + LOCAL_URL_POST_COMMENT;
     public static final String URL_GET_COMMENT_BY_TASK_ID = SERVER + LOCAL_URL_GET_COMMENT_BY_TASK_ID;
     public static final String URL_DELETE_COMMENT_BY_AUTHOR_ID = SERVER + API + VERSION + COMMENT_MANAGEMENT +
             COMMENT_DELETE + "-by-author/{id}";
-
+    public static final String URL_GET_FEEDBACK_BY_TASK_ID = SERVER + API + VERSION + FEEDBACK_MANAGEMENT +
+            FEEDBACK_GET + "-by-task/{id}";
 
 }

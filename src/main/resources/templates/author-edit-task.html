@@ -21,11 +21,11 @@
         </h3>
         <form id="form-task" method="post" th:object="${taskForm}">
             <input type="text" class="form-control mb-3" placeholder="Название" name="taskName"
-                   th:value="${taskForm.getTaskName()}" oninput="isEmpty(this);isNoDuplicate();">
+                   th:value="${taskForm.getTaskName()}" oninput="checkEmpty(this);isNoDuplicate();">
             <textarea class="form-control mb-3" placeholder="Описание" name="taskDescription" style="height: 200px;"
-                      th:text="${taskForm.getTaskDescription()}" oninput="isEmpty(this);isNoDuplicate();"/>
+                      th:text="${taskForm.getTaskDescription()}" oninput="checkEmpty(this);isNoDuplicate();"/>
             <input type="text" class="form-control mb-3" placeholder="Адрес проблемы" name="taskLocation"
-                   th:value="${taskForm.getTaskLocation()}" oninput="isEmpty(this);isNoDuplicate();">
+                   th:value="${taskForm.getTaskLocation()}" oninput="checkEmpty(this);isNoDuplicate();">
             <div class="div-comment-allow mb-2">
                 <label>Возможность комментирования:</label>
                 <label onclick="isNoDuplicate()">

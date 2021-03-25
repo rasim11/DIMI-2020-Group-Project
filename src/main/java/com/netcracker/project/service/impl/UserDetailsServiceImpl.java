@@ -102,9 +102,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             task.setCompleteDate(LocalDateTime.now());
             entityService.putTask(task);
 
-            Feedback feedback = new Feedback();
-            feedback.dataExtension(task);
-            entityService.postFeedback(feedback);
+            Feedback feedback = entityService.getFeedbackByTaskId(task.getId());
+            if (feedback == null) {
+                feedback = new Feedback();
+                feedback.dataExtension(task, "Связанный с данной проблемой аккаунт был удалён!");
+                entityService.postFeedback(feedback);
+            }
         }
 
         restTemplate.delete(URL_DELETE_COMMENT_BY_AUTHOR_ID, user.getId());
