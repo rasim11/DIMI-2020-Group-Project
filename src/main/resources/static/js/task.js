@@ -51,7 +51,6 @@ function loadTask() {
 
             const listImages = document.querySelectorAll("." + anyImgClass);
             for (let i = 0; i < listImages.length; i++) {
-                listImages[i].src = compress(listImages[i]).src;
                 inputTaskImages.value += listImages[i].src + " ";
             }
             formTaskAdd.prepend(inputTaskImages);
@@ -96,9 +95,13 @@ function processingImages(inputImages) {
 
             const inputNewImgTask = document.createElement("img");
             inputNewImgTask.src = e.target.result.toString();
-            inputNewImgTask.style.width = "100px";
-            inputNewImgTask.className = anyImgClass;
+            inputNewImgTask.className = anyImgClass + " task-preview-img";
+            inputNewImgTask.onclick = showFullImg.bind(null, inputNewImgTask);
             divImage.append(inputNewImgTask);
+            
+            setTimeout(function () {
+                inputNewImgTask.src = compress(inputNewImgTask).src;
+            }, 10);
 
             const btnDelete = document.createElement("button");
             btnDelete.type = "button";

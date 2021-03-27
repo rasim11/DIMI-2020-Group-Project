@@ -46,7 +46,7 @@
                 </div>
             </select>
         </div>
-        <div class="container mb-4">
+        <div class="container mb-4" style="white-space: nowrap;">
             <h4 class="mb-2" style="text-align: center">
                 Назначение сотрудников
             </h4>
@@ -86,7 +86,8 @@
                                th:href="@{${url}(id=${socialWorker.getId()})}">
                                 <img class="img-users-list" th:src="${socialWorker.getUserImage()}">
                             </a>
-                            <div class="mr-4 ml-4" style="display: inline-block; vertical-align: middle;">
+                            <div class="mr-4 ml-4" style="display: inline-block; vertical-align: middle;
+                                 max-width: 449px; overflow: hidden;">
                             <span th:text="'ФИО: ' + ${socialWorker.getLastname() + ' '
                                 + socialWorker.getFirstname()+ ' '
                                 + socialWorker.getMiddlename()}" style="display: block;"/>
@@ -126,7 +127,8 @@
                                th:href="@{${url}(id=${socialWorker.getId()})}">
                                 <img class="img-users-list" th:src="${socialWorker.getUserImage()}">
                             </a>
-                            <div class="mr-4 ml-4" style="display: inline-block; vertical-align: middle;">
+                            <div class="mr-4 ml-4" style="display: inline-block; vertical-align: middle;
+                            max-width: 449px; overflow: hidden;">
                             <span th:text="'ФИО: ' + ${socialWorker.getLastname() + ' '
                                 + socialWorker.getFirstname()+ ' '
                                 + socialWorker.getMiddlename()}" style="display: block;"/>

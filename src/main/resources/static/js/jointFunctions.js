@@ -1,5 +1,7 @@
 const divMainContentId = "div-main-content";
 const mainBlockId = "main-block";
+const divMainBlockId = "div-main-block";
+const divDynamicWindowId = "div-dynamic-window";
 
 
 function filterSearchStringActive(inputSearchString, divUsersId, inputIdSearchNames, spanIdCountUsers,
@@ -66,9 +68,9 @@ function setMainContentWidth() {
         parseFloat(window.getComputedStyle(navPanel, null).width) + "px";
 }
 
-function compress(inputImgSrc) {
-    let width = inputImgSrc.naturalWidth;
-    let height = inputImgSrc.naturalHeight;
+function compress(inputImg) {
+    let width = inputImg.naturalWidth;
+    let height = inputImg.naturalHeight;
     const maxWidth = 640;
     const maxHeight = 480;
 
@@ -91,7 +93,7 @@ function compress(inputImgSrc) {
     cvs.height = height;
 
     const ctx = cvs.getContext("2d");
-    ctx.drawImage(inputImgSrc, 0, 0, width, height);
+    ctx.drawImage(inputImg, 0, 0, width, height);
 
     resImg.src = cvs.toDataURL("image/jpeg", 1.0);
     return resImg;
@@ -108,4 +110,53 @@ function getRoleName(role) {
         default:
             return "Ошибка";
     }
+}
+
+function showFullImg(targetImg) {
+    const divMainBlock = document.getElementById(divMainBlockId);
+
+    const divMainWindow = document.createElement("div");
+    divMainWindow.className = "feedback-window";
+    divMainBlock.append(divMainWindow);
+
+    const divImageFullSize = document.createElement("div");
+    divImageFullSize.style.textAlign = "center";
+    divImageFullSize.id = divDynamicWindowId;
+    divImageFullSize.style.width = "fit-content";
+    divImageFullSize.style.padding = "0";
+    divMainWindow.append(divImageFullSize);
+
+    const imgFullSize = document.createElement("img");
+    imgFullSize.src = targetImg.src;
+    divImageFullSize.append(imgFullSize);
+
+    addCloseBtn(divImageFullSize, divMainWindow);
+
+    setTimeout(function () {
+        divMainWindow.classList.add('show');
+    }, 10);
+}
+
+function addCloseBtn(parentDiv, mainWindow) {
+    const buttonWindowClose = document.createElement("button");
+    buttonWindowClose.className = "close-custom";
+    buttonWindowClose.style.outline = "none";
+    buttonWindowClose.title = "Закрыть";
+    buttonWindowClose.innerText = "X";
+    buttonWindowClose.addEventListener("click", function () {
+        mainWindow.classList.remove('show');
+        document.querySelector("body").onmousedown = null;
+        setTimeout(function () {
+            mainWindow.remove();
+        }, 1000);
+    });
+    parentDiv.append(buttonWindowClose);
+
+    document.querySelector("body").onmousedown = function (e) {
+        const mainDiv = $("#" + divDynamicWindowId);
+        if (!mainDiv.is(e.target)
+            && mainDiv.has(e.target).length === 0) {
+            buttonWindowClose.click();
+        }
+    };
 }

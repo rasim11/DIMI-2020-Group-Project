@@ -9,10 +9,6 @@ const textareaCommentTextId = "textarea-comment-text";
 const divCommentBoxId = "div-comment-box"
 const divPrintCommentsId = "div-print-comments";
 const divCommentClass = "div-any-comment";
-const divImagesId = "div-images";
-const divMainBlockId = "div-main-block";
-const divMainWindowId = "div-main-window";
-const divFeedbackWindowId = "div-feedback-window";
 const btnSaveFeedbackId = "btn-save-feedback";
 const btnShowFeedbackId = "btn-show-feedback";
 const btnCancelTaskId = "btn-cancel-task";
@@ -144,17 +140,6 @@ function calledOnLoad() {
         inputTaskFeedback.remove();
     }
 
-    const divImages = document.getElementById(divImagesId).querySelectorAll("img");
-    if (divImages.length === 1) {
-        const btn = document.getElementById(divImagesId).querySelectorAll("button");
-        for (let i = 0; i < btn.length; i++) {
-            btn[i].remove();
-        }
-        divImages[0].style.display = "inline-block";
-    } else {
-        imgResize(divImages[0]);
-    }
-
     const commentBox = document.getElementById(divCommentBoxId);
     if (commentBox) {
         printComments();
@@ -168,87 +153,19 @@ function activationScrollBarExt() {
     }
 }
 
-function imgResize(image) {
-    const btn = document.getElementById(divImagesId).querySelectorAll("button");
-
-    image.style.display = "inline-block";
-    const btnHeight = parseFloat(window.getComputedStyle(image, null).height) + "px";
-
-    for (let i = 0; i < btn.length; i++) {
-        btn[i].style.height = btnHeight;
-    }
-}
-
-function previousImage() {
-    const divImages = document.getElementById(divImagesId).querySelectorAll("img");
-    const btn = document.getElementById(divImagesId).querySelectorAll("button");
-
-    for (let i = 0; i < divImages.length; i++) {
-        if (divImages[i].style.display === "inline-block") {
-            divImages[i - 1].style.display = "inline-block";
-            divImages[i].style.display = "none";
-            if (i - 1 === 0) {
-                btn[0].disabled = true;
-            }
-            break;
-        }
-    }
-
-    btn[1].disabled = false;
-}
-
-function nextImage() {
-    const divImages = document.getElementById(divImagesId).querySelectorAll("img");
-    const btn = document.getElementById(divImagesId).querySelectorAll("button");
-
-    for (let i = 0; i < divImages.length; i++) {
-        if (divImages[i].style.display === "inline-block") {
-            divImages[i + 1].style.display = "inline-block";
-            divImages[i].style.display = "none";
-            if (i + 1 === divImages.length - 1) {
-                btn[1].disabled = true;
-            }
-            break;
-        }
-    }
-
-    btn[0].disabled = false;
-}
-
 function showFeedbackWindow(btn, text) {
     const divMainBlock = document.getElementById(divMainBlockId);
 
     const divMainWindow = document.createElement("div");
-    divMainWindow.id = divMainWindowId;
     divMainWindow.className = "feedback-window";
     divMainBlock.append(divMainWindow);
 
     const divFeedbackWindow = document.createElement("div");
     divFeedbackWindow.style.textAlign = "center";
-    divFeedbackWindow.id = divFeedbackWindowId;
+    divFeedbackWindow.id = divDynamicWindowId;
     divMainWindow.append(divFeedbackWindow);
 
-    const buttonWindowClose = document.createElement("button");
-    buttonWindowClose.className = "close-custom";
-    buttonWindowClose.style.outline = "none";
-    buttonWindowClose.title = "Закрыть";
-    buttonWindowClose.innerText = "X";
-    buttonWindowClose.addEventListener("click", function () {
-        divMainWindow.classList.remove('show');
-        document.querySelector("body").onmousedown = null;
-        setTimeout(function () {
-            divMainWindow.remove();
-        }, 1000);
-    });
-    divFeedbackWindow.append(buttonWindowClose);
-
-    document.querySelector("body").onmousedown = function (e) {
-        const mainDiv = $("#" + divFeedbackWindowId);
-        if (!mainDiv.is(e.target)
-            && mainDiv.has(e.target).length === 0) {
-            buttonWindowClose.click();
-        }
-    };
+    addCloseBtn(divFeedbackWindow, divMainWindow);
 
     const windowTitle = document.createElement("h3");
     windowTitle.innerText = text;

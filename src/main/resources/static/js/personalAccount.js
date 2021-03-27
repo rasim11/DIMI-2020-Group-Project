@@ -13,7 +13,6 @@ const btnIdDataBasic = "btn-data-basic";
 const btnIdDataPass = "btn-data-pass";
 const btnIdDataProblems = "btn-data-problems";
 const btnIdUpdate = "update-button";
-const btnIdReset = "reset-button";
 const btnIdDataAccount = "btn-data-account";
 const btnIdDataResponsible = "btn-data-responsible";
 const spanIdErrMsg = "err-msg";
@@ -98,19 +97,16 @@ function openMenuLoadImg(hiddenMenu) {
 function isNoDuplicate() {
     const newValues = document.querySelector('.' + formClassUpdate).querySelectorAll('.form-control');
     const updateButton = document.getElementById(btnIdUpdate);
-    const resetButton = document.getElementById(btnIdReset);
     const userAtr = Object.values(curUser);
 
     for (let i = 0; i < newValues.length; i++) {
         if (newValues[i].value !== userAtr[i]) {
             updateButton.disabled = false;
-            resetButton.disabled = updateButton.disabled;
             return;
         }
     }
 
     updateButton.disabled = true;
-    resetButton.disabled = updateButton.disabled;
 }
 
 function addDataUser(btnId) {
@@ -157,19 +153,10 @@ function addDataUser(btnId) {
     const btnChange = document.createElement("button");
     btnChange.type = "submit";
     btnChange.id = btnIdUpdate;
-    btnChange.className = "btn btn-primary mt-2 mr-1";
+    btnChange.className = "btn btn-primary mt-2";
     btnChange.disabled = true;
     btnChange.textContent = "Изменить";
     divDataVar.appendChild(btnChange);
-
-    const btnReset = document.createElement("button");
-    btnReset.type = "button";
-    btnReset.id = btnIdReset;
-    btnReset.className = "btn btn-danger mt-2 ml-1";
-    btnReset.disabled = btnChange.disabled;
-    btnReset.textContent = "Сбросить";
-    btnReset.addEventListener("click", btnResetClick);
-    divDataVar.appendChild(btnReset);
 }
 
 function addDataBasic(divDataBasic) {
@@ -564,9 +551,7 @@ function btnResetClick() {
     }
 
     const updateButton = document.getElementById(btnIdUpdate);
-    const resetButton = document.getElementById(btnIdReset);
     updateButton.disabled = true;
-    resetButton.disabled = updateButton.disabled;
 }
 
 function addDialogWindow(btn) {
@@ -617,10 +602,10 @@ function addDialogWindow(btn) {
     const btnResetDlg = document.createElement("button");
     btnResetDlg.type = "button";
     btnResetDlg.className = "btn btn-danger ml-1";
-    btnResetDlg.textContent = document.getElementById(btnIdReset).innerText;
+    btnResetDlg.textContent = "Сбросить";
     btnResetDlg.addEventListener("click", function () {
         buttonWindowClose.click();
-        document.getElementById(btnIdReset).click();
+        btnResetClick();
         changeContent(btn);
         divVarAdd(btn.id);
     });
@@ -631,10 +616,8 @@ function checkPassEmpty() {
     const inputPass = document.getElementById(inputIdPas);
     const inputConfPass = document.getElementById(inputIdConfPas);
     const btnUpdate = document.getElementById(btnIdUpdate);
-    const btnReset = document.getElementById(btnIdReset);
 
     btnUpdate.disabled = !inputPass.value && !inputConfPass.value;
-    btnReset.disabled = btnUpdate.disabled;
 }
 
 function showAvatarMenu() {
@@ -659,16 +642,8 @@ function hideAvatarMenu(e) {
 function isNoDuplicateAvatar() {
     if (document.getElementById(divIdDataBasic)) {
         const updateButton = document.getElementById(btnIdUpdate);
-        const resetButton = document.getElementById(btnIdReset);
 
         const imgAvatar = document.getElementById(imgIdAvatar);
-        if (imgAvatar && imgAvatar.src !== curUser.userImage) {
-            updateButton.disabled = false;
-            resetButton.disabled = updateButton.disabled;
-            return;
-        }
-
-        updateButton.disabled = true;
-        resetButton.disabled = updateButton.disabled;
+        updateButton.disabled = !(imgAvatar && imgAvatar.src !== curUser.userImage);
     }
 }
