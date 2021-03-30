@@ -5,12 +5,15 @@ table.taskTable {
   margin: 5px;
   border-spacing: 10px; /* Расстояние между границ */
   border-collapse: collapse;
+  table-layout: fixed;
 }
 
 table.taskTable td.task-td-text {
   padding: 15px;
   /*background-color: rgb(231, 245, 255);*/
   /*background-color: rgba(17, 17, 17, 0.07);*/
+  width: 70%;
+  height: 100%
 }
 table.taskTable td.task-td-title {
   padding-left:  15px;
@@ -21,8 +24,10 @@ table.taskTable td.task-describe {
   padding-top: 15px;
   background-color: rgba( 0, 113 , 240, 0.7);
   color: white;
-}
+  overflow: break-word;
+  width: 30%;
 
+}
 
 span.task-header {
   font-size: 30px;
@@ -43,10 +48,7 @@ table.taskTable td {
   list-style:none;
 }
 
-td.task-td-text {
-  width: 70%;
-  height: 100%
-}
+
 
 div.taskText {
   /*width: 100%;*/
@@ -58,11 +60,7 @@ div.taskText {
   /*border: 1px inset #0086ff;*/
 }
 
-.task-text-button{
-  display: block;
-  text-align: center;
-  color: #FFFFFF;
-  padding: 10px;
+button.task-text-button{
   width: 100%;
   background-color: rgba( 0, 113 , 240, 0.7);
   border-radius:5px;
@@ -98,4 +96,17 @@ li.notMarker {
 
 .table-item-rowS{
   display: table-row;
+}
+
+
+
+button.page-button{
+  background-color: rgba( 0, 113 , 240, 0.7);
+  color: white;
+  border-radius:5px;
+}
+button.page-button-current{
+  background-color: rgb(44, 0, 240);
+  color: white;
+  border-radius:5px;
 }
