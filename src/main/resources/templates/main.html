@@ -9,15 +9,62 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <link href="/css/tasksList.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://formden.com/static/cdn/bootstrap-iso.css"/>
+
+    <!-- Inline CSS based on choices in "Settings" tab -->
+    <style>.bootstrap-iso .formden_header h2, .bootstrap-iso .formden_header p, .bootstrap-iso form {
+        font-family: Arial, Helvetica, sans-serif;
+        color: black
+    }
+
+    .bootstrap-iso form button, .bootstrap-iso form button:hover {
+        color: white !important;
+    }
+
+    .asteriskField {
+        color: red;
+    }</style>
+
+
 </head>
 <body>
 
 <header th:insert="blocks/header :: header"></header>
 
+
+<form th:id="formFilterConst" hidden>
+    <label>hiden form for parametors</label>
+    <input id="ch0"
+           name="checkbox"
+           type="checkbox"
+           th:value="0"
+           th:checked="${checkbox0 != null} ? checked">
+    <input id="ch1"
+           name="checkbox"
+           type="checkbox"
+           th:value="1"
+           th:checked="${checkbox1 != null} ? checked">
+    <input id="ch2"
+           name="checkbox"
+           type="checkbox"
+           th:value="2"
+           th:checked="${checkbox2 != null} ? checked">
+    <input id="ch3"
+           name="checkbox"
+           type="checkbox"
+           th:value="3"
+           th:checked="${checkbox3 != null} ? checked">
+
+    <input id="da1" name="date" type="text"/>
+    <input id="da2" name="date" type="text"/>
+</form>
+
+
 <div class="tableMain">
     <div class="table-itemS2">
 
-        <form th:method="post" th:action="filter">
+        <form id="filterForm" th:method="post" action="#" th:action="@{/api/v1/main-page/filter}">
             <ul id="sidebarMenu" class="nav flex-column bg-light" style="min-width: max-content">
                 <li class="nav-item">
                     <span style="font-size: larger">Фильтры</span>
@@ -31,48 +78,84 @@
                     <div class="collapse" id="collapseStatus">
                         <div class="card card-body" style="background: none;border: none">
                             <div class="my-3">
-                                <div class="form-check" onclick="atLeastOneChecked()">
-                                    <input id="inProgress" name="IN_CREATING" th:checked="*{IN_CREATING}"
-                                           type="checkbox" class="form-check-input">
+                                <div class="form-check">
+                                    <input name="checkbox"
+                                           id="checkbox0"
+                                           type="checkbox"
+                                           class="form-check-input"
+                                           th:value="0"
+                                           th:checked="${checkbox0 != null} ? checked">
 
-                                    <label class="form-check-label" for="inProgress" style="font-size: large">В
+                                    <label class="form-check-label" for="checkbox0" style="font-size: large">В
                                         обработке</label>
                                 </div>
-                                <div class="form-check" onclick="atLeastOneChecked()">
-                                    <input id="solved" name="IN_PROCESSING" th:checked="*{IN_PROCESSING}"
-                                           type="checkbox" class="form-check-input">
+                                <div class="form-check">
+                                    <input name="checkbox"
+                                           id="checkbox1"
+                                           type="checkbox"
+                                           class="form-check-input"
+                                           th:value="1"
+                                           th:checked="${checkbox1 != null} ? checked">
 
-                                    <label class="form-check-label" for="solved"
+                                    <label class="form-check-label" for="checkbox1"
                                            style="font-size: large">Решаемые</label>
                                 </div>
-                                <div class="form-check" onclick="atLeastOneChecked()">
-                                    <input id="resolved" name="RESOLVED" th:checked="*{RESOLVED}" type="checkbox"
-                                           class="form-check-input">
+                                <div class="form-check">
+                                    <input name="checkbox"
+                                           id="checkbox2"
+                                           type="checkbox"
+                                           class="form-check-input"
+                                           th:value="2"
+                                           th:checked="${checkbox2 != null} ? checked">
 
-                                    <label class="form-check-label" for="resolved"
+                                    <label class="form-check-label" for="checkbox2"
                                            style="font-size: large">Решённые</label>
                                 </div>
-                                <div class="form-check" onclick="atLeastOneChecked()">
-                                    <input id="canceled" name="CANCELED" th:checked="*{CANCELED}" type="checkbox"
-                                           class="form-check-input">
+                                <div class="form-check">
+                                    <input name="checkbox"
+                                           id="checkbox3"
+                                           type="checkbox"
+                                           class="form-check-input"
+                                           th:value="3"
+                                           th:checked="${checkbox3 != null} ? checked">
 
-                                    <label class="form-check-label" for="canceled"
+                                    <label class="form-check-label" for="checkbox3"
                                            style="font-size: large">Отменённые</label>
+                                </div>
+                                <br>
+                                <div class="form-group ">
+                                    <label class="control-label" for="date1">
+                                        From
+                                    </label>
+                                    <div class="col-sm-10">
+                                        <input class="form-control" id="date1" name="date" placeholder="DD/MM/YYYY"
+                                               type="text"/>
+                                    </div>
+                                </div>
+                                <!--                                <label class="control-label" style="color: red" th:text="${betweenError}"></label>-->
+                                <div class="form-group ">
+                                    <label class="control-label " for="date2">
+                                        To
+                                    </label>
+                                    <div class="col-sm-10">
+                                        <input class="form-control" id="date2" name="date" placeholder="DD/MM/YYYY"
+                                               type="text"/>
+                                    </div>
                                 </div>
 
 
                                 <br>
                                 <div class="form-check">
-                                    <a id="btnReset" class="btn btn-primary" role="button" style="display: none"
-                                       onclick="resetChecked()">
-                                        <span style="font-size: large">Сбросить</span>
-                                    </a>
+                                    <input class="btn btn-primary" type="button"
+                                           onclick="resetChecked()" th:value="Сбросить"/>
                                     <br>
                                     <br>
-                                    <button class="btn btn-primary" th:type="submit"> Применить</button>
+                                    <input onclick=" setFilterParam(), setPage(1)  "
+                                           id="submitFilter" type="button"
+                                           class="btn btn-primary"
+                                           th:value="Применить"/>
 
                                 </div>
-
                             </div>
                         </div>
                     </div>
@@ -93,10 +176,10 @@
     <div class="table-itemS">
         <div class="tableMain">
             <div class="table-item-rowS">
-                <form th:method="post" th:action="find">
-                    <input th:type="text" th:name="find" placeholder="Название проблемы" th:value="${find}"
+                <form   th:id="findForm">
+                    <input th:type="text" th:name="find" placeholder="Название проблемы" th:id="textFind"
                            style="width: 80%;"/>
-                    <button class="btn btn-primary" th:type="submit">
+                    <button class="btn btn-primary" th:type="button" onclick="findFormPost()">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                              class="bi bi-search" viewBox="0 0 16 16">
                             <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
@@ -106,52 +189,221 @@
 
             </div>
             <div class="table-item-rowS">
-                <div class="table-itemS">
-                    <li th:each="task : ${taskList}" class="notMarker">
-                        <br>
-                        <table class="taskTable">
-                            <tr valign="top">
-                                <td class="task-td-title"><span class="task-header" th:text="${task.taskName}"> </span>
-                                </td>
-                                <td rowspan="2" class="task-describe">
-                                    <div>
-                                        <ul class="tasks-status">
-                                            <li th:text="${task.author.firstname}"></li>
-                                            <li th:text="${task.author.lastname}"></li>
-                                            <li th:text="${task.author.middlename}"></li>
-                                            <li th:text="${task.regDate}"></li>
+                <div class="table-itemS" th:id="taskListId">
+                    <!--                     -->
+                    <div class="table-itemS" th:id="listTaskId" xmlns:th="http://www.w3.org/1999/xhtml">
+                        <li th:each="task : ${taskList}" class="notMarker">
+                            <br>
+                            <table class="taskTable">
+                                <tr valign="top">
+                                    <td class="task-td-title"><span class="task-header"
+                                                                    th:text="${task.taskName}"> </span>
+                                    </td>
+                                    <td rowspan="2" class="task-describe">
+                                        <div>
+                                            <ul class="tasks-status">
+                                                <li>
+                                                    <button style="background: none; border: none;">
+                                                        <img th:src="${task.author.getUserImage()}"
+                                                             style="width: 34px; height: 34px; display: inline-block;border-radius: 100%;"/>
+                                                    </button>
+                                                    <span th:text="${task.author.firstname}"></span>
+                                                    <span th:text="${task.author.lastname}"></span>
+                                                    <span th:text="${task.author.middlename}"></span>
+                                                </li>
+                                                <li th:text="${task.regDate}"></li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="task-td-text">
+                                        <div class="taskText" th:text="${task.taskDescription}"></div>
+                                        <button class="task-text-button" id="height100"> читать</button>
+                                    </td>
+                                </tr>
+                            </table>
+                        </li>
 
-                                            <li th:if="${task.getStatus() != null}"
-                                                th:switch="${task.getStatus().ordinal()}">
-                                                <span th:case=0>В обработке</span>
-                                                <span th:case=1>Решаемые</span>
-                                                <span th:case=2>Решённые</span>
-                                                <span th:case=3>Отменённые</span>
-                                            </li>
 
-                                            <li></li>
-                                        </ul>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="task-td-text">
-                                    <div class="taskText" th:text="${task.taskDescription}"></div>
-                                    <a th:with="url=${T(com.netcracker.project.url.UrlTemplates).
-                                    LOCAL_URL_GET_TASK_BY_ID}" th:href="@{${url}(id=${task.getId()})}"
-                                       class="task-text-button" id="height100"> читать</a>
-                                </td>
-                            </tr>
-                        </table>
-                    </li>
+                        <div style="display:inline; margin: auto; width: 50%;" align="center">
+                            <form style="display:inline;">
+                            <span th:if="${setFirst}">
+                        <button type="button" class="page-button" th:name="id" th:value="${setFirst}"  th:text="${setFirst}"
+                                th:onclick="'setPage('+ ${setFirst} +')'"/>
+                            <button type="button" class="page-button" th:name="id"
+                                    th:value="${currentPage == null} ? ${1} : ${(currentPage)/2}"
+                                    th:text="..."
+                                    th:onclick="${currentPage == null} ? 'setPage('+ ${1} +') ' : 'setPage('+ ${(currentPage)/2} +') '" />
+
+                    </span>
+                                <ui th:each="pageNumber : ${pageNumbers}">
+                                    <button type="button"
+                                            th:name="id"
+                                            th:value="${pageNumber}"
+                                            th:text="${pageNumber}"
+                                            th:class="${pageNumber == currentPage} ?  'page-button-current' :  'page-button' "
+                                            th:onclick="'setPage('+ ${pageNumber} +') '"/>
+                                </ui>
+
+                                <span th:if="${setLast}">
+                <button type="button" th:class="page-button" th:name="id"
+                        th:value="${currentPage == null} ? ${setLast} : ${(setLast+currentPage)/2}"
+                        th:text="..."
+                        th:onclick="${currentPage == null} ? 'setPage('+ ${setLast} +') ' :  'setPage('+ ${(setLast+currentPage)/2} +') ' "/>
+                <button type="button" class="page-button" th:name="id"
+                        th:value="${setLast}"
+                        th:text="${setLast}"
+                        th:onclick="'setPage('+ ${setLast} +') '"/>
+            </span>
+                            </form>
+                        </div>
+                    </div>
+                    <!--                    -->
                 </div>
             </div>
         </div>
     </div>
 </div>
 
+<br>
+<form id="pageForm" hidden>
+    <input th:id="page" th:type="text" th:name="page" th:value="1">
+</form>
+<br>
 
-<br> <br>
+
 <footer th:insert="blocks/footer :: footer"></footer>
+
+<script>
+    function setPage(val) {
+        var page = document.getElementById("page");
+        page.value = val;
+
+        console.log("pageButtonClick")
+        if (isEmpty()) {
+            console.log("isEmpty")
+            var str = $("#pageForm").serialize();
+            $.ajax({
+                method: 'post',
+                dataType: 'html',
+                data: str,
+                success: function (data) {
+                    $('#listTaskId').html(data);
+                }
+            });
+        } else {
+            console.log("is not Empty")
+            var str = $("#formFilterConst, #pageForm").serialize();
+
+            $.ajax({
+                method: 'post',
+                dataType: 'html',
+                data: str,
+                url: "/api/v1/main-page/filter",
+                success: function (data) {
+                    $('#listTaskId').html(data);
+                }
+            });
+        }
+    }
+
+    function isEmpty() {
+        let arr = new Array();
+        arr.push(document.getElementById("ch0"));
+        arr.push(document.getElementById("ch1"));
+        arr.push(document.getElementById("ch2"));
+        arr.push(document.getElementById("ch3"));
+
+        let arrDate = new Array();
+        arrDate.push(document.getElementById("da1"));
+        arrDate.push(document.getElementById("da2"));
+
+        var filterEmpty = true;
+
+        var size = arr.length;
+        for (var i = 0; i < size; ++i) {
+            if (arr[i].checked == true) {
+                filterEmpty = false;
+                break;
+            }
+        }
+
+        size = arrDate.length;
+        console.log("size arrDate " + size);
+
+        for (var i = 0; i < size; ++i) {
+            console.log("filterEmpty arrDate " + i + " " + arrDate[i].value);
+            if (arrDate[i].value != null) {
+                if (arrDate[i].value.length > 0) {
+                    filterEmpty = false;
+                    break;
+                }
+            }
+        }
+        return filterEmpty;
+    }
+
+
+
+    function pageButtonClick() {
+        console.log("pageButtonClick")
+        if (isEmpty()) {
+            var str = $("#pageForm").serialize();
+            $.ajax({
+                method: 'post',
+                dataType: 'html',
+                data: str,
+                success: function (data) {
+                    $('#listTaskId').html(data);
+                }
+            });
+        }
+    }
+
+    function findFormPost() {
+
+        var textFind = document.getElementById("textFind")
+
+        if (textFind.value != "") {
+            var str = $("#findForm").serialize();
+
+            $.ajax({
+                method: 'post',
+                dataType: 'html',
+                data: str,
+                url: "/api/v1/main-page/find",
+                success: function (data) {
+                    $('#listTaskId').html(data);
+                }
+            });
+        } else {
+            setPage(1);
+        }
+    }
+
+</script>
+
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+
+<!-- Include Date Range Picker -->
+<script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css"/>
+
+<script>
+    $(document).ready(function () {
+        var date_input = $('input[name="date"]'); //our date input has the name "date"
+        var container = $('.bootstrap-iso form').length > 0 ? $('.bootstrap-iso form').parent() : "body";
+        date_input.datepicker({
+            format: 'dd/mm/yyyy',
+            container: container,
+            todayHighlight: true,
+            autoclose: true,
+        })
+    })
+</script>
+
 </body>
 </html>

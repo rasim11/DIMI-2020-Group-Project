@@ -3,6 +3,9 @@ package com.netcracker.project.model;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @AllArgsConstructor
 @Getter
 public enum Status {
@@ -11,4 +14,15 @@ public enum Status {
 
     private final int value;
     private final String name;
+    private static final Map<Integer, Status> map = new HashMap<>();
+
+    static {
+        for (Status status : Status.values()) {
+            map.put(status.value, status);
+        }
+    }
+
+    public static Status valueOf(int pageType) {
+        return map.get(pageType);
+    }
 }
