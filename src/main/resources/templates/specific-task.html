@@ -126,7 +126,7 @@
                     </button>
                     <div class="collapse show" id="div-date">
                         <div class="card card-body" style="background: none; border: none; ">
-                            <span class="task-attr" th:text="'Создана: '+${task.dateToString(task.getRegDate())}"/>
+                            <span class="task-attr" th:text="'Создана: '+${task.getRegDate()}"/>
                             <span th:if="${task.getStatus().getName()} == 'Решённые'" class="task-attr mt-2"
                                   th:text="'Решена: '+${task.dateToString(task.getCompleteDate())}"/>
                             <span th:if="${task.getStatus().getName()} == 'Отменённые'" class="task-attr mt-2"
