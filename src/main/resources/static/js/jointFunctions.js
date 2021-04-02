@@ -145,14 +145,14 @@ function addCloseBtn(parentDiv, mainWindow) {
     buttonWindowClose.innerText = "X";
     buttonWindowClose.addEventListener("click", function () {
         mainWindow.classList.remove('show');
-        document.querySelector("body").onmousedown = null;
+        document.querySelector("body").onmouseup = null;
         setTimeout(function () {
             mainWindow.remove();
         }, 1000);
     });
     parentDiv.append(buttonWindowClose);
 
-    document.querySelector("body").onmousedown = function (e) {
+    document.querySelector("body").onmouseup = function (e) {
         const mainDiv = $("#" + divDynamicWindowId);
         if (!mainDiv.is(e.target)
             && mainDiv.has(e.target).length === 0) {

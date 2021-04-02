@@ -21,16 +21,14 @@ public class Task {
     private String taskImage;
     private User author;
     private Region region;
-    private String regDate;
+    private LocalDateTime regDate;
     private LocalDateTime completeDate;
     private Status status;
     private Set<User> socialWorkers;
     private Feedback feedback;
 
     public void dataExtension(User author) {
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
-        LocalDateTime now = LocalDateTime.now();
-        this.regDate = dtf.format(now);
+        this.regDate = LocalDateTime.now();
         this.author = author;
         this.status = Status.IN_CREATING;
     }

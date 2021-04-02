@@ -92,7 +92,7 @@ public class EntityService {
         );
     }
 
-    public void deleteActiveTask(Long id, String url) {
+    public void deleteObject(Long id, String url) {
         restTemplate.delete(url, id);
     }
 
@@ -107,5 +107,13 @@ public class EntityService {
 
     public Feedback getFeedbackByTaskId(Long id) {
         return restTemplate.getForObject(URL_GET_FEEDBACK_BY_TASK_ID, Feedback.class, id);
+    }
+
+    public Subscription getSubscriptionByTaskUserIds(Long taskId, Long userId) {
+        return restTemplate.getForObject(URL_GET_SUBSCRIPTION_BY_TASK_USER_IDS, Subscription.class, taskId, userId);
+    }
+
+    public void postSubscription(Subscription subscription) {
+        restTemplate.postForLocation(URL_POST_SUBSCRIPTION, subscription);
     }
 }

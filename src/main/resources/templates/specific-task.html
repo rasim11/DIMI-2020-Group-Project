@@ -126,7 +126,7 @@
                     </button>
                     <div class="collapse show" id="div-date">
                         <div class="card card-body" style="background: none; border: none; ">
-                            <span class="task-attr" th:text="'Создана: '+${task.getRegDate()}"/>
+                            <span class="task-attr" th:text="'Создана: '+${task.dateToString(task.getRegDate())}"/>
                             <span th:if="${task.getStatus().getName()} == 'Решённые'" class="task-attr mt-2"
                                   th:text="'Решена: '+${task.dateToString(task.getCompleteDate())}"/>
                             <span th:if="${task.getStatus().getName()} == 'Отменённые'" class="task-attr mt-2"
@@ -168,6 +168,9 @@
                     Посмотреть причину отмены
                 </button>
             </div>
+            <button th:if="${isSubscription} != null" id="btn-subscription"></button>
+            <input th:if="${isSubscription} != null" id="input-cur-user-id" type="hidden"
+                   th:value="${#authentication.getPrincipal().getId()}">
         </div>
     </div>
     <div class="form-data" style="text-align: center;">
@@ -180,18 +183,20 @@
                 <div class="mb-4" style="display: inline-block;margin-left: 10px;text-align: start;">
                     <span class="font-weight-bold" th:text="${#authentication.getPrincipal().getFirstname()}"/>
                     <textarea class="form-control" style="width: 675px; min-height: 70px;" id="textarea-comment-text"
-                              placeholder="Оставьте комментарий"></textarea>
+                              placeholder="Оставьте комментарий" oninput="isCommentValid(this);"></textarea>
                 </div>
                 <div style="text-align: center">
-                    <button type="button" class="btn btn-outline-success"
+                    <button type="button" class="btn btn-outline-success" disabled
                             onclick="postComment();printComments();">
                         Оставить комментарий
                     </button>
-                    <button type="button" class="btn btn-outline-danger" onclick="cancelCommentBtn()">Отмена</button>
+                    <button type="button" class="btn btn-outline-danger" disabled onclick="cancelCommentBtn()">
+                        Отмена
+                    </button>
                 </div>
                 <hr>
             </div>
-            <div id="div-print-comments" style="overflow: auto;">
+            <div id="div-print-comments" style="overflow: auto; width: fit-content;margin: 0 auto;">
             </div>
         </div>
     </div>

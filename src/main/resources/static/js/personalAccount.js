@@ -6,12 +6,10 @@ const divIdDataBasic = "div-data-basic";
 const divIdAvatarMenu = "div-avatar-menu";
 const divIdHiddenAvatarMenu = "div-hidden-avatar-menu";
 const divIdDataPass = "div-data-pass";
-const divIdDataProblems = "div-data-problems";
 const divIdDialogWindow = "div-dialog-window";
 const divIdDataResponsible = "div-data-responsible";
 const btnIdDataBasic = "btn-data-basic";
 const btnIdDataPass = "btn-data-pass";
-const btnIdDataProblems = "btn-data-problems";
 const btnIdUpdate = "update-button";
 const btnIdDataAccount = "btn-data-account";
 const btnIdDataResponsible = "btn-data-responsible";
@@ -257,6 +255,7 @@ function addDataPass(divDataPass) {
         const inputPas = document.createElement("input");
         inputPas.type = "password";
         inputPas.className = "form-control";
+        inputPas.style.paddingRight = "35px";
         inputPas.addEventListener("input", checkPassEmpty);
 
         if (i === 0) {
@@ -277,21 +276,6 @@ function addDataPass(divDataPass) {
         btnPas.addEventListener("click", showPas.bind(null, btnPas, inputPas.id));
         divPass.appendChild(btnPas);
     }
-}
-
-function addDataProblems() {
-    const divMainContent = document.getElementById(divIdMainContent);
-
-    const divDataProblems = document.createElement("div");
-    divDataProblems.style.width = "450px";
-    divDataProblems.className = "form-data";
-    divDataProblems.style.margin = "auto";
-    divDataProblems.id = divIdDataProblems;
-    divMainContent.appendChild(divDataProblems);
-
-    const textProblem = document.createElement("span");
-    textProblem.textContent = document.getElementById(btnIdDataProblems).innerText;
-    divDataProblems.appendChild(textProblem);
 }
 
 function addDataAccount() {
@@ -424,9 +408,6 @@ function selectData(btn) {
         case btnIdDataPass:
             divTarget = document.getElementById(divIdDataPass);
             break;
-        case btnIdDataProblems:
-            divTarget = document.getElementById(divIdDataProblems);
-            break;
         case btnIdDataAccount:
             divTarget = document.getElementById(formIdDataAccount);
             break;
@@ -452,9 +433,6 @@ function divVarAdd(btnId) {
         case btnIdDataBasic:
         case btnIdDataPass:
             addDataUser(btnId);
-            break;
-        case btnIdDataProblems:
-            addDataProblems();
             break;
         case btnIdDataAccount:
             addDataAccount();
@@ -564,20 +542,11 @@ function addDialogWindow(btn) {
 
     const divDialogWindow = document.createElement("div");
     divDialogWindow.style.textAlign = "center";
+    divDialogWindow.id = divDynamicWindowId;
     divMainDialogWindow.appendChild(divDialogWindow);
 
-    const buttonWindowClose = document.createElement("button");
-    buttonWindowClose.className = "close-custom";
-    buttonWindowClose.style.outline = "none";
-    buttonWindowClose.title = "Закрыть";
-    buttonWindowClose.innerText = "X";
-    buttonWindowClose.addEventListener("click", function () {
-        divMainDialogWindow.classList.remove('show');
-        setTimeout(function () {
-            document.getElementById(divIdDialogWindow).remove();
-        }, 1000);
-    });
-    divDialogWindow.appendChild(buttonWindowClose);
+    addCloseBtn(divDialogWindow, divMainDialogWindow);
+    const buttonWindowClose = divDialogWindow.querySelector(".close-custom");
 
     const windowTitle = document.createElement("h3");
     windowTitle.className = "text-white";

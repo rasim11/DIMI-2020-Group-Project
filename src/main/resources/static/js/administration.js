@@ -200,6 +200,7 @@ function addDataUsers() {
     inputSearchString.className = "form-control";
     inputSearchString.style.width = "100%";
     inputSearchString.placeholder = "Введите критерий поиска";
+    inputSearchString.style.paddingRight = "35px";
     inputSearchString.addEventListener("input",
         filterSearchStringActive.bind(null, inputSearchString, divUsersId, inputIdSearchNames,
             spanIdCountUsers, "block"));
@@ -331,7 +332,9 @@ function addListUsers() {
     }
 
     const divUsersElements = document.querySelectorAll("#" + divUsersId + "> *");
-    activationScrollBar(divUsersId, maxCountUsers, divClassUser, divUsersElements.length);
+    if (divUsersElements.length !== 0) {
+        activationScrollBar(divUsersId, maxCountUsers, divClassUser, divUsersElements.length);
+    }
 }
 
 function isFilterDateActive(divFilter, spanTitleFilter) {
@@ -566,6 +569,10 @@ function setDivUserAtrWidth() {
         parseFloat(window.getComputedStyle(divDataFilters, null).width) -
         parseFloat(window.getComputedStyle(divDataFilters, null).marginLeft) - 20;
     divDataUsers.style.width = maxWidth + "px";
+
+    if (!divAnyUser) {
+        return;
+    }
 
     maxWidth -= parseFloat(window.getComputedStyle(divDataUsers, null).paddingLeft) * 2 +
         parseFloat(window.getComputedStyle(divAnyUser.querySelector("img"), null).width) +

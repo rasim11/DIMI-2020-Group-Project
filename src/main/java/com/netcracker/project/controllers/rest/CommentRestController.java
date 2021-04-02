@@ -26,7 +26,8 @@ public class CommentRestController {
         Task task = entityService.getTaskById(Long.parseLong(commentBody[1]));
         User curUser = securityService.getCurrentUser();
 
-        Comment comment = new Comment(null, task, commentBody[0], LocalDateTime.now(), curUser);
+        Comment comment = new Comment(null, task, commentBody[0].trim(), LocalDateTime.now(),
+                curUser, commentBody.length >= 3 ? commentBody[2] : null);
         entityService.postComment(comment);
     }
 

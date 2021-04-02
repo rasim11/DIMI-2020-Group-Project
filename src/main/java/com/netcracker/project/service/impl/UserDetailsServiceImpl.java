@@ -97,19 +97,22 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         Iterable<Task> tasks = entityService.getTasksByAuthorsEmail(user.getEmail());
         for (Task task : tasks) {
-            task.setStatus(Status.CANCELED);
-            task.setAuthor(null);
-            task.setCompleteDate(LocalDateTime.now());
-            entityService.putTask(task);
+            if (!task.getStatus().equals(Status.RESOLVED)) {
+                task.setStatus(Status.CANCELED);
+                task.setCompleteDate(LocalDateTime.now());
 
-            Feedback feedback = entityService.getFeedbackByTaskId(task.getId());
-            if (feedback == null) {
-                feedback = new Feedback();
-                feedback.dataExtension(task, "Связанный с данной проблемой аккаунт был удалён!");
-                entityService.postFeedback(feedback);
+                Feedback feedback = entityService.getFeedbackByTaskId(task.getId());
+                if (feedback == null) {
+                    feedback = new Feedback();
+                    feedback.dataExtension(task, "Связанный с данной проблемой аккаунт был удалён!");
+                    entityService.postFeedback(feedback);
+                }
             }
+            task.setAuthor(null);
+            entityService.putTask(task);
         }
 
+        restTemplate.delete(URL_DELETE_SUBSCRIPTIONS_BY_USER_ID, user.getId());
         restTemplate.delete(URL_DELETE_COMMENT_BY_AUTHOR_ID, user.getId());
         restTemplate.delete(URL_DELETE_USER, user.getEmail());
     }
@@ -160,7 +163,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             region.setResponsible(null);
             entityService.putRegion(region);
         } else if (user.getRole().equals(Role.SOCIAL_WORKER)) {
-            entityService.deleteActiveTask(user.getId(), URL_DELETE_ACTIVE_TASK_BY_WORKER_ID);
+            entityService.deleteObject(user.getId(), URL_DELETE_ACTIVE_TASK_BY_WORKER_ID);
         }
     }
 
