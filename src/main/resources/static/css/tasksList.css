@@ -110,3 +110,39 @@ button.page-button-current{
   color: white;
   border-radius:5px;
 }
+
+/**/
+
+
+table.taskTableList {
+  width: 90%;
+  /*height: 200px;*/
+  /*padding: 20px;*/
+  /*margin: 5px;*/
+  /*border-spacing: 10px; !* Расстояние между границ *!*/
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+tr.hoverClass:hover {
+  background:rgba( 0, 113 , 240, 0.7);
+}
+td a {
+  display: block;
+  border-radius: 10px;
+  border: 1px solid black;
+  padding: 16px;
+}
+
+  .clip {
+  white-space: nowrap; /* Запрещаем перенос строк */
+  overflow: hidden; /* Обрезаем все, что не помещается в область */
+  /*padding: 5px; !* Поля вокруг текста *!*/
+  text-overflow: ellipsis; /* Добавляем многоточие */
+}
+
+ .taskTableList {
+  width: 90%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}

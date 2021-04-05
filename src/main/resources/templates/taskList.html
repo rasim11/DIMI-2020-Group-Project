@@ -1,66 +1,71 @@
 <div class="table-itemS" th:id="listTaskId" xmlns:th="http://www.w3.org/1999/xhtml">
-    <li th:each="task : ${taskList}" class="notMarker">
-        <br>
-        <table class="taskTable">
-            <tr valign="top">
-                <td class="task-td-title"><span class="task-header" th:text="${task.taskName}"> </span>
+
+         <table class="table  taskTableList">
+            <thead class="table-light">
+            <tr>
+                <th scope="col">Название</th>
+                <th scope="col"></th>
+                <th scope="col">Автор</th>
+                <th scope="col">Дата</th>
+                <th scope="col">Статус</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            <tbody>
+            <tr th:each="task : ${taskList}" onclick="window.location=' adawaw';"   class="hoverClass" >
+
+                <td class="clip" colspan="2" >
+                    <span  th:text="${task.taskName}" th:title="${task.taskName}"></span>
                 </td>
-                <td rowspan="2" class="task-describe">
+                <td class="clip">
                     <div>
-                        <ul class="tasks-status">
-                            <li>
-                                <button style="background: none; border: none;">
-                                    <img th:src="${task.author.getUserImage()}"
-                                         style="width: 34px; height: 34px; display: inline-block;border-radius: 100%;"/>
-                                </button>
-                                <span th:text="${task.author.firstname}"></span>
-                                <span th:text="${task.author.lastname}"></span>
-                                <span th:text="${task.author.middlename}"></span>
-                            </li>
-                            <li th:text="${task.regDate}"></li>
-                        </ul>
+                    <span><img th:src="${task.author.getUserImage()}" style="width: 34px; height: 34px; display: inline-block;border-radius: 100%;"/></span>
+                    <span th:text="${task.author.firstname}" th:title="${task.author.firstname}"></span>
+                    <span th:text="${task.author.lastname}" th:title="${task.author.lastname}"></span>
                     </div>
                 </td>
-            </tr>
-            <tr>
-                <td class="task-td-text">
-                    <div class="taskText" th:text="${task.taskDescription}"></div>
-                    <button class="task-text-button" id="height100"> читать</button>
+                <td class="clip">
+                    <span th:text="${task.regDate}" th:title="${task.regDate}"></span>
+                </td>
+                <td class="clip">
+                    <span th:text="${task.status.getName}" th:title="${task.status.getName}"></span>
                 </td>
             </tr>
+            </tbody>
         </table>
-    </li>
 
 
     <div style="display:inline; margin: auto; width: 50%;" align="center">
         <form style="display:inline;">
                             <span th:if="${setFirst}">
-                        <button type="button" class="page-button" th:name="id" th:value="${setFirst}"  th:text="${setFirst}"
-                               th:onclick="'setPage('+ ${setFirst} +')'"/>
+                        <button type="button" class="page-button" th:name="id" th:value="${setFirst}"
+                                th:text="${setFirst}"
+                                th:onclick="'setPage('+ ${setFirst} +')'"/>
                             <button type="button" class="page-button" th:name="id"
-                                   th:value="${currentPage == null} ? ${1} : ${(currentPage)/2}"
+                                    th:value="${currentPage == null} ? ${1} : ${(currentPage)/2}"
                                     th:text="..."
-                                   th:onclick="${currentPage == null} ? 'setPage('+ ${1} +') ' : 'setPage('+ ${(currentPage)/2} +') '" />
+                                    th:onclick="${currentPage == null} ? 'setPage('+ ${1} +') ' : 'setPage('+ ${(currentPage)/2} +') '"/>
 
                     </span>
             <ui th:each="pageNumber : ${pageNumbers}">
                 <button type="button"
-                       th:name="id"
-                       th:value="${pageNumber}"
+                        th:name="id"
+                        th:value="${pageNumber}"
                         th:text="${pageNumber}"
-                       th:class="${pageNumber == currentPage} ?  'page-button-current' :  'page-button' "
-                       th:onclick="'setPage('+ ${pageNumber} +') '"/>
+                        th:class="${pageNumber == currentPage} ?  'page-button-current' :  'page-button' "
+                        th:onclick="'setPage('+ ${pageNumber} +') '"/>
             </ui>
 
             <span th:if="${setLast}">
                 <button type="button" th:class="page-button" th:name="id"
-                       th:value="${currentPage == null} ? ${setLast} : ${(setLast+currentPage)/2}"
+                        th:value="${currentPage == null} ? ${setLast} : ${(setLast+currentPage)/2}"
                         th:text="..."
-                       th:onclick="${currentPage == null} ? 'setPage('+ ${setLast} +') ' :  'setPage('+ ${(setLast+currentPage)/2} +') ' "/>
+                        th:onclick="${currentPage == null} ? 'setPage('+ ${setLast} +') ' :  'setPage('+ ${(setLast+currentPage)/2} +') ' "/>
                 <button type="button" class="page-button" th:name="id"
                         th:value="${setLast}"
                         th:text="${setLast}"
-                       th:onclick="'setPage('+ ${setLast} +') '"/>
+                        th:onclick="'setPage('+ ${setLast} +') '"/>
             </span>
         </form>
     </div>

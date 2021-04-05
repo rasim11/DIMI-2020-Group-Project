@@ -11,6 +11,9 @@ public class FilterParams {
     private LocalDate rightDate;
     private ArrayList<Status> listTasksStatus = null;
 
+    private String authorFilter;
+    private String responsibleFilter;
+
     private Integer page;
 
     public void setParams(Integer[] params) {
@@ -43,6 +46,18 @@ public class FilterParams {
         if (listTasksStatus != null) {
            if (  listTasksStatus.size() > 0)
             empty = false;
+        }
+
+        if (authorFilter != null)
+        {
+            if (authorFilter.toString().length() > 0 )
+                empty = false;
+        }
+
+        if (responsibleFilter != null)
+        {
+            if (responsibleFilter.toString().length() > 0 )
+                empty = false;
         }
 
         return empty;
@@ -95,5 +110,19 @@ public class FilterParams {
         this.page = page;
     }
 
+    public String getAuthorFilter() {
+        return authorFilter;
+    }
 
+    public void setAuthorFilter(String authorFilter) {
+        this.authorFilter = authorFilter;
+    }
+
+    public String getResponsibleFilter() {
+        return responsibleFilter;
+    }
+
+    public void setResponsibleFilter(String responsibleFilter) {
+        this.responsibleFilter = responsibleFilter;
+    }
 }

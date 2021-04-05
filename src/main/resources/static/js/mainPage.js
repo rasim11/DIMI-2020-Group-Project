@@ -49,6 +49,9 @@ function setFilterParam() {
     document.getElementById("ch3").checked = document.getElementById("checkbox3").checked;
     document.getElementById("da1").value = document.getElementById("date1").value
     document.getElementById("da2").value = document.getElementById("date2").value
+
+    document.getElementById("inpAuthForm").value = document.getElementById("InputAuthor").value
+    document.getElementById("inpRespForm").value = document.getElementById("InputResponse").value
 }
 
 function resetChecked() {
@@ -58,4 +61,8 @@ function resetChecked() {
     document.getElementById("checkbox3").checked = false;
     document.getElementById("date1").value = "";
     document.getElementById("date2").value = "";
+
+    document.getElementById("InputAuthor").value  = ""
+    document.getElementById("InputResponse").value =  ""
+
 }

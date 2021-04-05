@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.time.LocalDate;
@@ -154,8 +155,22 @@ public class MainController {
     public String filterPost(@RequestParam(required = false) Integer[] checkbox,
                              @RequestParam(required = false) String[] date,
                              @RequestParam(required = false) Integer page,
+                             @RequestParam(required = false) String inpAuthForm,
+                             @RequestParam(required = false) String inpRespForm,
+//                             @RequestParam(required = false) String inpAuth132,
                              Model model
     ) {
+
+
+        if (inpAuthForm != null)
+        System.out.println("inpAuth " + inpAuthForm);
+        else    System.out.println("inpAuthForm == null ");
+
+        if (inpRespForm != null)
+            System.out.println("inpAuth " + inpRespForm);
+        else    System.out.println("inpRespForm == null ");
+
+
 
         FilterParams filterParams = new FilterParams();
 
@@ -166,6 +181,9 @@ public class MainController {
                 model.addAttribute(checkParam, 1);
             }
         }
+
+        filterParams.setAuthorFilter(inpAuthForm);
+        filterParams.setResponsibleFilter(inpRespForm);
 
         DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         LocalDate leftDate = null;
@@ -192,8 +210,11 @@ public class MainController {
         }
 
         if (filterParams.isFilterEmpty()) {
-            return null;
+            System.out.println("filterParams.isFilterEmpty()");
+            mainPagePost(model, 1);
+            return "taskList";
         } else {
+            System.out.println("filterParams.isFilterEmpty() not not not");
             if (filterParams.isDateRangeIsCorrect()) {
 
                 if (leftDate != null)

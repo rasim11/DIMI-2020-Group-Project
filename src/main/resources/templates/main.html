@@ -33,7 +33,7 @@
 <header th:insert="blocks/header :: header"></header>
 
 
-<form th:id="formFilterConst" hidden>
+<form th:id="formFilterConst"  hidden>
     <label>hiden form for parametors</label>
     <input id="ch0"
            name="checkbox"
@@ -56,8 +56,14 @@
            th:value="3"
            th:checked="${checkbox3 != null} ? checked">
 
-    <input id="da1" name="date" type="text"/>
-    <input id="da2" name="date" type="text"/>
+    <input th:id="da1" th:name="date" type="text"/>
+    <input th:id="da2" th:name="date" type="text"/>
+
+    <input th:id="inpAuthForm" th:name="inpAuthForm" type="text"  />
+    <input th:id="inpRespForm" th:name="inpRespForm" type="text"  />
+
+<!--    <input th:id="inpAuth" th:name="inpAuth132" th:type="text" />-->
+
 </form>
 
 
@@ -65,15 +71,19 @@
     <div class="table-itemS2">
 
         <form id="filterForm" th:method="post" action="#" th:action="@{/api/v1/main-page/filter}">
-            <ul id="sidebarMenu" class="nav flex-column bg-light" style="min-width: max-content">
+            <ul id="sidebarMenu" class="nav flex-column bg-light"  style="min-width: max-content">
+
+                <div style=" min-width: 300px " >
+                </div>
+
                 <li class="nav-item">
-                    <span style="font-size: larger">Фильтры</span>
+                    <span style="font-size: larger " >Фильтры</span>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item" >
                     <a class="btn dropdown-toggle" data-toggle="collapse" href="#collapseStatus" role="button"
                        aria-expanded="false"
-                       aria-controls="collapseStatus">
-                        <span id="textStatus" style="font-size: larger">Статус</span>
+                       aria-controls="collapseStatus" >
+                        <span id="textStatus" style="font-size: larger "   >Статус</span>
                     </a>
                     <div class="collapse" id="collapseStatus">
                         <div class="card card-body" style="background: none;border: none">
@@ -125,7 +135,7 @@
                                 <br>
                                 <div class="form-group ">
                                     <label class="control-label" for="date1">
-                                        From
+                                        Создан в период от
                                     </label>
                                     <div class="col-sm-10">
                                         <input class="form-control" id="date1" name="date" placeholder="DD/MM/YYYY"
@@ -135,7 +145,7 @@
                                 <!--                                <label class="control-label" style="color: red" th:text="${betweenError}"></label>-->
                                 <div class="form-group ">
                                     <label class="control-label " for="date2">
-                                        To
+                                        до
                                     </label>
                                     <div class="col-sm-10">
                                         <input class="form-control" id="date2" name="date" placeholder="DD/MM/YYYY"
@@ -143,18 +153,29 @@
                                     </div>
                                 </div>
 
+                                <div class="form-group">
+                                    <label for="InputAuthor"> Автор</label>
+                                    <input type="text" class="form-control" id="InputAuthor"  placeholder="Имя Фамилия Отчесвто">
+<!--                                    <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>-->
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="InputResponse">Ответственный</label>
+                                    <input type="text" class="form-control" id="InputResponse"  placeholder="Имя Фамилия Отчесвто">
+                                    <!--                                    <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>-->
+                                </div>
+
 
                                 <br>
                                 <div class="form-check">
-                                    <input class="btn btn-primary" type="button"
+                                    <input class="btn btn-primary" type="button"  style=" min-width: 200px "
                                            onclick="resetChecked()" th:value="Сбросить"/>
                                     <br>
                                     <br>
-                                    <input onclick=" setFilterParam(), setPage(1)  "
+                                    <input onclick=" setFilterParam(), setPage(1)"  style=" min-width: 200px "
                                            id="submitFilter" type="button"
                                            class="btn btn-primary"
                                            th:value="Применить"/>
-
                                 </div>
                             </div>
                         </div>
@@ -162,7 +183,7 @@
                 </li>
                 <li class="nav-item">
                     <br><br>
-                    <a class="btn btn-primary" role="button" href="#">
+                    <a class="btn btn-primary" role="button" href="#"  style=" min-width: 200px ">
                         <span style="font-size: larger">Показать на карте</span>
                     </a>
                 </li>
@@ -192,49 +213,53 @@
                 <div class="table-itemS" th:id="taskListId">
                     <!--                     -->
                     <div class="table-itemS" th:id="listTaskId" xmlns:th="http://www.w3.org/1999/xhtml">
-                        <li th:each="task : ${taskList}" class="notMarker">
-                            <br>
-                            <table class="taskTable">
-                                <tr valign="top">
-                                    <td class="task-td-title"><span class="task-header"
-                                                                    th:text="${task.taskName}"> </span>
-                                    </td>
-                                    <td rowspan="2" class="task-describe">
-                                        <div>
-                                            <ul class="tasks-status">
-                                                <li>
-                                                    <button style="background: none; border: none;">
-                                                        <img th:src="${task.author.getUserImage()}"
-                                                             style="width: 34px; height: 34px; display: inline-block;border-radius: 100%;"/>
-                                                    </button>
-                                                    <span th:text="${task.author.firstname}"></span>
-                                                    <span th:text="${task.author.lastname}"></span>
-                                                    <span th:text="${task.author.middlename}"></span>
-                                                </li>
-                                                <li th:text="${task.regDate}"></li>
-                                            </ul>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="task-td-text">
-                                        <div class="taskText" th:text="${task.taskDescription}"></div>
-                                        <button class="task-text-button" id="height100"> читать</button>
-                                    </td>
-                                </tr>
-                            </table>
-                        </li>
+
+                        <table class="table  taskTableList">
+                            <thead class="table-light">
+                            <tr>
+                                <th scope="col">Название</th>
+                                <th scope="col"></th>
+                                <th scope="col">Автор</th>
+                                <th scope="col">Дата</th>
+                                <th scope="col">Статус</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+
+                            <tbody>
+                            <tr th:each="task : ${taskList}" onclick="window.location=' adawaw';"   class="hoverClass" >
+
+                                <td class="clip" colspan="2" >
+                                    <span  th:text="${task.taskName}" th:title="${task.taskName}"></span>
+                                </td>
+                                <td class="clip">
+                                    <div>
+                                        <span><img th:src="${task.author.getUserImage()}" style="width: 34px; height: 34px; display: inline-block;border-radius: 100%;"/></span>
+                                        <span th:text="${task.author.firstname}" th:title="${task.author.firstname}"></span>
+                                        <span th:text="${task.author.lastname}" th:title="${task.author.lastname}"></span>
+                                    </div>
+                                </td>
+                                <td class="clip">
+                                    <span th:text="${task.regDate}" th:title="${task.regDate}"></span>
+                                </td>
+                                <td class="clip">
+                                    <span th:text="${task.status.getName}" th:title="${task.status.getName}"></span>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
 
 
                         <div style="display:inline; margin: auto; width: 50%;" align="center">
                             <form style="display:inline;">
                             <span th:if="${setFirst}">
-                        <button type="button" class="page-button" th:name="id" th:value="${setFirst}"  th:text="${setFirst}"
+                        <button type="button" class="page-button" th:name="id" th:value="${setFirst}"
+                                th:text="${setFirst}"
                                 th:onclick="'setPage('+ ${setFirst} +')'"/>
                             <button type="button" class="page-button" th:name="id"
                                     th:value="${currentPage == null} ? ${1} : ${(currentPage)/2}"
                                     th:text="..."
-                                    th:onclick="${currentPage == null} ? 'setPage('+ ${1} +') ' : 'setPage('+ ${(currentPage)/2} +') '" />
+                                    th:onclick="${currentPage == null} ? 'setPage('+ ${1} +') ' : 'setPage('+ ${(currentPage)/2} +') '"/>
 
                     </span>
                                 <ui th:each="pageNumber : ${pageNumbers}">
@@ -319,6 +344,7 @@
         arrDate.push(document.getElementById("da1"));
         arrDate.push(document.getElementById("da2"));
 
+
         var filterEmpty = true;
 
         var size = arr.length;
@@ -341,6 +367,18 @@
                 }
             }
         }
+
+
+        if  (document.getElementById("inpAuthForm").value !=  "") {
+            filterEmpty = false;
+            console.log("  inpAuthForm empty = false; " );
+        }
+
+        if  (document.getElementById("inpRespForm").value !=  "") {
+            filterEmpty = false;
+            console.log("  inpRespForm empty = false; " );
+        }
+
         return filterEmpty;
     }
 
@@ -381,6 +419,17 @@
             setPage(1);
         }
     }
+
+
+    $(document).ready(function () {
+        $(".clickable-row").click(function() {
+            window.location = $(this).data("href");
+        });
+    });
+
+    $("#container").on('click-row.bs.table', function (e, row, $element) {
+        window.location = $element.data('href');
+    });
 
 </script>
 
