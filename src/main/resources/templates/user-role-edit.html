@@ -34,14 +34,9 @@
         <input type="hidden" id="input-user-id" th:value="${user.getId()}">
         <input type="hidden" id="input-region-id" th:if="${user.getRegion()} != null"
                th:value="${user.getRegion().getId()}">
-        <div id="div-btn-actions" class="mt-4">
-            <button type="submit" class="btn btn-primary mr-2" disabled>
-                Изменить
-            </button>
-            <button type="button" class="btn btn-danger" disabled onclick="resetBtn()">
-                Сбросить
-            </button>
-        </div>
+        <button type="submit" id="btn-change" class="btn btn-primary mt-4" disabled>
+            Изменить
+        </button>        
     </form>
 </div>
 

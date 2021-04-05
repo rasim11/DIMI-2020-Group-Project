@@ -42,18 +42,15 @@
                        th:value="${userForm.getPhoneNumber()}">
                 <div class="pas mb-2" style="width: 100%">
                     <input type="password" class="form-control input-ctrl" id="pas-input" placeholder="Пароль"
-                           name="password"
-                           oninput="checkPassFormat()"
-                           th:value="${userForm.getPassword()}">
+                           name="password" oninput="checkPassFormat()" th:value="${userForm.getPassword()}"
+                           style="padding-right: 35px;">
                     <button type="button" class="pas-control" style="outline: none;"
                             onclick="showPas(this, 'pas-input')"></button>
                 </div>
                 <div class="pas mb-4">
                     <input type="password" class="form-control input-ctrl" id="conf-pas-input"
-                           placeholder="Повторите пароль"
-                           name="passwordConfirm"
-                           oninput="checkPassConfirm(this)"
-                           th:value="${userForm.getPasswordConfirm()}">
+                           placeholder="Повторите пароль" name="passwordConfirm" style="padding-right: 35px;"
+                           oninput="checkPassConfirm(this)" th:value="${userForm.getPasswordConfirm()}">
                     <button type="button" class="pas-control" style="outline: none;"
                             onclick="showPas(this, 'conf-pas-input')"></button>
                 </div>

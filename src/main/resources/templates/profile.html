@@ -30,7 +30,7 @@
                th:text="'Электронная почта: '+${user.getEmail()}"/>
             <p th:if="${isEmp} or ${isCurUser} or ${#authentication.getPrincipal().getRole().getName()} == 'Админ'"
                th:text="'Номер телефона: '+${user.getPhoneNumber()}"/>
-            <div th:if="${roleName} != 'Админ'">
+            <div class="mb-4" th:if="${roleName} != 'Админ'" style="width: fit-content;margin: 0 auto;">
                 <div th:if="${roleName} == 'Пользователь'">
                     <p th:text="'Опубликованных проблем: '+${user.getTasksCount()}"/>
                 </div>
@@ -40,6 +40,11 @@
                 </div>
                 <a href="#"><p>Актуальные проблемы</p></a>
             </div>
+            <form th:if="${#authentication.getPrincipal().getRole().getName()} == 'Админ' and ${roleName} != 'Админ'"
+                    class="mb-2" method="post">
+                <button type="submit" name="btn" value="true" class="btn btn-outline-primary">Изменить роль</button>
+                <button type="submit" name="btn" value="false" class="btn btn-outline-danger">Удалить</button>
+            </form>
         </div>
     </div>
 </div>

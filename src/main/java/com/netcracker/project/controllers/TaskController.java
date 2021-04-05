@@ -11,7 +11,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
-import java.util.function.Predicate;
 
 import static com.netcracker.project.url.UrlTemplates.*;
 import static java.util.stream.Collectors.toCollection;
@@ -46,6 +45,10 @@ public class TaskController {
     @GetMapping(LOCAL_URL_GET_TASK_BY_ID)
     public String getTask(@PathVariable Long id, Model model) {
         Task task = entityService.getTaskById(id);
+        if (task == null) {
+            return REDIRECT_ON_MAIN_PAGE;
+        }
+
         task.setFeedback(entityService.getFeedbackByTaskId(task.getId()));
         String[] taskImages = task.getTaskImage().length() != 0 ? task.getTaskImage().split(" ") : null;
 
@@ -61,16 +64,16 @@ public class TaskController {
 
             User curUser = securityService.getCurrentUser();
             Region curRegion = entityService.getRegionByResponsibleEmail(curUser.getEmail());
-            Predicate<Role> userRole = x -> x.equals(Role.USER) || x.equals(Role.SOCIAL_WORKER);
-            Predicate<Status> taskStatus = x -> x.equals(Status.RESOLVED);
 
-            if (userRole.test(curUser.getRole())) {
+            if (curUser.getRole().equals(Role.USER)) {
                 User author = task.getAuthor();
                 if (author.getEmail().equals(curUser.getEmail())) {
-                    String param = taskStatus.test(task.getStatus()) ? "isFeedback" : "isEditAuthor";
+                    String param = task.getStatus().equals(Status.RESOLVED) ? "isFeedback" : "isEditAuthor";
                     model.addAttribute(param, true);
+                } else if (!task.getStatus().equals(Status.RESOLVED)) {
+                    model.addAttribute("isSubscription", true);
                 }
-            } else if (curUser.getRole().equals(Role.RESPONSIBLE) && !taskStatus.test(task.getStatus()) &&
+            } else if (curUser.getRole().equals(Role.RESPONSIBLE) && !task.getStatus().equals(Status.RESOLVED) &&
                     task.getRegion().getRegionName().equals(curRegion.getRegionName())) {
                 model.addAttribute("isEditResponsible", true);
             }
@@ -85,6 +88,13 @@ public class TaskController {
     @GetMapping(LOCAL_URL_AUTHOR_PUT_TASK)
     public String updateTaskGet(@PathVariable Long id, Model model) {
         Task task = entityService.getTaskById(id);
+        User curUser = securityService.getCurrentUser();
+
+        if (task == null || task.getAuthor() == null || !task.getAuthor().getId().equals(curUser.getId()) ||
+                task.getStatus().equals(Status.RESOLVED) || task.getStatus().equals(Status.CANCELED)) {
+            return REDIRECT_ON_MAIN_PAGE;
+        }
+
         String[] taskImages = task.getTaskImage().length() != 0 ? task.getTaskImage().split(" ") : null;
 
         model.addAttribute("taskForm", task);
@@ -101,7 +111,7 @@ public class TaskController {
         task.dataExtension(taskForm);
         entityService.putTask(task);
 
-        return REDIRECT_ON_MAIN_PAGE;
+        return "redirect:" + LOCAL_URL_GET_TASK_BY_ID.replace("{id}", id.toString());
     }
 
     @GetMapping(LOCAL_URL_RESPONSIBLE_PUT_TASK)
@@ -152,16 +162,17 @@ public class TaskController {
         task.dataExtension(taskForm.getStatus(), taskForm.getPriority());
         entityService.putTask(task);
 
-        entityService.deleteActiveTask(id, URL_DELETE_ACTIVE_TASK_BY_TASK_ID);
+        entityService.deleteObject(id, URL_DELETE_ACTIVE_TASK_BY_TASK_ID);
 
-        assert emails != null;
-        for (String email : emails) {
-            User socialWorker = userDetailsService.getUserByEmail(email);
-            entityService.postActiveTask(task.getId(), socialWorker.getId());
+        if (emails != null) {
+            for (String email : emails) {
+                User socialWorker = userDetailsService.getUserByEmail(email);
+                entityService.postActiveTask(task.getId(), socialWorker.getId());
 
-            if (task.getStatus().equals(Status.RESOLVED)) {
-                socialWorker.setTasksCount(socialWorker.getTasksCount() + 1);
-                userDetailsService.putUser(socialWorker);
+                if (task.getStatus().equals(Status.RESOLVED)) {
+                    socialWorker.setTasksCount(socialWorker.getTasksCount() + 1);
+                    userDetailsService.putUser(socialWorker);
+                }
             }
         }
 
@@ -173,6 +184,6 @@ public class TaskController {
             securityService.autoLogin(responsible.getEmail(), securityService.getCurrentUser().getPasswordConfirm());
         }
 
-        return REDIRECT_ON_MAIN_PAGE;
+        return "redirect:" + LOCAL_URL_GET_TASK_BY_ID.replace("{id}", id.toString());
     }
 }

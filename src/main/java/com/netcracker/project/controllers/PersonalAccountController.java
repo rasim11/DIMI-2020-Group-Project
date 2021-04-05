@@ -6,10 +6,15 @@ import com.netcracker.project.service.EntityService;
 import com.netcracker.project.service.SecurityService;
 import com.netcracker.project.service.impl.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.Arrays;
 
 import static com.netcracker.project.url.UrlTemplates.*;
 
@@ -61,5 +66,16 @@ public class PersonalAccountController {
         }
 
         return "profile";
+    }
+
+    @PostMapping(LOCAL_URL_USER_PROFILE)
+    public String userActivities(@PathVariable Long id, @RequestParam("btn") Boolean btnValue) {
+        if (btnValue) {
+            return "redirect:" + LOCAL_URL_USER_ROLE_EDIT.replace("{id}", id.toString());
+        } else {
+            User user = userDetailsService.getUserById(id);
+            userDetailsService.deleteUser(user);
+            return REDIRECT_ON_ADMINISTRATION;
+        }
     }
 }

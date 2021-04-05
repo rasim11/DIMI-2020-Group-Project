@@ -1,55 +1,73 @@
-<div class="bg-primary shadow-sm" th:fragment="header">
+<div class="bg-primary shadow-sm" th:fragment="header" style="height: 90px;">
     <link href="/css/pageConfig.css" rel="stylesheet">
-    <div class="container pt-4 pb-4" style="display: table; width: 100%;">
+    <link href="/css/header.css" rel="stylesheet">
+    <div class="container" style="display: flex; width: 100%; height: 100%; font-family: sans-serif;">
         <a th:with="url=${T(com.netcracker.project.url.UrlTemplates).LOCAL_URL_MAIN_PAGE}"
-           th:href="@{${url}}" style="text-decoration: none; display: table-cell;vertical-align: middle;">
-                <span class="text-white" style="font-family: Jokerman; font-weight: bold; font-size: 24px;">
-                    DIMI 2020|Task-FIX
+           class="header-panel mr-4" th:href="@{${url}}" style="display: flex;">
+                <span class="text-white" style="font-weight: bold; font-size: 24px; margin: auto 0;">
+                    Социальный ситуационный центр
                 </span>
         </a>
-        <a sec:authorize="!isAuthenticated()" style="display: table-cell;text-decoration: none;text-align: right;"
+        <a sec:authorize="!isAuthenticated()" style="display: flex; margin-left: auto;" class="header-panel"
            th:with="url=${T(com.netcracker.project.url.UrlTemplates).LOCAL_URL_USER_LOGIN}" th:href="@{${url}}">
-            <span class="text-white" style="font-weight: bold; font-size: 24px; vertical-align: super;">
+            <span class="text-white" style="font-weight: bold; font-size: 24px; margin: auto 0;">
                 Вход и регистрация
             </span>
         </a>
-        <div sec:authorize="isAuthenticated()" style="display: table-cell;text-align: right;">
+        <div sec:authorize="isAuthenticated()" style="display: flex; margin-left: auto;">
             <script src=/js/header.js></script>
-            <link href="/css/header.css" rel="stylesheet">
-            <a th:with="url=${T(com.netcracker.project.url.UrlTemplates).LOCAL_URL_POST_TASK}" th:href="@{${url}}"
-               sec:authorize="hasAuthority('Пользователь')" style="text-decoration: none">
-                <span class="text-white" style="font-weight: bold; font-size: 24px">Создать проблему</span>
+            <div sec:authorize="!hasAuthority('Админ')" id="div-hidden-problems-menu" style="display: flex;">
+                <button class="header-panel mr-1" onclick="showProblemsMenu();">
+                    <span class="text-white" style="font-weight: bold; font-size: 24px">Проблемы</span>
+                </button>
+                <div id="div-problems-menu" class="dropdown-content" style="text-align: center;">
+                    <a sec:authorize="hasAuthority('Пользователь')"
+                       th:with="url=${T(com.netcracker.project.url.UrlTemplates).LOCAL_URL_POST_TASK}"
+                       th:href="@{${url}}" class="btn btn-outline-success mt-1 mb-1">
+                        Создать проблему
+                    </a>
+                    <a href="#" sec:authorize="hasAnyAuthority('Соц. работник','Ответственный')"
+                       class="btn btn-outline-success mt-1 mb-1">
+                        Мои актуальные проблемы
+                    </a>
+                    <a href="#" class="btn btn-outline-primary mb-1">
+                        Мои проблемы
+                    </a>
+                </div>
+            </div>
+            <a sec:authorize="hasAuthority('Пользователь')" href="#" class="header-panel mr-1" style="display: flex">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+                     class="bi bi-bell-fill text-white" viewBox="0 0 16 16" style="margin: auto 0;">
+                    <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2zm.995-14.901a1 1 0 1 0-1.99 0A5.002 5.002 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901z"/>
+                </svg>
             </a>
             <a th:with="url=${T(com.netcracker.project.url.UrlTemplates).LOCAL_URL_ADMINISTRATION}" th:href="@{${url}}"
-               sec:authorize="hasAuthority('Админ')" style="text-decoration: none">
-                <span class="text-white" style="font-weight: bold; font-size: 24px">Администрирование</span>
+               sec:authorize="hasAuthority('Админ')" class="header-panel mr-1" style="display: flex;">
+                <span class="text-white" style="font-weight: bold; font-size: 24px;margin: auto 0;">
+                    Администрирование
+                </span>
             </a>
-            <a href="#" sec:authorize="hasAnyAuthority('Соц. работник','Ответственный')"
-               style="text-decoration: none">
-                <span class="text-white" style="font-weight: bold; font-size: 24px">Актуальные проблемы</span>
-            </a>
-            <div id="div-hidden-login-menu" style="display: inline-block;">
-                <button style="background: none;border: none;" onclick="showLoginMenu()">
+            <div id="div-hidden-login-menu" style="display: flex;">
+                <button class="header-panel" onclick="showLoginMenu();">
                     <img th:src="${#authentication.getPrincipal().getUserImage()}"
                          style="width: 34px; height: 34px; display: inline-block;border-radius: 100%;"/>
-                    <span class="text-white" th:text="${#authentication.getPrincipal().getFirstname()}"/>
+                    <span class="text-white" th:text="${#authentication.getPrincipal().getFirstname()}"
+                          style="overflow: hidden; max-width: 135px; display: inline-block; vertical-align: middle;"/>
                 </button>
-                <form method="post" th:action="@{/logout}" id="form-login-menu"
-                      class="dropdown-content">
-                    <div align="center">
-                        <a th:with="url=${T(com.netcracker.project.url.UrlTemplates).LOCAL_URL_USER_PROFILE}"
-                           th:href="@{${url}(id=${#authentication.getPrincipal().getId()})}"
-                           class="btn btn-outline-primary mt-1 mb-1">
-                            <span>Мой профиль</span>
-                        </a>
-                        <a th:with="url=${T(com.netcracker.project.url.UrlTemplates).LOCAL_URL_PERSONAL_ACCOUNT}"
-                           th:href="@{${url}}" class="btn btn-outline-success mb-1">
-                            <span>Личный кабинет</span>
-                        </a>
-                        <button type="submit" class="btn btn-outline-danger mb-1">
-                            <span>Выйти</span>
-                        </button>
-                    </div>
+                <form method="post" th:action="@{/logout}" id="form-login-menu" class="dropdown-content"
+                      style="text-align: center;">
+                    <a th:with="url=${T(com.netcracker.project.url.UrlTemplates).LOCAL_URL_USER_PROFILE}"
+                       th:href="@{${url}(id=${#authentication.getPrincipal().getId()})}"
+                       class="btn btn-outline-primary mt-1 mb-1">
+                        Мой профиль
+                    </a>
+                    <a th:with="url=${T(com.netcracker.project.url.UrlTemplates).LOCAL_URL_PERSONAL_ACCOUNT}"
+                       th:href="@{${url}}" class="btn btn-outline-success mb-1">
+                        Личный кабинет
+                    </a>
+                    <button type="submit" class="btn btn-outline-danger mb-1">
+                        Выйти
+                    </button>
                 </form>
             </div>
         </div>

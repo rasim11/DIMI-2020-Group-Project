@@ -8,13 +8,14 @@
     <link href="/css/validation.css" rel="stylesheet">
     <link href="/css/formData.css" rel="stylesheet">
     <link href="/css/task.css" rel="stylesheet">
+    <link href="/css/closeCustom.css" rel="stylesheet">
     <script src=/js/validation.js></script>
     <script src=/js/jointFunctions.js></script>
     <script src=/js/task.js></script>
 </head>
 <body onload="loadTaskEdit()">
 <header th:insert="blocks/header :: header"></header>
-<div class="external-cont">
+<div id="div-main-block" class="external-cont">
     <div class="form-data" style="width: 800px; text-align: center; font-size: 20px">
         <h3>
             Редактирование проблемы
@@ -45,7 +46,7 @@
                 <div class="div-images" style="display: table-cell;text-align: start;">
                     <div class="div-image mr-2 mb-2" style="position: relative; display: inline-block;"
                          th:each="taskImage, iter : ${taskImages}" th:id="'div-task-img'+${iter.index}">
-                        <img th:src="${taskImage}" class="any-img" style="width: 100px;">
+                        <img th:src="${taskImage}" class="task-preview-img any-img" onclick="showFullImg(this);">
                         <button type="button" class="del-img" title="Удалить" style="outline: none;"
                                 th:onclick="'taskDivImgRemove(\'div-task-img'+ ${iter.index} +'\');'">
                             X
@@ -53,8 +54,7 @@
                     </div>
                     <input type="file" id="input-load-img" accept="image/jpeg,image/jpg,image/png,image/bmp"
                            style="display: none;" multiple onchange="processingImages(this)">
-                    <img class="mb-2" src="/img/add-photo.jpg" style="width: 100px; cursor: pointer"
-                         title="Добавить фотографии"
+                    <img class="task-preview-img mb-2" src="/img/add-photo.jpg" title="Добавить фотографии"
                          onclick="loadImages();">
                 </div>
             </div>

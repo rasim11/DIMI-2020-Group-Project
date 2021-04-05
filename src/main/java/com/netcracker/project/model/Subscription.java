@@ -3,17 +3,12 @@ package com.netcracker.project.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import java.time.LocalDateTime;
 
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
-public class Comment {
-
+public class Subscription {
     private Long id;
+    private User user;
     private Task task;
-    private String comment;
-    private LocalDateTime publishDate;
-    private User author;
-    private String tag;
 }

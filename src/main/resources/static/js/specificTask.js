@@ -3,37 +3,36 @@ const LOCAL_URL_GET_TASK_BY_ID = API + VERSION + TASK_MANAGEMENT + TASK_GET + BY
 
 const maxCountComments = 10;
 const inputTaskId = "input-task-id";
+const inputCurUserId = "input-cur-user-id";
 const divFeedbackId = "div-feedback";
 const divAuthorId = "div-author";
 const textareaCommentTextId = "textarea-comment-text";
+const textareaFeedbackId = "textarea-feedback";
 const divCommentBoxId = "div-comment-box"
 const divPrintCommentsId = "div-print-comments";
 const divCommentClass = "div-any-comment";
-const divImagesId = "div-images";
-const divMainBlockId = "div-main-block";
-const divMainWindowId = "div-main-window";
-const divFeedbackWindowId = "div-feedback-window";
 const btnSaveFeedbackId = "btn-save-feedback";
 const btnShowFeedbackId = "btn-show-feedback";
 const btnCancelTaskId = "btn-cancel-task";
 const btnCancellationReasonId = "btn-cancellation-reason";
+const btnSubscriptionId = "btn-subscription";
 let taskId;
+let curUserId;
 let taskFeedback = [];
 let taskComments = [];
 let authorAtr = [];
 
 
-function postComment() {
-    const commentText = document.getElementById(textareaCommentTextId);
+function postComment(elementId = textareaCommentTextId, tag = "") {
+    const commentText = document.getElementById(elementId);
     const xhr = new XMLHttpRequest();
-    const strArray = commentText.value + '&&&' + taskId;
+    const strArray = [commentText.value, taskId, tag].join("&&&");
 
     xhr.open('POST', URL_POST_COMMENT, false);
     xhr.send(strArray);
 
     if (xhr.status !== 200) {
         alert(xhr.status + ': ' + xhr.statusText);
-        return null;
     } else {
         commentText.value = "";
     }
@@ -46,7 +45,6 @@ function getTaskComments(taskId) {
     }
 
     const xhr = new XMLHttpRequest();
-
     xhr.open('GET', URL_GET_COMMENT_BY_TASK_ID + "/" + taskId, false);
     xhr.send();
 
@@ -71,8 +69,28 @@ function printComments() {
 
     for (let i = 0; i < taskComments.length; i++) {
         const anyComment = document.createElement("div");
-        anyComment.className = divCommentClass + " pb-4";
-        allComments.prepend(anyComment);
+
+        if (!taskComments[i].tag) {
+            anyComment.className = divCommentClass + " pb-4";
+            allComments.prepend(anyComment);
+        } else {
+            anyComment.className = divCommentClass;
+            const divFeedback = document.createElement("div");
+            divFeedback.className = "bg-success mb-4";
+            divFeedback.style.borderRadius = "15px";
+            divFeedback.style.padding = "10px";
+            allComments.prepend(divFeedback);
+
+            const feedbackTitle = document.createElement("h5");
+            feedbackTitle.textContent = taskComments[i].tag === "Причина" ? "Причина отмены" : "Отзыв автора";
+            divFeedback.append(feedbackTitle);
+
+            anyComment.style.padding = "10px";
+            anyComment.style.borderRadius = "15px";
+            anyComment.style.backgroundColor = "white";
+            divFeedback.append(anyComment);
+        }
+
 
         const aUserProfile = document.createElement("a");
         aUserProfile.href = LOCAL_URL_USER_PROFILE + "/" + taskComments[i].author.id;
@@ -144,141 +162,84 @@ function calledOnLoad() {
         inputTaskFeedback.remove();
     }
 
-    const divImages = document.getElementById(divImagesId).querySelectorAll("img");
-    if (divImages.length === 1) {
-        const btn = document.getElementById(divImagesId).querySelectorAll("button");
-        for (let i = 0; i < btn.length; i++) {
-            btn[i].remove();
-        }
-        divImages[0].style.display = "inline-block";
-    } else {
-        imgResize(divImages[0]);
-    }
-
     const commentBox = document.getElementById(divCommentBoxId);
     if (commentBox) {
         printComments();
+    }
+
+    const btnSubscription = document.getElementById(btnSubscriptionId);
+    if (btnSubscription) {
+        const inputCurUser = document.getElementById(inputCurUserId);
+        curUserId = inputCurUser.value;
+        inputCurUser.remove();
+
+        getSubscriptionByTaskId(btnSubscription);
     }
 }
 
 function activationScrollBarExt() {
     const divPrintCommentsElements = document.querySelectorAll("#" + divPrintCommentsId + "> *");
-    if (divPrintCommentsElements.length > 0) {
+    if (divPrintCommentsElements.length !== 0) {
         activationScrollBar(divPrintCommentsId, maxCountComments, divCommentClass, divPrintCommentsElements.length);
     }
-}
-
-function imgResize(image) {
-    const btn = document.getElementById(divImagesId).querySelectorAll("button");
-
-    image.style.display = "inline-block";
-    const btnHeight = parseFloat(window.getComputedStyle(image, null).height) + "px";
-
-    for (let i = 0; i < btn.length; i++) {
-        btn[i].style.height = btnHeight;
-    }
-}
-
-function previousImage() {
-    const divImages = document.getElementById(divImagesId).querySelectorAll("img");
-    const btn = document.getElementById(divImagesId).querySelectorAll("button");
-
-    for (let i = 0; i < divImages.length; i++) {
-        if (divImages[i].style.display === "inline-block") {
-            divImages[i - 1].style.display = "inline-block";
-            divImages[i].style.display = "none";
-            if (i - 1 === 0) {
-                btn[0].disabled = true;
-            }
-            break;
-        }
-    }
-
-    btn[1].disabled = false;
-}
-
-function nextImage() {
-    const divImages = document.getElementById(divImagesId).querySelectorAll("img");
-    const btn = document.getElementById(divImagesId).querySelectorAll("button");
-
-    for (let i = 0; i < divImages.length; i++) {
-        if (divImages[i].style.display === "inline-block") {
-            divImages[i + 1].style.display = "inline-block";
-            divImages[i].style.display = "none";
-            if (i + 1 === divImages.length - 1) {
-                btn[1].disabled = true;
-            }
-            break;
-        }
-    }
-
-    btn[0].disabled = false;
 }
 
 function showFeedbackWindow(btn, text) {
     const divMainBlock = document.getElementById(divMainBlockId);
 
     const divMainWindow = document.createElement("div");
-    divMainWindow.id = divMainWindowId;
     divMainWindow.className = "feedback-window";
     divMainBlock.append(divMainWindow);
 
     const divFeedbackWindow = document.createElement("div");
     divFeedbackWindow.style.textAlign = "center";
-    divFeedbackWindow.id = divFeedbackWindowId;
+    divFeedbackWindow.id = divDynamicWindowId;
     divMainWindow.append(divFeedbackWindow);
 
-    const buttonWindowClose = document.createElement("button");
-    buttonWindowClose.className = "close-custom";
-    buttonWindowClose.style.outline = "none";
-    buttonWindowClose.title = "Закрыть";
-    buttonWindowClose.innerText = "X";
-    buttonWindowClose.addEventListener("click", function () {
-        divMainWindow.classList.remove('show');
-        document.querySelector("body").onmousedown = null;
-        setTimeout(function () {
-            divMainWindow.remove();
-        }, 1000);
-    });
-    divFeedbackWindow.append(buttonWindowClose);
-
-    document.querySelector("body").onmousedown = function (e) {
-        const mainDiv = $("#" + divFeedbackWindowId);
-        if (!mainDiv.is(e.target)
-            && mainDiv.has(e.target).length === 0) {
-            buttonWindowClose.click();
-        }
-    };
+    addCloseBtn(divFeedbackWindow, divMainWindow);
 
     const windowTitle = document.createElement("h3");
     windowTitle.innerText = text;
     divFeedbackWindow.append(windowTitle);
 
-    const formFeedback = document.createElement("form");
-    formFeedback.className = "mb-4";
-    formFeedback.method = "get";
-    formFeedback.action = LOCAL_URL_GET_TASK_BY_ID + "/" + taskId;
-    formFeedback.onsubmit = function (e) {
-        e.preventDefault();
-        if (textareaFeedback.value) {
-            postFeedback(divMainWindow, btn);
-            e.target.submit();
-        } else {
-            setInvalidFormat(textareaFeedback, "Текст отсутствует");
+    let blockFeedback;
+    if ([btnSaveFeedbackId, btnCancelTaskId].includes(btn.id)) {
+        blockFeedback = document.createElement("form");
+        blockFeedback.method = "get";
+        blockFeedback.action = LOCAL_URL_GET_TASK_BY_ID + "/" + taskId;
+        blockFeedback.onsubmit = function (e) {
+            e.preventDefault();
+            if (textareaFeedback.value) {
+                postFeedback(divMainWindow, btn);
+                const tag = btn.id === btnSaveFeedbackId ? "Отзыв" : "Причина";
+                postComment(textareaFeedbackId, tag);
+                e.target.submit();
+            } else {
+                setInvalidFormat(textareaFeedback, "Текст отсутствует");
+            }
         }
+
+        const btnSave = document.createElement("button");
+        btnSave.type = "submit";
+        btnSave.className = "btn btn-primary mt-4";
+        btnSave.textContent = "Сохранить";
+        blockFeedback.append(btnSave);
+    } else {
+        blockFeedback = document.createElement("div");
     }
-    divFeedbackWindow.append(formFeedback);
+    blockFeedback.className = "mb-4";
+    divFeedbackWindow.append(blockFeedback);
 
     const userImg = document.createElement("img");
     userImg.src = authorAtr[0];
     userImg.className = "comment-author-img";
-    formFeedback.append(userImg);
+    blockFeedback.prepend(userImg);
 
     const divFeedbackText = document.createElement("div");
     divFeedbackText.style.display = "inline-block";
     divFeedbackText.style.marginLeft = "10px";
     divFeedbackText.style.textAlign = "start";
-    formFeedback.append(divFeedbackText);
+    userImg.after(divFeedbackText);
 
     const spanAuthor = document.createElement("span");
     spanAuthor.className = "font-weight-bold";
@@ -286,6 +247,7 @@ function showFeedbackWindow(btn, text) {
     divFeedbackText.append(spanAuthor);
 
     const textareaFeedback = document.createElement("textarea");
+    textareaFeedback.id = textareaFeedbackId;
     textareaFeedback.className = "form-control";
     textareaFeedback.style.width = "600px";
     textareaFeedback.style.minHeight = "100px";
@@ -310,14 +272,6 @@ function showFeedbackWindow(btn, text) {
         textareaFeedback.before(commentDateTime);
     }
 
-    if ([btnSaveFeedbackId, btnCancelTaskId].includes(btn.id)) {
-        const btnSave = document.createElement("button");
-        btnSave.type = "submit";
-        btnSave.className = "btn btn-primary mt-4";
-        btnSave.textContent = "Сохранить";
-        formFeedback.append(btnSave);
-    }
-
     setTimeout(function () {
         divMainWindow.classList.add('show');
     }, 10);
@@ -333,5 +287,53 @@ function postFeedback(divFrom, btnFrom) {
     xhr.send(strArray);
 
     divFrom.querySelector("button").click();
+}
 
+function isCommentValid(comment) {
+    const btn = document.querySelector(".comment").querySelectorAll("button");
+    btn[0].disabled = !(comment.value && comment.value.trim() !== "");
+    btn[1].disabled = btn[0].disabled;
+}
+
+function getSubscriptionByTaskId(btn) {
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', URL_GET_SUBSCRIPTION_BY_TASK_USER_IDS + "/" + taskId + "&" + curUserId, false);
+    xhr.send();
+
+    if (xhr.status !== 200) {
+        alert(xhr.status + ': ' + xhr.statusText);
+    } else {
+        if (xhr.responseText) {
+            const subscription = JSON.parse(xhr.responseText);
+
+            btn.textContent = "Отписаться";
+            btn.className = "btn btn-outline-danger";
+            btn.onclick = function () {
+                const xhr = new XMLHttpRequest();
+                xhr.open('DELETE', URL_DELETE_SUBSCRIPTION_BY_ID + "/" + subscription.id, false);
+                xhr.send();
+
+                if (xhr.status !== 200) {
+                    alert(xhr.status + ': ' + xhr.statusText);
+                } else {
+                    getSubscriptionByTaskId(btn);
+                }
+            }
+        } else {
+            btn.textContent = "Подписаться";
+            btn.className = "btn btn-outline-success";
+            btn.onclick = function () {
+                const xhr = new XMLHttpRequest();
+                const strArray = [taskId, curUserId].join("&&&");
+                xhr.open('POST', URL_POST_SUBSCRIPTION, false);
+                xhr.send(strArray);
+
+                if (xhr.status !== 200) {
+                    alert(xhr.status + ': ' + xhr.statusText);
+                } else {
+                    getSubscriptionByTaskId(btn);
+                }
+            }
+        }
+    }
 }

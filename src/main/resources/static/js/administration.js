@@ -1,12 +1,10 @@
 const LOCAL_URL_REGISTRATION_THROUGH_ADMIN = API + VERSION + ADMIN_MANAGEMENT + USER_REGISTRATION;
 const LOCAL_URL_USER_PROFILE = API + VERSION + USER_MANAGEMENT + USER_GET + BY_ID;
-const LOCAL_URL_USER_ROLE_EDIT = API + VERSION + ADMIN_MANAGEMENT + USER_ROLE_EDIT + BY_ID;
 
 const maxCountUsers = 10;
 const divClassUser = "div-user";
 const divClassFilterActions = "div-filter-actions";
 const divClassUserAttribute = "div-user-attribute";
-const formClassUserActivity = "div-user-activity";
 const divContentId = "div-content";
 const divUsersId = "div-users";
 const divIdDataUsers = "div-data-users"
@@ -202,6 +200,7 @@ function addDataUsers() {
     inputSearchString.className = "form-control";
     inputSearchString.style.width = "100%";
     inputSearchString.placeholder = "Введите критерий поиска";
+    inputSearchString.style.paddingRight = "35px";
     inputSearchString.addEventListener("input",
         filterSearchStringActive.bind(null, inputSearchString, divUsersId, inputIdSearchNames,
             spanIdCountUsers, "block"));
@@ -236,7 +235,7 @@ function addDataUsers() {
             "<input id='" + inputIdSearchEmail + "' type='radio' name='searchCriterion' checked " +
             "style='vertical-align: middle'> Email |" :
             "<input id='" + inputIdSearchNames + "' type='radio' name='searchCriterion' " +
-            "style='vertical-align: middle'> ФИ";
+            "style='vertical-align: middle'> ФИО";
     }
 
     addListUsers();
@@ -279,18 +278,13 @@ function addListUsers() {
     for (let i = 0; i < users.length; i++) {
         const divUser = document.createElement("div");
         divUser.className = divClassUser + " pb-4";
-        divUser.style.display = "table";
         divUser.style.width = "100%";
         divUsers.appendChild(divUser);
 
-        const divTableCell = document.createElement("div");
-        divTableCell.style.display = "table-cell";
-        divUser.appendChild(divTableCell);
-
         const aProfile = document.createElement("a");
         aProfile.href = LOCAL_URL_USER_PROFILE + "/" + users[i].id;
-        aProfile.className = "pr-4";
-        divTableCell.appendChild(aProfile);
+        aProfile.className = "mr-4";
+        divUser.appendChild(aProfile);
 
         const imgUserAvatar = document.createElement("img");
         imgUserAvatar.className = "img-users-list";
@@ -303,14 +297,15 @@ function addListUsers() {
         divUserAttribute.style.verticalAlign = "middle";
         divUserAttribute.style.overflow = "hidden";
         divUserAttribute.style.maxWidth = divUserAtrMaxWidth;
-        divTableCell.appendChild(divUserAttribute);
+        divUser.appendChild(divUserAttribute);
 
         for (let j = 0; j < 4; j++) {
             const spanUserAttribute = document.createElement("span");
             spanUserAttribute.style.display = "block";
             switch (j) {
                 case 0:
-                    spanUserAttribute.textContent = "ФИ: " + users[i].lastname + " " + users[i].firstname;
+                    spanUserAttribute.textContent = "ФИО: " + users[i].lastname + " "
+                        + users[i].firstname + " " + users[i].middlename;
                     break;
                 case 1:
                     spanUserAttribute.textContent = "Email: " + users[i].email;
@@ -334,53 +329,12 @@ function addListUsers() {
         hiddenRegDate.type = "hidden";
         hiddenRegDate.value = users[i].regDate;
         divUserAttribute.appendChild(hiddenRegDate);
-
-        const formUserActivity = document.createElement("form");
-        formUserActivity.className = formClassUserActivity + " pl-4";
-        formUserActivity.action = LOCAL_URL_USER_ROLE_EDIT + "/" + users[i].id;
-        formUserActivity.method = "get";
-        formUserActivity.style.width = "162px";
-        formUserActivity.style.display = "table-cell";
-        formUserActivity.style.verticalAlign = "middle";
-        divUser.appendChild(formUserActivity);
-
-        for (let j = 0; j < 2; j++) {
-            const btn = document.createElement("button");
-            btn.style.display = "block";
-            btn.style.width = "100%";
-
-            if (j === 0) {
-                btn.type = "submit";
-                btn.className = "btn btn-outline-primary mb-3";
-                btn.textContent = "Изменить роль";
-            } else {
-                btn.type = "button";
-                btn.className = "btn btn-outline-danger";
-                btn.textContent = "Удалить";
-                btn.addEventListener("click", function () {
-                    deleteUser(divUser, divUserAttribute, spanCountUsers);
-                    const divUsersElements = document.querySelectorAll("#" + divUsersId + "> *");
-                    activationScrollBar(divUsersId, maxCountUsers, divClassUser, divUsersElements.length);
-                    users = getAllObjectsFromRequest(URL_GET_ALL_USER);
-                });
-            }
-
-            formUserActivity.appendChild(btn);
-        }
     }
 
     const divUsersElements = document.querySelectorAll("#" + divUsersId + "> *");
-    activationScrollBar(divUsersId, maxCountUsers, divClassUser, divUsersElements.length);
-}
-
-function deleteUser(divUser, divUserAttribute, spanCountUsers) {
-    const email = divUserAttribute.querySelectorAll("span")[1].innerText.split(" ");
-    deleteObject(URL_DELETE_USER + "/" + email[email.length - 1], false);
-    divUser.remove();
-
-    let newCount = spanCountUsers.innerText.split(" ");
-    newCount[newCount.length - 1] = (Number(newCount[newCount.length - 1]) - 1).toString();
-    spanCountUsers.textContent = newCount.join(" ");
+    if (divUsersElements.length !== 0) {
+        activationScrollBar(divUsersId, maxCountUsers, divClassUser, divUsersElements.length);
+    }
 }
 
 function isFilterDateActive(divFilter, spanTitleFilter) {
@@ -614,13 +568,16 @@ function setDivUserAtrWidth() {
     let maxWidth = parseFloat(window.getComputedStyle(divMainContent, null).width) -
         parseFloat(window.getComputedStyle(divDataFilters, null).width) -
         parseFloat(window.getComputedStyle(divDataFilters, null).marginLeft) - 20;
-    divDataUsers.style.maxWidth = maxWidth + 10 + "px";
+    divDataUsers.style.width = maxWidth + "px";
+
+    if (!divAnyUser) {
+        return;
+    }
 
     maxWidth -= parseFloat(window.getComputedStyle(divDataUsers, null).paddingLeft) * 2 +
         parseFloat(window.getComputedStyle(divAnyUser.querySelector("img"), null).width) +
-        parseFloat(window.getComputedStyle(divAnyUser.querySelector("a"), null).paddingRight) +
-        parseFloat(window.getComputedStyle(divAnyUser.querySelector("." + formClassUserActivity),
-            null).width) + 8;
+        parseFloat(window.getComputedStyle(divAnyUser.querySelector("a"), null).marginRight);
+    maxWidth -= document.querySelectorAll("#" + divUsersId + "> *").length > maxCountUsers ? 18 : 0;
     divUserAtrMaxWidth = maxWidth + "px";
 
     const divUsersAtr = document.querySelectorAll("." + divClassUserAttribute);

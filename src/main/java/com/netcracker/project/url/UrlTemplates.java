@@ -50,6 +50,7 @@ public final class UrlTemplates {
     public static final String ACTIVE_TASKS_GET = "/active-tasks-get";
     public static final String COMMENT_DELETE = "/comment-delete";
     public static final String FEEDBACK_GET = "/feedback-get";
+    public static final String SUBSCRIPTION_MANAGEMENT = "/subscription-management";
 
     public static final String LOCAL_URL_ADMINISTRATION = API + VERSION + ADMIN_MANAGEMENT;
     public static final String LOCAL_URL_USER_ROLE_EDIT = API + VERSION + ADMIN_MANAGEMENT +
@@ -77,6 +78,13 @@ public final class UrlTemplates {
     public static final String LOCAL_URL_RESPONSIBLE_PUT_TASK = API + VERSION + TASK_MANAGEMENT +
             TASK_PUT + BY_ID + "-by-responsible/{id}";
     public static final String LOCAL_URL_POST_FEEDBACK = API + VERSION + FEEDBACK_MANAGEMENT + FEEDBACK_POST;
+    public static final String LOCAL_URL_GET_SUBSCRIPTION_BY_TASK_USER_IDS = API + VERSION + SUBSCRIPTION_MANAGEMENT +
+            "/subscription-get-by-task-user-ids/{taskId}&{userId}";
+    public static final String LOCAL_URL_DELETE_SUBSCRIPTION_BY_ID = API + VERSION + SUBSCRIPTION_MANAGEMENT +
+            "/subscription-delete-by-id/{id}";
+    public static final String LOCAL_URL_POST_SUBSCRIPTION = API + VERSION + SUBSCRIPTION_MANAGEMENT +
+            "/subscription-post";
+    public static final String LOCAL_URL_GET_TASKS = API + VERSION + TASK_MANAGEMENT + "/tasks-get";
 
     public static final String URL_GET_ALL_REGIONS = SERVER + LOCAL_URL_GET_ALL_REGIONS;
     public static final String URL_GET_ALL_USERS = SERVER + LOCAL_URL_GET_ALL_USERS;
@@ -114,5 +122,11 @@ public final class UrlTemplates {
             COMMENT_DELETE + "-by-author/{id}";
     public static final String URL_GET_FEEDBACK_BY_TASK_ID = SERVER + API + VERSION + FEEDBACK_MANAGEMENT +
             FEEDBACK_GET + "-by-task/{id}";
+    public static final String URL_GET_SUBSCRIPTION_BY_TASK_USER_IDS = SERVER +
+            LOCAL_URL_GET_SUBSCRIPTION_BY_TASK_USER_IDS;
+    public static final String URL_POST_SUBSCRIPTION = SERVER + LOCAL_URL_POST_SUBSCRIPTION;
+    public static final String URL_DELETE_SUBSCRIPTION_BY_ID = SERVER + LOCAL_URL_DELETE_SUBSCRIPTION_BY_ID;
+    public static final String URL_DELETE_SUBSCRIPTIONS_BY_USER_ID = SERVER + API + VERSION + SUBSCRIPTION_MANAGEMENT +
+            "/subscriptions-delete-by-user-id/{id}";
 
 }

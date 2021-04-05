@@ -23,7 +23,7 @@
         <span th:if="${errorPass!=null}" style="color: red;" th:text="${errorPass}"/>
         <div class="pas mb-2" style="width: 100%">
             <input class="form-control" type="password" id="pas-input" placeholder="Пароль" name="password"
-                   th:value="${password}" oninput="setValidFormat(this)">
+                   th:value="${password}" oninput="setValidFormat(this)" style="padding-right: 35px;">
             <button type="button" class="pas-control" style="outline: none;"
                     onclick="showPas(this, 'pas-input')">
             </button>

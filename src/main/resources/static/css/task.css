@@ -56,3 +56,9 @@
     border-radius: 10px;
     background: white;
 }
+
+.task-preview-img {
+    width: 100px;
+    height: 100px;
+    cursor: pointer;
+}

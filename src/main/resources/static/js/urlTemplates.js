@@ -16,7 +16,6 @@ const ALL_REGIONS_GET = "/all-regions-get";
 const EMAIL_FREE = "/email-free";
 const USER_GET = "/user-get";
 const BY_ID = "-by-id";
-const USER_ROLE_EDIT = "/user-role-edit";
 const COMMENT_POST = "/comment-post";
 const COMMENT_MANAGEMENT = "/comment-management";
 const COMMENT_GET = "/comment-get";
@@ -24,6 +23,7 @@ const FEEDBACK_MANAGEMENT = "/feedback-management";
 const FEEDBACK_POST = "/feedback-post";
 const TASK_MANAGEMENT = "/task-management";
 const TASK_GET = "/task-get";
+const SUBSCRIPTION_MANAGEMENT = "/subscription-management";
 
 const URL_GET_ALL_USER = SERVER + API + VERSION + USER_MANAGEMENT + ALL_USERS_GET;
 const URL_DELETE_USER = SERVER + API + VERSION + USER_MANAGEMENT + USER_DELETE;
@@ -35,3 +35,8 @@ const URL_CHECK_EMAIL_FREE = SERVER + API + VERSION + USER_MANAGEMENT + EMAIL_FR
 const URL_POST_COMMENT = SERVER + API + VERSION + COMMENT_MANAGEMENT + COMMENT_POST;
 const URL_POST_FEEDBACK = SERVER + API + VERSION + FEEDBACK_MANAGEMENT + FEEDBACK_POST;
 const URL_GET_COMMENT_BY_TASK_ID = SERVER + API + VERSION + COMMENT_MANAGEMENT + COMMENT_GET + "-by-task";
+const URL_GET_SUBSCRIPTION_BY_TASK_USER_IDS = SERVER + API + VERSION + SUBSCRIPTION_MANAGEMENT +
+    "/subscription-get-by-task-user-ids";
+const URL_DELETE_SUBSCRIPTION_BY_ID = SERVER + API + VERSION + SUBSCRIPTION_MANAGEMENT +
+    "/subscription-delete-by-id";
+const URL_POST_SUBSCRIPTION = SERVER + API + VERSION + SUBSCRIPTION_MANAGEMENT + "/subscription-post";

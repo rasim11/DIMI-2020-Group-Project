@@ -1,5 +1,6 @@
 const selectIdRoles = "select-roles";
 const selectIdRegions = "select-regions";
+const btnChangeId = "btn-change";
 
 let roles;
 let regions;
@@ -142,17 +143,10 @@ function isNoDuplicate() {
     const selectRegion = document.getElementById(selectIdRegions);
 
     if (!selectRegion) {
-        if (selectRoles.value === targetUserRole) {
-            setBtnActionsStates(true);
-        } else {
-            setBtnActionsStates(false);
-        }
+        document.getElementById(btnChangeId).disabled = selectRoles.value === targetUserRole;
     } else {
-        if (selectRoles.value === targetUserRole && selectRegion.value === targetUserRegionId) {
-            setBtnActionsStates(true);
-        } else {
-            setBtnActionsStates(false);
-        }
+        document.getElementById(btnChangeId).disabled = selectRoles.value === targetUserRole &&
+            selectRegion.value === targetUserRegionId;
     }
 }
 
@@ -166,12 +160,5 @@ function resetBtn() {
     selectRoles.remove();
 
     addBegData();
-    setBtnActionsStates(true);
-}
-
-function setBtnActionsStates(val) {
-    const divBtnActions = document.getElementById("div-btn-actions").querySelectorAll("button");
-    for (let i = 0; i < divBtnActions.length; i++) {
-        divBtnActions[i].disabled = val;
-    }
+    document.getElementById(btnChangeId).disabled = true;
 }

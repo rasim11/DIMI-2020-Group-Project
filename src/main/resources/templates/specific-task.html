@@ -5,6 +5,7 @@
     <title>TF|Просмотр проблемы</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <link href="/css/formData.css" rel="stylesheet">
     <link href="/css/task.css" rel="stylesheet">
     <link href="/css/closeCustom.css" rel="stylesheet">
@@ -16,8 +17,8 @@
 </head>
 <body onload="calledOnLoad();">
 <header th:insert="blocks/header :: header"></header>
-<div class="external-cont">
-    <div id="div-main-block" class="form-data mb-4" style="width: 900px;">
+<div id="div-main-block" class="container external-cont">
+    <div class="form-data mb-4">
         <input id="input-task-id" type="hidden" th:value="${task.getId()}">
         <div id="div-feedback" th:if="${task.getFeedback()}!=null">
             <input type="hidden" th:value="${task.getFeedback().getFeedback()}">
@@ -28,51 +29,112 @@
             <input type="hidden" th:value="${task.getAuthor().getFirstname()}">
         </div>
         <h3 style="text-align: center;" th:text="${task.getTaskName()}"/>
-        <div style="display: table; width: 100%">
-            <div class="pr-3" style="display: table-cell">
-                <span class="task-attr" th:text="${task.getTaskDescription()}"
-                      style="max-height: 600px; overflow: auto; white-space: pre-wrap;"/>
-            </div>
-            <div style="display: table-cell; text-align: right; width: 35%;">
-                <span class="task-attr mb-2" th:if="${task.getPriority()!=null}"
-                      th:text="'Приоритет: '+${task.getPriority().getName()}"/>
-                <span class="task-attr mb-2" th:if="${task.getPriority()==null}">Приоритет: Не назначен</span>
-                <span class="task-attr mb-2" th:text="'Статус: '+${task.getStatus().getName()}"/>
-                <span class="task-attr mb-2" th:text="'Регион: '+${task.getRegion().getRegionName()}"/>
-                <span class="task-attr mb-2" th:text="'Адрес: '+${task.getTaskLocation()}"/>
-                <label class="task-attr mb-2">
-                    Автор:
-                    <a th:if="${task.getAuthor()}!=null"
-                       th:text="${task.getAuthor().getLastname() + ' ' + task.getAuthor().getFirstname()}"
-                       th:with="url=${T(com.netcracker.project.url.UrlTemplates).LOCAL_URL_USER_PROFILE}"
-                       th:href="@{${url}(id=${task.getAuthor().getId()})}"/>
-                    <span th:if="${task.getAuthor()}==null">Аккаунт был удалён</span>
-                </label>
-                <label class="task-attr mb-2">
-                    Ответственный:
-                    <a th:if="${task.getRegion().getResponsible()}!=null"
-                       th:text="${task.getRegion().getResponsible().getLastname() + ' ' +
-               task.getRegion().getResponsible().getFirstname()}"
-                       th:with="url=${T(com.netcracker.project.url.UrlTemplates).LOCAL_URL_USER_PROFILE}"
-                       th:href="@{${url}(id=${task.getRegion().getResponsible().getId()})}"/>
-                    <span th:if="${task.getRegion().getResponsible()}==null">
-                        У данного региона ответственный не назначен
-                    </span>
-                </label>
-                <span class="task-attr" th:text="'Создана: '+${task.getRegDate()}"/>
-                <span th:if="${task.getStatus().getName()} == 'Решённые'" class="task-attr mt-2"
-                      th:text="'Решена: '+${task.dateToString(task.getCompleteDate())}"/>
-                <span th:if="${task.getStatus().getName()} == 'Отменённые'" class="task-attr mt-2"
-                      th:text="'Отменена: '+${task.dateToString(task.getCompleteDate())}"/>
-            </div>
-        </div>
-        <hr>
-        <div id="div-images" class="mb-4" style="text-align: center;">
-            <button type="button" class="btn btn-secondary" disabled onclick="previousImage();"><</button>
-            <img th:if="${taskImages} != null" th:each="taskImage : ${taskImages}" th:src="${taskImage}"
-                 style="display: none">
-            <img th:if="${taskImages} == null" src="/img/default-problem.jpg" style="width: 640px;">
-            <button type="button" class="btn btn-secondary" onclick="nextImage();">></button>
+        <div class="mb-4" style="display: table; width: 100%">
+            <ul class="nav flex-column pr-3" style="display: table-cell">
+                <li class="nav-item mb-3">
+                    <button class="btn dropdown-toggle font-weight-bold" type="button" data-toggle="collapse"
+                            aria-expanded="true" data-target="#div-description" aria-controls="div-description"
+                            style="box-shadow: none;">
+                        Описание
+                    </button>
+                    <div class="collapse show" id="div-description">
+                        <div class="card card-body" style="background: none; border: none;">
+                               <span class="mb-4 task-attr" th:text="${task.getTaskDescription()}"
+                                     style="max-height: 600px; overflow: auto; white-space: pre-wrap;"/>
+                        </div>
+                    </div>
+                </li>
+                <li th:if="${taskImages} != null" class="nav-item">
+                    <button class="btn dropdown-toggle font-weight-bold" type="button" data-toggle="collapse"
+                            aria-expanded="true" data-target="#div-images" aria-controls="div-images"
+                            style="box-shadow: none;">
+                        Изображения
+                    </button>
+                    <div class="collapse show" id="div-images">
+                        <div class="card card-body" style="background: none; border: none; flex-direction: row;">
+                            <img class="task-preview-img mr-2" th:each="taskImage : ${taskImages}"
+                                 th:src="${taskImage}" onclick="showFullImg(this)">
+                        </div>
+                    </div>
+                </li>
+            </ul>
+            <ul class="nav flex-column pr-3" style="display: table-cell; width: 35%;">
+                <li class="nav-item mb-3">
+                    <button class="btn dropdown-toggle font-weight-bold" type="button" data-toggle="collapse"
+                            aria-expanded="true" data-target="#div-details" aria-controls="div-details"
+                            style="box-shadow: none;">
+                        Детали
+                    </button>
+                    <div class="collapse show" id="div-details">
+                        <div class="card card-body" style="background: none; border: none;">
+                            <span class="task-attr mb-2" th:if="${task.getPriority()!=null}"
+                                  th:text="'Приоритет: '+${task.getPriority().getName()}"/>
+                            <span class="task-attr mb-2"
+                                  th:if="${task.getPriority()==null}">Приоритет: Не назначен</span>
+                            <span class="task-attr mb-2" th:text="'Статус: '+${task.getStatus().getName()}"/>
+                        </div>
+                    </div>
+                </li>
+                <li class="nav-item mb-3">
+                    <button class="btn dropdown-toggle font-weight-bold" type="button" data-toggle="collapse"
+                            aria-expanded="true" data-target="#div-location" aria-controls="div-location"
+                            style="box-shadow: none;">
+                        Местоположение
+                    </button>
+                    <div class="collapse show" id="div-location">
+                        <div class="card card-body" style="background: none; border: none; ">
+                            <span class="task-attr mb-2" th:text="'Регион: '+${task.getRegion().getRegionName()}"/>
+                            <span class="task-attr mb-2" th:text="'Адрес: '+${task.getTaskLocation()}"/>
+                        </div>
+                    </div>
+                </li>
+                <li class="nav-item mb-3">
+                    <button class="btn dropdown-toggle font-weight-bold" type="button" data-toggle="collapse"
+                            aria-expanded="true" data-target="#div-people" aria-controls="div-people"
+                            style="box-shadow: none;">
+                        Люди
+                    </button>
+                    <div class="collapse show" id="div-people">
+                        <div class="card card-body" style="background: none; border: none; ">
+                            <label class="task-attr mb-2">
+                                Автор:
+                                <a th:if="${task.getAuthor()}!=null"
+                                   th:text="${task.getAuthor().getLastname() + ' ' + task.getAuthor().getFirstname()}"
+                                   th:with="url=${T(com.netcracker.project.url.UrlTemplates).LOCAL_URL_USER_PROFILE}"
+                                   th:href="@{${url}(id=${task.getAuthor().getId()})}"/>
+                                <span th:if="${task.getAuthor()}==null">Аккаунт был удалён</span>
+                            </label>
+                            <label class="task-attr mb-2">
+                                Ответственный:
+                                <a th:if="${task.getRegion().getResponsible()}!=null"
+                                   th:text="${task.getRegion().getResponsible().getLastname() + ' ' +
+                                    task.getRegion().getResponsible().getFirstname()}"
+                                   th:with="url=${T(com.netcracker.project.url.UrlTemplates).LOCAL_URL_USER_PROFILE}"
+                                   th:href="@{${url}(id=${task.getRegion().getResponsible().getId()})}"/>
+                                <span th:if="${task.getRegion().getResponsible()}==null">
+                                    У данного региона ответственный не назначен
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+                </li>
+                <li class="nav-item mb-3">
+                    <button class="btn dropdown-toggle font-weight-bold" type="button" data-toggle="collapse"
+                            aria-expanded="true" data-target="#div-date" aria-controls="div-date"
+                            style="box-shadow: none;">
+                        Даты:
+                    </button>
+                    <div class="collapse show" id="div-date">
+                        <div class="card card-body" style="background: none; border: none; ">
+                            <span class="task-attr" th:text="'Создана: '+${task.getRegDate()}"/>
+                            <span th:if="${task.getStatus().getName()} == 'Решённые'" class="task-attr mt-2"
+                                  th:text="'Решена: '+${task.dateToString(task.getCompleteDate())}"/>
+                            <span th:if="${task.getStatus().getName()} == 'Отменённые'" class="task-attr mt-2"
+                                  th:text="'Отменена: '+${task.dateToString(task.getCompleteDate())}"/>
+                        </div>
+                    </div>
+                </li>
+            </ul>
         </div>
         <div style="text-align: center">
             <div th:if="${isEditAuthor}!=null">
@@ -106,30 +168,35 @@
                     Посмотреть причину отмены
                 </button>
             </div>
+            <button th:if="${isSubscription} != null" id="btn-subscription"></button>
+            <input th:if="${isSubscription} != null" id="input-cur-user-id" type="hidden"
+                   th:value="${#authentication.getPrincipal().getId()}">
         </div>
     </div>
-    <div class="form-data" style="width: 900px; text-align: center;">
+    <div class="form-data" style="text-align: center;">
         <span class="task-attr" th:if="${task.commentAllow}==false">Комментарии отключены</span>
         <div th:if="${task.commentAllow}==true" id="div-comment-box">
             <h4 class="mb-3">Всего комментариев:</h4>
             <span th:if="${commentForbidden}!=null" class="task-attr mb-4" th:text="${commentForbidden}"/>
             <div class="comment mb-4" th:if="${commentPermission}!=null">
                 <img th:src="${#authentication.getPrincipal().getUserImage()}" class="comment-author-img">
-                <div style="display: inline-block;margin-left: 10px;text-align: start;">
+                <div class="mb-4" style="display: inline-block;margin-left: 10px;text-align: start;">
                     <span class="font-weight-bold" th:text="${#authentication.getPrincipal().getFirstname()}"/>
                     <textarea class="form-control" style="width: 675px; min-height: 70px;" id="textarea-comment-text"
-                              placeholder="Оставьте комментарий"></textarea>
+                              placeholder="Оставьте комментарий" oninput="isCommentValid(this);"></textarea>
                 </div>
-                <hr>
                 <div style="text-align: center">
-                    <button type="button" class="btn btn-outline-success"
+                    <button type="button" class="btn btn-outline-success" disabled
                             onclick="postComment();printComments();">
                         Оставить комментарий
                     </button>
-                    <button type="button" class="btn btn-outline-danger" onclick="cancelCommentBtn()">Отмена</button>
+                    <button type="button" class="btn btn-outline-danger" disabled onclick="cancelCommentBtn()">
+                        Отмена
+                    </button>
                 </div>
+                <hr>
             </div>
-            <div id="div-print-comments" style="overflow: auto;">
+            <div id="div-print-comments" style="overflow: auto; width: fit-content;margin: 0 auto;">
             </div>
         </div>
     </div>
