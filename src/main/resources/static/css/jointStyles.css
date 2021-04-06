@@ -1,14 +1,14 @@
-.nav-btn {
-    width: 100%;
-    border: none;
-    text-align: start;
-}
-
-svg {
+.left-menu {
     vertical-align: text-top;
     width: 24px;
     height: 24px;
     fill: currentColor;
+}
+
+.nav-btn {
+    width: 100%;
+    border: none;
+    text-align: start;
 }
 
 .img-users-list {

@@ -58,11 +58,16 @@ public class TaskController {
         if (securityService.isAuthenticated()) {
             model.addAttribute("commentPermission", true);
 
+            User curUser = securityService.getCurrentUser();
+
+            if (curUser.getRole().equals(Role.USER)) {
+                model.addAttribute("isSubscription", true);
+            }
+
             if (task.getStatus().equals(Status.CANCELED)) {
                 return "specific-task";
             }
 
-            User curUser = securityService.getCurrentUser();
             Region curRegion = entityService.getRegionByResponsibleEmail(curUser.getEmail());
 
             if (curUser.getRole().equals(Role.USER)) {
@@ -70,8 +75,6 @@ public class TaskController {
                 if (author.getEmail().equals(curUser.getEmail())) {
                     String param = task.getStatus().equals(Status.RESOLVED) ? "isFeedback" : "isEditAuthor";
                     model.addAttribute(param, true);
-                } else if (!task.getStatus().equals(Status.RESOLVED)) {
-                    model.addAttribute("isSubscription", true);
                 }
             } else if (curUser.getRole().equals(Role.RESPONSIBLE) && !task.getStatus().equals(Status.RESOLVED) &&
                     task.getRegion().getRegionName().equals(curRegion.getRegionName())) {

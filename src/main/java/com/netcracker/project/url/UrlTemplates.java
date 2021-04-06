@@ -47,7 +47,6 @@ public final class UrlTemplates {
     public static final String ACTIVE_TASK_POST = "/active-task-post";
     public static final String FEEDBACK_MANAGEMENT = "/feedback-management";
     public static final String FEEDBACK_POST = "/feedback-post";
-    public static final String ACTIVE_TASKS_GET = "/active-tasks-get";
     public static final String COMMENT_DELETE = "/comment-delete";
     public static final String FEEDBACK_GET = "/feedback-get";
     public static final String SUBSCRIPTION_MANAGEMENT = "/subscription-management";
@@ -84,7 +83,10 @@ public final class UrlTemplates {
             "/subscription-delete-by-id/{id}";
     public static final String LOCAL_URL_POST_SUBSCRIPTION = API + VERSION + SUBSCRIPTION_MANAGEMENT +
             "/subscription-post";
-    public static final String LOCAL_URL_GET_TASKS = API + VERSION + TASK_MANAGEMENT + "/tasks-get";
+    public static final String LOCAL_URL_GET_EMPLOYEES = API + VERSION + USER_MANAGEMENT +
+            "/get-employees-by-responsible-email/{email}";
+    public static final String LOCAL_URL_GET_TASKS_BY_WORKER_ID = API + VERSION + TASK_SOCIAL_WORKERS_MANAGEMENT +
+            "/active-tasks-get-by-social-worker" + BY_ID + "/{id}";
 
     public static final String URL_GET_ALL_REGIONS = SERVER + LOCAL_URL_GET_ALL_REGIONS;
     public static final String URL_GET_ALL_USERS = SERVER + LOCAL_URL_GET_ALL_USERS;
@@ -107,8 +109,7 @@ public final class UrlTemplates {
     public static final String URL_GET_USERS_BY_REGION_ID = URL_GET_ALL_USERS + "-by-region" + BY_ID + "/{id}";
     public static final String URL_GET_WORKERS_BY_TASK_ID = SERVER + API + VERSION + TASK_SOCIAL_WORKERS_MANAGEMENT +
             SOCIAL_WORKERS_GET + "-by-active-task" + BY_ID + "/{id}";
-    public static final String URL_GET_TASKS_BY_WORKER_ID = SERVER + API + VERSION + TASK_SOCIAL_WORKERS_MANAGEMENT +
-            ACTIVE_TASKS_GET + "-by-social-worker" + BY_ID + "/{id}";
+    public static final String URL_GET_TASKS_BY_WORKER_ID = SERVER + LOCAL_URL_GET_TASKS_BY_WORKER_ID;
     public static final String URL_DELETE_ACTIVE_TASK_BY_TASK_ID = SERVER + API + VERSION +
             TASK_SOCIAL_WORKERS_MANAGEMENT + ACTIVE_TASK_DELETE + "-by-task" + BY_ID + "/{id}";
     public static final String URL_DELETE_ACTIVE_TASK_BY_WORKER_ID = SERVER + API + VERSION +

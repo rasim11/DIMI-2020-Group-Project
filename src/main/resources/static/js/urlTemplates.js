@@ -24,8 +24,12 @@ const FEEDBACK_POST = "/feedback-post";
 const TASK_MANAGEMENT = "/task-management";
 const TASK_GET = "/task-get";
 const SUBSCRIPTION_MANAGEMENT = "/subscription-management";
+const TASK_SOCIAL_WORKERS_MANAGEMENT = "/task-social-workers-management";
 
 const URL_GET_ALL_USER = SERVER + API + VERSION + USER_MANAGEMENT + ALL_USERS_GET;
+const URL_GET_EMPLOYEES = SERVER + API + VERSION + USER_MANAGEMENT + "/get-employees-by-responsible-email";
+const URL_GET_TASKS_BY_WORKER_ID = SERVER + API + VERSION + TASK_SOCIAL_WORKERS_MANAGEMENT +
+    "/active-tasks-get-by-social-worker" + BY_ID;
 const URL_DELETE_USER = SERVER + API + VERSION + USER_MANAGEMENT + USER_DELETE;
 const URL_GET_ALL_ROLES = SERVER + API + VERSION + ROLE_MANAGEMENT + ALL_ROLES_GET;
 const URL_GET_CUR_USER = SERVER + API + VERSION + USER_MANAGEMENT + CUR_USER_GET;

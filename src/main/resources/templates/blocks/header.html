@@ -4,9 +4,30 @@
     <div class="container" style="display: flex; width: 100%; height: 100%; font-family: sans-serif;">
         <a th:with="url=${T(com.netcracker.project.url.UrlTemplates).LOCAL_URL_MAIN_PAGE}"
            class="header-panel mr-4" th:href="@{${url}}" style="display: flex;">
-                <span class="text-white" style="font-weight: bold; font-size: 24px; margin: auto 0;">
-                    Социальный ситуационный центр
-                </span>
+            <div style="margin: auto 0;">
+                <svg style="fill: #f9f953;width: 60px; height: 60px;" viewBox="5.5 5.5 89 89" preserveAspectRatio="none">
+                    <g transform="matrix(1 0 0 1 0 0)"
+                       class="aIptOCySncolors-0445a7a8f-7b0d-4663-814e-3404354a80b0">
+                        <g>
+                            <g>
+                                <path fill-rule="evenodd" clip-rule="evenodd"
+                                      d="M50,5.5C25.427,5.5,5.5,25.424,5.5,50c0,21.814,15.707,39.953,36.425,43.755    c-0.008-0.073-0.025-0.14-0.016-0.215l3.165-21.269c0.074-0.545,0.161-1.445,0.185-2l0.385-9.044l-4.033,9.629    c-0.304,0.71-1.126,1.055-1.847,0.759c-0.714-0.307-1.055-1.125-0.761-1.843l5.818-13.89c0.036-0.148,0.095-0.285,0.175-0.425    l0.068-0.137c0,0,0.01,0.002,0.014,0.019c0.188-0.256,0.444-0.447,0.733-0.538c0,0,2.096-0.623,3.827-0.623    c1.74,0,3.835,0.623,3.835,0.623c0.298,0.091,0.543,0.285,0.734,0.538c0.007,0,0.01-0.019,0.021-0.022l0.057,0.141    c0.074,0.14,0.138,0.276,0.18,0.425l5.808,13.89c0.303,0.718-0.029,1.536-0.755,1.843c-0.721,0.296-1.55-0.049-1.835-0.759    l-4.175-9.949l0.394,9.364c0.02,0.555,0.111,1.455,0.191,2L57.25,93.54c0.019,0.127,0.009,0.25-0.019,0.366    C78.366,90.45,94.5,72.111,94.5,50C94.5,25.424,74.573,5.5,50,5.5z M49.639,53.306c-1.986,0-3.592-1.615-3.592-3.596    c0-1.988,1.605-3.59,3.592-3.59c1.988,0,3.594,1.602,3.594,3.59C53.232,51.69,51.627,53.306,49.639,53.306z"></path>
+                                <path fill-rule="evenodd" clip-rule="evenodd"
+                                      d="M49.774,76.503c-0.062-0.272-0.125-0.403-0.199-0.413    c-0.063,0.01-0.129,0.141-0.182,0.413l-3.42,17.263c-0.04,0.201-0.152,0.372-0.29,0.522C47.104,94.424,48.543,94.5,50,94.5    c1.189,0,2.365-0.061,3.53-0.152c-0.168-0.159-0.3-0.354-0.348-0.582L49.774,76.503z"></path>
+                            </g>
+                        </g>
+                    </g>
+                </svg>
+                <svg style="fill: white;width: 3px; height: 60px;" viewBox="0 0 3.4749 173.7473"
+                     preserveAspectRatio="none">
+                    <rect x="0" y="0" width="3.4749" height="173.7473"
+                          class="atBXipXk0bfillColor445a7a8f-7b0d-4663-814e-3404354a80b0 atBXipXk0bstrokeColor-str445a7a8f-7b0d-4663-814e-3404354a80b0"
+                          style="stroke-width:0;" rx="0px" ry="0px"></rect>
+                </svg>
+            </div>
+            <span class="text-white ml-1" style="font-weight: bold; font-size: 24px; margin: auto 0;">
+                    Social Issues Tracker
+            </span>
         </a>
         <a sec:authorize="!isAuthenticated()" style="display: flex; margin-left: auto;" class="header-panel"
            th:with="url=${T(com.netcracker.project.url.UrlTemplates).LOCAL_URL_USER_LOGIN}" th:href="@{${url}}">
@@ -33,14 +54,11 @@
                     <a href="#" class="btn btn-outline-primary mb-1">
                         Мои проблемы
                     </a>
+                    <a sec:authorize="hasAuthority('Пользователь')" href="#" class="btn btn-outline-info mb-1">
+                        Отслеживаемые проблемы
+                    </a>
                 </div>
             </div>
-            <a sec:authorize="hasAuthority('Пользователь')" href="#" class="header-panel mr-1" style="display: flex">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
-                     class="bi bi-bell-fill text-white" viewBox="0 0 16 16" style="margin: auto 0;">
-                    <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2zm.995-14.901a1 1 0 1 0-1.99 0A5.002 5.002 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901z"/>
-                </svg>
-            </a>
             <a th:with="url=${T(com.netcracker.project.url.UrlTemplates).LOCAL_URL_ADMINISTRATION}" th:href="@{${url}}"
                sec:authorize="hasAuthority('Админ')" class="header-panel mr-1" style="display: flex;">
                 <span class="text-white" style="font-weight: bold; font-size: 24px;margin: auto 0;">

@@ -5,7 +5,8 @@
     <title>TF|Редакитрование проблемы ответственным</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <link href="/css/administration.css" rel="stylesheet">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link href="/css/jointStyles.css" rel="stylesheet">
     <link href="/css/validation.css" rel="stylesheet">
     <link href="/css/searchString.css" rel="stylesheet">
     <link href="/css/formData.css" rel="stylesheet">
@@ -13,13 +14,12 @@
     <script src=/js/jointFunctions.js></script>
     <script src="/js/responsibleEditTask.js"></script>
 </head>
-<body onload="setDefaultValue();">
+<body onload="setDefaultValue();setDivUserAtrWidth();">
 
 <header th:insert="blocks/header :: header"></header>
 
-<div class="external-cont">
-    <form class="form-data" th:object="${task}" method="post" onsubmit="return isValid()"
-          style="width: 800px;">
+<div class="container external-cont">
+    <form class="form-data" th:object="${task}" method="post" onsubmit="return isValid()">
         <div class="mb-4">
             <h3 style="text-align: center">
                 Редакитрование проблемы
@@ -46,112 +46,116 @@
                 </div>
             </select>
         </div>
-        <div class="container mb-4" style="white-space: nowrap;">
-            <h4 class="mb-2" style="text-align: center">
-                Назначение сотрудников
-            </h4>
-            <div>
-                <div class="search-string">
-                    <input id="input-search-string" type="text" class="form-control"
-                           placeholder="Введите критерий поиска" style="width: 100%; padding-right: 35px;"
-                           oninput="filterSearchStringActiveExt(this)">
-                    <button type="button" class="clear-search-string" style="outline: none;"
-                            onclick="filterSearchStringInactiveExt()"></button>
-                </div>
-                <div class="mb-2">
-                    <label style="font-size: 14px;"> Критерий поиска:</label>
-                    <label class="ml-2" style="font-size: 14px;">
-                        <input id="input-search-email" type="radio" name="searchCriterion" checked=""
-                               style="vertical-align: middle">
-                        Email |
-                    </label>
-                    <label class="ml-2" style="font-size: 14px;">
-                        <input id="input-search-names" type="radio" name="searchCriterion"
-                               style="vertical-align: middle">
-                        ФИО
-                    </label>
-                </div>
-            </div>
-            <div id="div-users" style="overflow: auto;">
-                <span id="span-designated-users" style="text-align: center;display: block;"
-                      th:text="'Назначено сотрудников: ' + ${task.getSocialWorkers().size()} "/>
-                <hr>
-                <div id="div-designated-users" class="mb-4">
-                    <div class="div-designated-user pb-4" th:id="'div-user-data'+${iter.index}"
-                         th:each="socialWorker, iter : ${task.getSocialWorkers()}"
-                         style="display: table;width: 100%">
-                        <input type="hidden" name="email" th:value="${socialWorker.getEmail()}">
-                        <div style="display: table-cell">
-                            <a th:with="url=${T(com.netcracker.project.url.UrlTemplates).LOCAL_URL_USER_PROFILE}"
-                               th:href="@{${url}(id=${socialWorker.getId()})}">
-                                <img class="img-users-list" th:src="${socialWorker.getUserImage()}">
-                            </a>
-                            <div class="mr-4 ml-4" style="display: inline-block; vertical-align: middle;
-                                 max-width: 449px; overflow: hidden;">
-                            <span th:text="'ФИО: ' + ${socialWorker.getLastname() + ' '
-                                + socialWorker.getFirstname()+ ' '
-                                + socialWorker.getMiddlename()}" style="display: block;"/>
-                                <span th:text="'Email: ' + ${socialWorker.getEmail()}" style="display: block;"/>
-                                <span th:text="'Номер телефона: '+ ${socialWorker.getPhoneNumber()}"
-                                      style="display: block;"/>
-                                <span th:text="'Дата регистрации: '+${socialWorker.dateToString(socialWorker.getRegDate())}"
-                                      style="display: block;"/>
-                                <span th:text="'Решённых проблем: '+${socialWorker.getTasksCount()}"/>
-                                <span th:if="${socialWorker.getActiveTasks()} != null"
-                                      th:text="'Актуальных проблем: '+ ${socialWorker.calculateActiveTask()}"
-                                      style="display: block;"/>
-                                <span th:if="${socialWorker.getActiveTasks()} == null" style="display: block;">
-                                Актуальных проблем: 0
-                            </span>
-                            </div>
-                        </div>
-                        <div style="display: table-cell;width: 103px">
-                            <button type="button" class="btn btn-outline-danger" style="width: 100%"
-                                    th:onclick="'dismissUser(\'div-user-data'+ ${iter.index} +'\'); isNoDuplicate();' +
-                                'sortSocialWorkers(false);'">
-                                Снять
-                            </button>
-                        </div>
+        <button class="btn dropdown-toggle font-weight-bold" type="button" data-toggle="collapse"
+                aria-expanded="true" data-target="#div-employees" aria-controls="div-employees"
+                style="box-shadow: none;">
+            Назначение соц. работников
+        </button>
+        <div class="collapse show mb-4" id="div-employees" style="white-space: nowrap;">
+            <div class="card card-body" style="background: none; border: none; ">
+                <div>
+                    <div class="search-string">
+                        <input id="input-search-string" type="text" class="form-control"
+                               placeholder="Введите критерий поиска" style="width: 100%; padding-right: 35px;"
+                               oninput="filterSearchStringActiveExt(this)">
+                        <button type="button" class="clear-search-string" style="outline: none;"
+                                onclick="filterSearchStringInactiveExt()"></button>
+                    </div>
+                    <div class="mb-2">
+                        <label style="font-size: 14px;"> Критерий поиска:</label>
+                        <label class="ml-2" style="font-size: 14px;">
+                            <input id="input-search-email" type="radio" name="searchCriterion" checked=""
+                                   style="vertical-align: middle">
+                            Email |
+                        </label>
+                        <label class="ml-2" style="font-size: 14px;">
+                            <input id="input-search-names" type="radio" name="searchCriterion"
+                                   style="vertical-align: middle">
+                            ФИО
+                        </label>
                     </div>
                 </div>
-                <span id="span-unassigned-users" style="text-align: center;display: block;"
-                      th:text="'Не назначено сотрудников: ' + ${socialWorkers.size()} "/>
-                <hr class="mb-4">
-                <div id="div-unassigned-users">
-                    <div class="div-unassigned-user pb-4"
-                         th:id="'div-user-data'+${task.getSocialWorkers().size() + iter.index}"
-                         th:each="socialWorker, iter : ${socialWorkers}" style="display: table;width: 100%">
-                        <input type="hidden" th:value="${socialWorker.getEmail()}">
-                        <div style="display: table-cell">
-                            <a th:with="url=${T(com.netcracker.project.url.UrlTemplates).LOCAL_URL_USER_PROFILE}"
-                               th:href="@{${url}(id=${socialWorker.getId()})}">
-                                <img class="img-users-list" th:src="${socialWorker.getUserImage()}">
-                            </a>
-                            <div class="mr-4 ml-4" style="display: inline-block; vertical-align: middle;
-                            max-width: 449px; overflow: hidden;">
-                            <span th:text="'ФИО: ' + ${socialWorker.getLastname() + ' '
-                                + socialWorker.getFirstname()+ ' '
-                                + socialWorker.getMiddlename()}" style="display: block;"/>
-                                <span th:text="'Email: ' + ${socialWorker.getEmail()}" style="display: block;"/>
-                                <span th:text="'Номер телефона: '+ ${socialWorker.getPhoneNumber()}"
-                                      style="display: block;"/>
-                                <span th:text="'Дата регистрации: '+${socialWorker.dateToString(socialWorker.getRegDate())}"
-                                      style="display: block;"/>
-                                <span th:text="'Решённых проблем: '+${socialWorker.getTasksCount()}"/>
-                                <span th:if="${socialWorker.getActiveTasks()} != null"
-                                      th:text="'Актуальных проблем: '+ ${socialWorker.calculateActiveTask()}"
-                                      style="display: block;"/>
-                                <span th:if="${socialWorker.getActiveTasks()} == null" style="display: block;">
-                                Актуальных проблем: 0
-                            </span>
+                <div id="div-users" style="display: table">
+                    <div class="pr-4" style="display: table-cell; width: 50%;">
+                    <span id="span-designated-users" style="display: block;" class="font-weight-bold"
+                          th:text="'Назначено соц. работников: ' + ${task.getSocialWorkers().size()} "/>
+                        <hr>
+                        <div id="div-designated-users" class="mb-4" style="overflow: auto;">
+                            <div class="div-user pb-4" th:id="'div-user-data'+${iter.index}"
+                                 th:each="socialWorker, iter : ${task.getSocialWorkers()}"
+                                 style="display: table;width: 100%">
+                                <input type="hidden" name="email" th:value="${socialWorker.getEmail()}">
+                                <div style="display: table-cell;width: 38px;">
+                                    <button type="button" class="btn btn-outline-danger" title="Снять"
+                                            style="width: 100%"
+                                            th:onclick="'dismissUser(\'div-user-data'+ ${iter.index} +'\'); isNoDuplicate();' +
+                                'sortSocialWorkers(false);'">
+                                        X
+                                    </button>
+                                </div>
+                                <div style="display: table-cell">
+                                    <a th:with="url=${T(com.netcracker.project.url.UrlTemplates).LOCAL_URL_USER_PROFILE}"
+                                       th:href="@{${url}(id=${socialWorker.getId()})}" style="display: inline-block;"
+                                       class="ml-3 mr-2">
+                                        <img class="img-users-list" th:src="${socialWorker.getUserImage()}">
+                                    </a>
+                                    <div class="div-user-attr" style="display: inline-block;
+                                        vertical-align: middle; max-width: 420px; overflow: hidden;">
+                                        <span th:text="'ФИО: ' + ${socialWorker.getLastname() + ' '
+                                            + socialWorker.getFirstname()+ ' '
+                                            + socialWorker.getMiddlename()}" style="display: block;"/>
+                                        <span th:text="'Email: ' + ${socialWorker.getEmail()}" style="display: block;"/>
+                                        <span th:text="'Номер телефона: '+ ${socialWorker.getPhoneNumber()}"
+                                              style="display: block;"/>
+                                        <span th:text="'Дата регистрации: '+${socialWorker.dateToString(socialWorker.getRegDate())}"
+                                              style="display: block;"/>
+                                        <span th:text="'Решённых проблем: '+${socialWorker.getTasksCount()}"/>
+                                        <span th:text="'Актуальных проблем: '+ ${socialWorker.calculateActiveTask()}"
+                                              style="display: block;"/>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div style="display: table-cell;width: 103px">
-                            <button type="button" class="btn btn-outline-success" style="width: 100%"
-                                    th:onclick="'assignmentUser(\'div-user-data'+ ${task.getSocialWorkers().size() +
+                    </div>
+                    <div style="display: table-cell;">
+                    <span id="span-unassigned-users" style="display: block;" class="font-weight-bold"
+                          th:text="'Не назначено соц. работников: ' + ${socialWorkers.size()} "/>
+                        <hr>
+                        <div id="div-unassigned-users" style="overflow: auto;">
+                            <div class="div-user pb-4"
+                                 th:id="'div-user-data'+${task.getSocialWorkers().size() + iter.index}"
+                                 th:each="socialWorker, iter : ${socialWorkers}" style="display: table;width: 100%">
+                                <input type="hidden" th:value="${socialWorker.getEmail()}">
+                                <div style="display: table-cell;width: 38px;">
+                                    <button type="button" class="btn btn-outline-success" title="Назначить"
+                                            style="width: 100%"
+                                            th:onclick="'assignmentUser(\'div-user-data'+ ${task.getSocialWorkers().size() +
                                 iter.index} +'\'); isNoDuplicate(); sortSocialWorkers(true);'">
-                                Назначить
-                            </button>
+                                        ✓
+                                    </button>
+                                </div>
+                                <div style="display: table-cell">
+                                    <a th:with="url=${T(com.netcracker.project.url.UrlTemplates).LOCAL_URL_USER_PROFILE}"
+                                       th:href="@{${url}(id=${socialWorker.getId()})}" style="display: inline-block;"
+                                       class="ml-3 mr-2">
+                                        <img class="img-users-list" th:src="${socialWorker.getUserImage()}">
+                                    </a>
+                                    <div class="div-user-attr" style="display: inline-block;
+                                        vertical-align: middle; max-width: 420px; overflow: hidden;">
+                                        <span th:text="'ФИО: ' + ${socialWorker.getLastname() + ' '
+                                            + socialWorker.getFirstname()+ ' '
+                                            + socialWorker.getMiddlename()}" style="display: block;"/>
+                                        <span th:text="'Email: ' + ${socialWorker.getEmail()}" style="display: block;"/>
+                                        <span th:text="'Номер телефона: '+ ${socialWorker.getPhoneNumber()}"
+                                              style="display: block;"/>
+                                        <span th:text="'Дата регистрации: '+${socialWorker.dateToString(socialWorker.getRegDate())}"
+                                              style="display: block;"/>
+                                        <span th:text="'Решённых проблем: '+${socialWorker.getTasksCount()}"/>
+                                        <span th:text="'Актуальных проблем: '+ ${socialWorker.calculateActiveTask()}"
+                                              style="display: block;"/>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

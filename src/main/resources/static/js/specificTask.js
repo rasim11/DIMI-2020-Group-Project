@@ -16,6 +16,7 @@ const btnShowFeedbackId = "btn-show-feedback";
 const btnCancelTaskId = "btn-cancel-task";
 const btnCancellationReasonId = "btn-cancellation-reason";
 const btnSubscriptionId = "btn-subscription";
+const spanStatusId = "span-status";
 let taskId;
 let curUserId;
 let taskFeedback = [];
@@ -179,8 +180,8 @@ function calledOnLoad() {
 
 function activationScrollBarExt() {
     const divPrintCommentsElements = document.querySelectorAll("#" + divPrintCommentsId + "> *");
-    if (divPrintCommentsElements.length !== 0) {
-        activationScrollBar(divPrintCommentsId, maxCountComments, divCommentClass, divPrintCommentsElements.length);
+    if (divPrintCommentsElements.length > maxCountComments) {
+        activationScrollBar(divPrintCommentsId, maxCountComments, divCommentClass);
     }
 }
 
@@ -319,7 +320,8 @@ function getSubscriptionByTaskId(btn) {
                     getSubscriptionByTaskId(btn);
                 }
             }
-        } else {
+        } else if (!["Решённые", "Отменённые"].includes(
+            document.getElementById(spanStatusId).innerText.split(": ")[1])) {
             btn.textContent = "Подписаться";
             btn.className = "btn btn-outline-success";
             btn.onclick = function () {
@@ -334,6 +336,8 @@ function getSubscriptionByTaskId(btn) {
                     getSubscriptionByTaskId(btn);
                 }
             }
+        } else {
+            btn.remove();
         }
     }
 }
