@@ -1,5 +1,7 @@
 <div class="table-itemS" th:id="listTaskId" xmlns:th="http://www.w3.org/1999/xhtml">
 
+    <h2 th:text="${infMessage}"></h2>
+
          <table class="table  taskTableList">
             <thead class="table-light">
             <tr>
@@ -13,7 +15,7 @@
             <tbody>
 
             <tbody>
-            <tr th:each="task : ${taskList}" onclick="window.location=' adawaw';"   class="hoverClass" >
+            <tr th:each="task : ${taskList}" th:onclick="|window.location.href='task-management/task-get-by-id/${task.id}'|"   class="hoverClass" >
 
                 <td class="clip" colspan="2" >
                     <span  th:text="${task.taskName}" th:title="${task.taskName}"></span>

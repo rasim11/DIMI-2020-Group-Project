@@ -3,6 +3,7 @@ package com.netcracker.project.controllers;
 
 import com.netcracker.project.model.Task;
 import com.netcracker.project.model.response.FilterParams;
+import com.netcracker.project.model.response.FilterRadio;
 import com.netcracker.project.model.response.GetPageAndDateRange;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,16 +12,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.util.UriComponentsBuilder;
-
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import static com.netcracker.project.url.UrlTemplates.*;
 
 @Controller
@@ -40,6 +38,7 @@ public class MainController {
     public String mainPageGet(Model model) {
         Integer currentPage = 1;
         mainPageCommon(currentPage, model);
+        model.addAttribute("defaultRadio", true);
         return "main";
     }
 
@@ -150,29 +149,53 @@ public class MainController {
     }
 
 
-
     @PostMapping(LOCAL_URL_MAIN_PAGE + "/filter")
     public String filterPost(@RequestParam(required = false) Integer[] checkbox,
                              @RequestParam(required = false) String[] date,
                              @RequestParam(required = false) Integer page,
                              @RequestParam(required = false) String inpAuthForm,
                              @RequestParam(required = false) String inpRespForm,
-//                             @RequestParam(required = false) String inpAuth132,
+                             @RequestParam(required = false) Boolean radioAP,
+                             @RequestParam(required = false) Boolean radioMP,
+                             @RequestParam(required = false) Boolean radioSP,
+                             @RequestParam(required = false) Integer userId,
+
                              Model model
     ) {
 
+        FilterRadio filterRadio = null;
+
+        // задание радио кнопок
+        if (radioMP != null) {
+            if (radioMP) {
+                filterRadio = new FilterRadio();
+                filterRadio.setMyTasks();
+                filterRadio.setUserId(userId);
+                String infMessage = "Созданные задачи" ;
+                model.addAttribute("infMessage", infMessage);
+            }
+        } else  if (radioSP != null) {
+            if (radioSP) {
+                filterRadio = new FilterRadio();
+                filterRadio.setSubscribeTasks();
+                filterRadio.setUserId(userId);
+                String infMessage = "Отслеживаемые задачи" ;
+                model.addAttribute("infMessage", infMessage);
+            }
+        }
+
 
         if (inpAuthForm != null)
-        System.out.println("inpAuth " + inpAuthForm);
-        else    System.out.println("inpAuthForm == null ");
+            System.out.println("inpAuth " + inpAuthForm);
+        else System.out.println("inpAuthForm == null ");
 
         if (inpRespForm != null)
             System.out.println("inpAuth " + inpRespForm);
-        else    System.out.println("inpRespForm == null ");
-
+        else System.out.println("inpRespForm == null ");
 
 
         FilterParams filterParams = new FilterParams();
+        filterParams.setFilterRadio(filterRadio);
 
         if (checkbox != null) {
             filterParams.setParams(checkbox);
@@ -224,15 +247,62 @@ public class MainController {
 
                 filterParams.setPage(page);
                 GetPageAndDateRange response = restTemplate.postForObject(filterUrl, filterParams, GetPageAndDateRange.class);
-                model.addAttribute("taskList", response.getTaskList());
-                Integer allTaskCount = response.getAllTaskCount();
-                setButtons(page, allTaskCount, model);
+                if (response != null)
+                {
+                    model.addAttribute("taskList", response.getTaskList());
+                    Integer allTaskCount = response.getAllTaskCount();
+                    setButtons(page, allTaskCount, model);
+                }
+
             } else {
                 String betweenError = "Начальный день после последнего";
-                model.addAttribute("betweenError", betweenError);
+                model.addAttribute("infMessage", betweenError);
             }
         }
         return "taskList";
+    }
+
+    @GetMapping(LOCAL_URL_MAIN_PAGE + "/filterMyProblems")
+    public String filterMyProblemsGet( @RequestParam(required = false) Integer userId,  Model model    ) {
+        setRadios(0, userId, model);
+        String infMessage = "Созданные задачи" ;
+        model.addAttribute("infMessage", infMessage);
+        return "taskList";
+    }
+
+    @GetMapping(LOCAL_URL_MAIN_PAGE + "/filterSubsProblems")
+    public String filterSubscribeProblemsGet( @RequestParam(required = false) Integer userId, Model model) {
+        setRadios(1, userId, model);
+        String infMessage = "Отслеживаемые задачи" ;
+        model.addAttribute("infMessage", infMessage);
+        return "taskList";
+    }
+
+    void setRadios(Integer valeOfRadio, Integer userId, Model model)
+    {
+        System.out.println("filterPost " + userId);
+        FilterParams filterParams = new FilterParams();
+        if (userId != null)
+        {
+            FilterRadio filterRadio = new FilterRadio();
+
+            if (valeOfRadio == 0)
+            filterRadio.setMyTasks();
+            if (valeOfRadio == 1)
+                filterRadio.setSubscribeTasks();
+
+            filterRadio.setUserId(userId);
+            filterParams.setFilterRadio(filterRadio);
+
+            GetPageAndDateRange response = restTemplate.postForObject(filterUrl, filterParams, GetPageAndDateRange.class);
+            if (response != null)
+            {
+                model.addAttribute("taskList", response.getTaskList());
+                Integer allTaskCount = response.getAllTaskCount();
+                setButtons(1, allTaskCount, model);
+                System.out.println("size " +  response.getTaskList().size());
+            }
+        }
     }
 
 
@@ -252,5 +322,4 @@ public class MainController {
 
         return "taskList";
     }
-
 }

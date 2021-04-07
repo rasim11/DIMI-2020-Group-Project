@@ -52,6 +52,28 @@ function setFilterParam() {
 
     document.getElementById("inpAuthForm").value = document.getElementById("InputAuthor").value
     document.getElementById("inpRespForm").value = document.getElementById("InputResponse").value
+
+    // document.getElementById("radioAP").checked = document.getElementById("radioAllProblems").checked
+    // document.getElementById("radioMP").checked = document.getElementById("radioMyProblems").checked
+    // document.getElementById("radioSP").checked = document.getElementById("radioSubscribeProblems").checked
+
+}
+
+function setFilterParamAuth() {
+    document.getElementById("ch0").checked = document.getElementById("checkbox0").checked;
+    document.getElementById("ch1").checked = document.getElementById("checkbox1").checked;
+    document.getElementById("ch2").checked = document.getElementById("checkbox2").checked;
+    document.getElementById("ch3").checked = document.getElementById("checkbox3").checked;
+    document.getElementById("da1").value = document.getElementById("date1").value
+    document.getElementById("da2").value = document.getElementById("date2").value
+
+    document.getElementById("inpAuthForm").value = document.getElementById("InputAuthor").value
+    document.getElementById("inpRespForm").value = document.getElementById("InputResponse").value
+
+    document.getElementById("radioAP").checked = document.getElementById("radioAllProblems").checked
+    document.getElementById("radioMP").checked = document.getElementById("radioMyProblems").checked
+    document.getElementById("radioSP").checked = document.getElementById("radioSubscribeProblems").checked
+
 }
 
 function resetChecked() {
@@ -64,5 +86,9 @@ function resetChecked() {
 
     document.getElementById("InputAuthor").value  = ""
     document.getElementById("InputResponse").value =  ""
+
+    document.getElementById("radioAllProblems").checked =  true
+    document.getElementById("radioMyProblems").checked =  false
+    document.getElementById("radioSubscribeProblems").checked =  false
 
 }

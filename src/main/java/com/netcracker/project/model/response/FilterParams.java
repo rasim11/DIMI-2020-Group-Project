@@ -14,6 +14,8 @@ public class FilterParams {
     private String authorFilter;
     private String responsibleFilter;
 
+    private FilterRadio filterRadio = null;
+
     private Integer page;
 
     public void setParams(Integer[] params) {
@@ -59,6 +61,9 @@ public class FilterParams {
             if (responsibleFilter.toString().length() > 0 )
                 empty = false;
         }
+
+        if (filterRadio != null)
+            empty = false;
 
         return empty;
     }
@@ -124,5 +129,13 @@ public class FilterParams {
 
     public void setResponsibleFilter(String responsibleFilter) {
         this.responsibleFilter = responsibleFilter;
+    }
+
+    public FilterRadio getFilterRadio() {
+        return filterRadio;
+    }
+
+    public void setFilterRadio(FilterRadio filterRadio) {
+        this.filterRadio = filterRadio;
     }
 }
