@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org/" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
     <meta charset="UTF-8">
-    <title>TF|Регистрация</title>
+    <title th:text="${title}"/>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <link href="/css/password.css" rel="stylesheet">
@@ -40,7 +40,8 @@
     <input type="text" class="form-control input-ctrl mb-2" placeholder="Номер телефона" name="phoneNumber"
            style="width: 100%" oninput="checkInvalidFormat(this, /^(8|\+7)\d{10}$/)"
            th:value="${userForm.getPhoneNumber()}">
-    <select name="role" id="select-roles" class="form-control mb-2" onchange="roleChecked(this)">
+    <select sec:authorize="hasAuthority('Админ')" name="role" id="select-roles" class="form-control mb-2"
+            onchange="roleChecked(this)">
         <option value="" disabled selected>Роль</option>
         <div th:each="role : ${roles}">
             <option th:value="${role}" th:text="${role.getName()}"/>

@@ -84,9 +84,11 @@ public final class UrlTemplates {
     public static final String LOCAL_URL_POST_SUBSCRIPTION = API + VERSION + SUBSCRIPTION_MANAGEMENT +
             "/subscription-post";
     public static final String LOCAL_URL_GET_EMPLOYEES = API + VERSION + USER_MANAGEMENT +
-            "/get-employees-by-responsible-email/{email}";
+            "/get-employees-by-responsible-email/{email}/{searchString}/{criterion}/{sort}/{actualTask}" +
+            "/{resolvedTask}/{regDate}/{page}";
     public static final String LOCAL_URL_GET_TASKS_BY_WORKER_ID = API + VERSION + TASK_SOCIAL_WORKERS_MANAGEMENT +
             "/active-tasks-get-by-social-worker" + BY_ID + "/{id}";
+    public static final String LOCAL_URL_POST_EMP = API + VERSION + USER_MANAGEMENT + "/post-emp";
 
     public static final String URL_GET_ALL_REGIONS = SERVER + LOCAL_URL_GET_ALL_REGIONS;
     public static final String URL_GET_ALL_USERS = SERVER + LOCAL_URL_GET_ALL_USERS;
