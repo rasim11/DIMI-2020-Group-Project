@@ -59,8 +59,10 @@ public class TaskController {
             model.addAttribute("commentPermission", true);
 
             User curUser = securityService.getCurrentUser();
+            User author = task.getAuthor();
+            Region curRegion = entityService.getRegionByResponsibleEmail(curUser.getEmail());
 
-            if (curUser.getRole().equals(Role.USER)) {
+            if (curUser.getRole().equals(Role.USER) && !author.getEmail().equals(curUser.getEmail())) {
                 model.addAttribute("isSubscription", true);
             }
 
@@ -68,14 +70,9 @@ public class TaskController {
                 return "specific-task";
             }
 
-            Region curRegion = entityService.getRegionByResponsibleEmail(curUser.getEmail());
-
-            if (curUser.getRole().equals(Role.USER)) {
-                User author = task.getAuthor();
-                if (author.getEmail().equals(curUser.getEmail())) {
-                    String param = task.getStatus().equals(Status.RESOLVED) ? "isFeedback" : "isEditAuthor";
-                    model.addAttribute(param, true);
-                }
+            if (curUser.getRole().equals(Role.USER) && author.getEmail().equals(curUser.getEmail())) {
+                String param = task.getStatus().equals(Status.RESOLVED) ? "isFeedback" : "isEditAuthor";
+                model.addAttribute(param, true);
             } else if (curUser.getRole().equals(Role.RESPONSIBLE) && !task.getStatus().equals(Status.RESOLVED) &&
                     task.getRegion().getRegionName().equals(curRegion.getRegionName())) {
                 model.addAttribute("isEditResponsible", true);

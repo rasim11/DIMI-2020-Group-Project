@@ -32,6 +32,7 @@ public class AdminController {
         List<Role> roles = Arrays.stream(Role.values()).collect(Collectors.toList());
         roles.remove(Role.ADMIN);
 
+        model.addAttribute("title", "TF|Регистрация пользователя");
         model.addAttribute("roles", roles);
         model.addAttribute("userForm", new User());
         return "registration-through-admin";

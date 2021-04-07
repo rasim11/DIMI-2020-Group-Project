@@ -1,20 +1,19 @@
 package com.netcracker.project.controllers;
 
 import com.netcracker.project.model.Region;
+import com.netcracker.project.model.Role;
 import com.netcracker.project.model.User;
 import com.netcracker.project.service.EntityService;
 import com.netcracker.project.service.SecurityService;
 import com.netcracker.project.service.impl.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.netcracker.project.url.UrlTemplates.*;
 
@@ -77,5 +76,23 @@ public class PersonalAccountController {
             userDetailsService.deleteUser(user);
             return REDIRECT_ON_ADMINISTRATION;
         }
+    }
+
+    @GetMapping(LOCAL_URL_POST_EMP)
+    public String registrationEmpGet(Model model) {
+        model.addAttribute("title", "TF|Регистрация сотрудника");
+        model.addAttribute("userForm", new User());
+        return "registration-through-admin";
+    }
+
+    @PostMapping(LOCAL_URL_POST_EMP)
+    public String registrationEmpPost(@ModelAttribute("userForm") User userForm) {
+        User curUser = securityService.getCurrentUser();
+        Role role = Role.SOCIAL_WORKER;
+        userForm.setRegion(entityService.getRegionByResponsibleEmail(curUser.getEmail()));
+
+        userDetailsService.addWorkerOrResponsible(userForm, role, userForm.getRegion().getId());
+
+        return "redirect:" + LOCAL_URL_PERSONAL_ACCOUNT;
     }
 }
