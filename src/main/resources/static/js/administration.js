@@ -12,7 +12,6 @@ const divIdListUsers = "div-list-users";
 const divIdFilterRole = "div-filter-role";
 const divIdFilterRegDate = "div-filter-reg-date";
 const divIdFiltersActions = "div-filters-actions";
-const divIdDataFilters = "div-data-filters";
 const btnIdDataUsers = "btn-data-users";
 const ulIdFiltersMenu = "ul-filters-menu";
 const checkedBtnIdRole = "checked-btn-id-role";
@@ -42,7 +41,7 @@ function addDataFilters() {
     const divContent = document.getElementById(divContentId);
 
     const divDataFilters = document.createElement("div");
-    divDataFilters.id = divIdDataFilters;
+    divDataFilters.id = divDataFiltersId;
     divDataFilters.style.display = "inline-block";
     divDataFilters.style.verticalAlign = "top";
     divDataFilters.style.marginLeft = "40px";
@@ -83,11 +82,11 @@ function addDataFilters() {
         divFilter.className = "collapse";
         liFilter.appendChild(divFilter);
 
-        const divFilterRoleBody = document.createElement("div");
-        divFilterRoleBody.className = "card card-body";
-        divFilterRoleBody.style.background = "none";
-        divFilterRoleBody.style.border = "none";
-        divFilter.appendChild(divFilterRoleBody);
+        const divFilterBody = document.createElement("div");
+        divFilterBody.className = "card card-body";
+        divFilterBody.style.background = "none";
+        divFilterBody.style.border = "none";
+        divFilter.appendChild(divFilterBody);
 
         const hiddenIsActive = document.createElement("input");
         hiddenIsActive.className = inputClassHiddenIsActive;
@@ -107,7 +106,7 @@ function addDataFilters() {
                     divFilterElement.className = "form-check";
                     divFilterElement.addEventListener("click", isFilterRoleActive.bind(null, divFilter,
                         spanTitleFilter));
-                    divFilterRoleBody.appendChild(divFilterElement);
+                    divFilterBody.appendChild(divFilterElement);
 
                     const inputCheckedBtn = document.createElement("input");
                     inputCheckedBtn.id = checkedBtnIdRole + j;
@@ -142,7 +141,7 @@ function addDataFilters() {
                     inputRegDate.addEventListener("blur", isFilterDateActive.bind(null, divFilter,
                         spanTitleFilter));
                     inputRegDate.placeholder = j === 0 ? "От" : "До";
-                    divFilterRoleBody.appendChild(inputRegDate);
+                    divFilterBody.appendChild(inputRegDate);
                 }
                 break;
         }
@@ -252,6 +251,7 @@ function addListUsers() {
     preData.className = "mb-2";
     preData.action = LOCAL_URL_REGISTRATION_THROUGH_ADMIN;
     preData.method = "get";
+    preData.style.display = "flex";
     divListUsers.appendChild(preData);
 
     const btnAddUser = document.createElement("button");
@@ -262,8 +262,7 @@ function addListUsers() {
 
     const spanCountUsers = document.createElement("span");
     spanCountUsers.id = spanIdCountUsers;
-    spanCountUsers.style.float = "right";
-    spanCountUsers.style.transform = "translateY(25%)";
+    spanCountUsers.style.margin = "auto 0 auto auto";
     spanCountUsers.textContent = "Всего пользователей: " + users.length;
     preData.appendChild(spanCountUsers);
 
@@ -332,8 +331,8 @@ function addListUsers() {
     }
 
     const divUsersElements = document.querySelectorAll("#" + divUsersId + "> *");
-    if (divUsersElements.length !== 0) {
-        activationScrollBar(divUsersId, maxCountUsers, divClassUser, divUsersElements.length);
+    if (divUsersElements.length > maxCountUsers) {
+        activationScrollBar(divUsersId, maxCountUsers, divClassUser);
     }
 }
 
@@ -530,7 +529,7 @@ function calculateUsersCountFilters(usersCount) {
 
 function filtersResetAll() {
     removeListUsers();
-    document.getElementById(divIdDataFilters).remove();
+    document.getElementById(divDataFiltersId).remove();
     addDataFilters();
     filterSearchStringActive(document.getElementById(inputIdSearchString),
         divUsersId, inputIdSearchNames, spanIdCountUsers, "block");
@@ -560,23 +559,11 @@ function removeListUsers() {
 }
 
 function setDivUserAtrWidth() {
-    const divMainContent = document.getElementById(divMainContentId);
-    const divDataFilters = document.getElementById(divIdDataFilters);
-    const divDataUsers = document.getElementById(divIdDataUsers);
-    const divAnyUser = document.querySelector("." + divClassUser);
-
-    let maxWidth = parseFloat(window.getComputedStyle(divMainContent, null).width) -
-        parseFloat(window.getComputedStyle(divDataFilters, null).width) -
-        parseFloat(window.getComputedStyle(divDataFilters, null).marginLeft) - 20;
-    divDataUsers.style.width = maxWidth + "px";
-
-    if (!divAnyUser) {
+    let maxWidth = calcDivElementsWidth(divIdDataUsers, divClassUser);
+    if (!maxWidth) {
         return;
     }
 
-    maxWidth -= parseFloat(window.getComputedStyle(divDataUsers, null).paddingLeft) * 2 +
-        parseFloat(window.getComputedStyle(divAnyUser.querySelector("img"), null).width) +
-        parseFloat(window.getComputedStyle(divAnyUser.querySelector("a"), null).marginRight);
     maxWidth -= document.querySelectorAll("#" + divUsersId + "> *").length > maxCountUsers ? 18 : 0;
     divUserAtrMaxWidth = maxWidth + "px";
 

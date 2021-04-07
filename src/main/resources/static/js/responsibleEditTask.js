@@ -4,13 +4,13 @@ const spanUnassignedUsersId = "span-unassigned-users";
 const divDesignatedUsersId = "div-designated-users";
 const divUnassignedUsersId = "div-unassigned-users";
 const divUsersId = "div-users";
-const divUnassignedUserClass = "div-unassigned-user";
-const divDesignatedUserClass = "div-designated-user";
+const divUserClass = "div-user";
+const divUserAttrClass = "div-user-attr";
 const selectStatusName = "status";
 const selectPriorityName = "priority";
 const inputSearchNamesId = "input-search-names";
 const inputSearchStringId = "input-search-string";
-const maxCountUsers = 11;
+const maxCountUsers = 10;
 let defaultStatus;
 let defaultPriority;
 let defaultAssignmentUser = [];
@@ -28,7 +28,8 @@ function assignmentUser(divIdUserData) {
     calculateCount(spanUnassignedUsersId, -1);
 
     const btn = divUserData.querySelector("button");
-    btn.textContent = "Снять";
+    btn.textContent = "X";
+    btn.title = "Снять";
     btn.className = "btn btn-outline-danger";
     btn.onclick = function () {
         dismissUser(divIdUserData);
@@ -49,7 +50,8 @@ function dismissUser(divIdUserData) {
     calculateCount(spanUnassignedUsersId, 1);
 
     const btn = divUserData.querySelector("button");
-    btn.textContent = "Назначить";
+    btn.textContent = "✓";
+    btn.title = "Назначить";
     btn.className = "btn btn-outline-success";
     btn.onclick = function () {
         assignmentUser(divIdUserData);
@@ -79,12 +81,17 @@ function setDefaultValue() {
 
     let divDesignatedUsersLength = document.querySelectorAll("#" + divDesignatedUsersId + "> *").length;
     let divUnassignedUsersLength = document.querySelectorAll("#" + divUnassignedUsersId + "> *").length;
-    if (divDesignatedUsersLength !== 0) {
-        activationScrollBar(divUsersId, maxCountUsers, divDesignatedUserClass,
-            divDesignatedUsersLength + divUnassignedUsersLength);
-    } else if (divUnassignedUsersLength !== 0) {
-        activationScrollBar(divUsersId, maxCountUsers, divUnassignedUserClass,
-            divDesignatedUsersLength + divUnassignedUsersLength);
+
+    if (divDesignatedUsersLength + divUnassignedUsersLength > maxCountUsers) {
+        if (divDesignatedUsersLength !== 0) {
+            activationScrollBar(divDesignatedUsersId, maxCountUsers, divUserClass);
+            document.getElementById(divUnassignedUsersId).style.maxHeight =
+                document.getElementById(divDesignatedUsersId).style.maxHeight;
+        } else {
+            activationScrollBar(divUnassignedUsersId, maxCountUsers, divUserClass);
+            document.getElementById(divDesignatedUsersId).style.maxHeight =
+                document.getElementById(divUnassignedUsersId).style.maxHeight;
+        }
     }
 }
 
@@ -209,4 +216,23 @@ function filterSearchStringActiveExt(inputSearchString) {
         "table");
     filterSearchStringActive(inputSearchString, divDesignatedUsersId, inputSearchNamesId, spanDesignatedUsersId,
         "table");
+}
+
+function setDivUserAtrWidth() {
+    const divUsers = document.getElementById(divUsersId);
+    const divDesignatedUsers = document.getElementById(divDesignatedUsersId);
+    const divUser = document.querySelector("." + divUserClass);
+
+    let maxWidth = parseFloat(window.getComputedStyle(divUsers, null).width) / 2 -
+        parseFloat(window.getComputedStyle(divUsers.querySelector("div"), null).paddingRight) -
+        parseFloat(window.getComputedStyle(divUser.querySelector("a"), null).width) -
+        parseFloat(window.getComputedStyle(divUser.querySelector("a"), null).marginRight) -
+        parseFloat(window.getComputedStyle(divUser.querySelector("a"), null).marginLeft) -
+        parseFloat(window.getComputedStyle(divUser.querySelector("button"), null).width);
+    maxWidth -= divDesignatedUsers.style.maxHeight ? 18 : 0;
+
+    const divUsersAtr = document.querySelectorAll("." + divUserAttrClass);
+    for (let i = 0; i < divUsersAtr.length; i++) {
+        divUsersAtr[i].style.maxWidth = maxWidth + "px";
+    }
 }

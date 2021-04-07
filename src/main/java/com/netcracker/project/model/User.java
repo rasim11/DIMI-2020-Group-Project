@@ -87,8 +87,12 @@ public class User implements UserDetails {
         return localDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
     }
 
-    public Integer calculateActiveTask() {
-        int count = 0;
+    public Long calculateActiveTask() {
+        long count = 0;
+        if (activeTasks == null) {
+            return count;
+        }
+
         for (Task task : activeTasks) {
             if (task.getStatus().equals(Status.IN_CREATING) || task.getStatus().equals(Status.IN_PROCESSING)) {
                 count++;

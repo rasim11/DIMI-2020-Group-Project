@@ -2,6 +2,7 @@ const divMainContentId = "div-main-content";
 const mainBlockId = "main-block";
 const divMainBlockId = "div-main-block";
 const divDynamicWindowId = "div-dynamic-window";
+const divDataFiltersId = "div-data-filters";
 
 
 function filterSearchStringActive(inputSearchString, divUsersId, inputIdSearchNames, spanIdCountUsers,
@@ -35,13 +36,12 @@ function filterSearchStringInactive(divUsersId, spanIdCountUsers, displayType) {
     calculateUsersCountSearchString(divUsersId, spanIdCountUsers, displayType);
 }
 
-function activationScrollBar(divUsersId, maxCountUsers, divUserClass, divLength) {
+function activationScrollBar(divUsersId, maxCountUsers, divUserClass) {
     const divUsers = document.getElementById(divUsersId);
     const divUser = document.querySelector("." + divUserClass);
     const divUserHeight = parseFloat(window.getComputedStyle(divUser, null).height);
 
-    divUsers.style.height = divLength > maxCountUsers ? maxCountUsers * divUserHeight + "px" :
-        "";
+    divUsers.style.maxHeight = maxCountUsers * divUserHeight + "px";
 }
 
 function calculateUsersCountSearchString(divUsersId, spanIdCountUsers, displayType) {
@@ -159,4 +159,26 @@ function addCloseBtn(parentDiv, mainWindow) {
             buttonWindowClose.click();
         }
     };
+}
+
+function calcDivElementsWidth(elementsId, anyElemClass) {
+    const divMainContent = document.getElementById(divMainContentId);
+    const divDataFilters = document.getElementById(divDataFiltersId);
+    const divElements = document.getElementById(elementsId);
+    const divAnyElement = document.querySelector("." + anyElemClass);
+
+    let maxWidth = parseFloat(window.getComputedStyle(divMainContent, null).width) -
+        parseFloat(window.getComputedStyle(divDataFilters, null).width) -
+        parseFloat(window.getComputedStyle(divDataFilters, null).marginLeft) - 35;
+    divElements.style.width = maxWidth + "px";
+
+    if (!divAnyElement) {
+        return null;
+    }
+
+    maxWidth -= parseFloat(window.getComputedStyle(divElements, null).paddingLeft) * 2 +
+        parseFloat(window.getComputedStyle(divAnyElement.querySelector("img"), null).width) +
+        parseFloat(window.getComputedStyle(divAnyElement.querySelector("a"), null).marginRight);
+
+    return maxWidth;
 }
