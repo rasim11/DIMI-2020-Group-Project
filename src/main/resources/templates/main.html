@@ -69,8 +69,26 @@
     <div sec:authorize="isAuthenticated()">
         <input th:name="userId" th:id="userId" th:value="${#authentication.getPrincipal().getId()}" type="text"/>
     </div>
-
 </form>
+
+
+<script type="text/javascript"  th:if="${param.myTasks == null && param.mySubs == null}">
+    $(document).ready(function() {
+        setPage(1);
+    });
+</script>
+
+<script type="text/javascript"  th:if="${param.myTasks} ">
+    $(document).ready(function() {
+        getMyTaskList()
+    });
+</script>
+
+<script type="text/javascript"  th:if="${param.mySubs} ">
+    $(document).ready(function() {
+       getMySubsList()
+    });
+</script>
 
 
 <div class="tableMain">
@@ -483,7 +501,6 @@
                 $('#listTaskId').html(data);
             }
         });
-
         document.getElementById("radioMyProblems").checked = true;
     }
 
@@ -499,7 +516,6 @@
                 $('#listTaskId').html(data);
             }
         });
-
         document.getElementById("radioSubscribeProblems").checked = true;
     }
 

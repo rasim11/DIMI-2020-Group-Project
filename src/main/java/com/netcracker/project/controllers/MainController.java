@@ -36,8 +36,8 @@ public class MainController {
 
     @GetMapping(LOCAL_URL_MAIN_PAGE)
     public String mainPageGet(Model model) {
-        Integer currentPage = 1;
-        mainPageCommon(currentPage, model);
+//        Integer currentPage = 1;
+//        mainPageCommon(currentPage, model);
         model.addAttribute("defaultRadio", true);
         return "main";
     }
@@ -267,6 +267,8 @@ public class MainController {
         setRadios(0, userId, model);
         String infMessage = "Созданные задачи" ;
         model.addAttribute("infMessage", infMessage);
+
+//        return "redirect:/api/v1/main-page";
         return "taskList";
     }
 
