@@ -4,6 +4,7 @@ public class FilterRadio {
     private Integer userID = -1;
     private Boolean myTasks = false;
     private Boolean subscribeTasks = false;
+    private Boolean myTaskForStaff = false;
 
     FilterRadio(Integer userId)
     {
@@ -17,11 +18,20 @@ public class FilterRadio {
     {
         myTasks = true;
         subscribeTasks = false;
+        myTaskForStaff =false;
     }
 
     public void setSubscribeTasks()
     {
         subscribeTasks = true;
+        myTasks = false;
+        myTaskForStaff =false;
+    }
+
+    public void setMyTaskForStaff()
+    {
+        myTaskForStaff =true;
+        subscribeTasks = false;
         myTasks = false;
     }
 
@@ -47,5 +57,13 @@ public class FilterRadio {
 
     public void setSubscribeTasks(Boolean subscribeTasks) {
         this.subscribeTasks = subscribeTasks;
+    }
+
+    public Boolean getMyTaskForStaff() {
+        return myTaskForStaff;
+    }
+
+    public void setMyTaskForStaff(Boolean myTaskForStaff) {
+        this.myTaskForStaff = myTaskForStaff;
     }
 }

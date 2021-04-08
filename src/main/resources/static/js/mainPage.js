@@ -42,22 +42,18 @@
 //         "px";
 // }
 
-function setFilterParam() {
-    document.getElementById("ch0").checked = document.getElementById("checkbox0").checked;
-    document.getElementById("ch1").checked = document.getElementById("checkbox1").checked;
-    document.getElementById("ch2").checked = document.getElementById("checkbox2").checked;
-    document.getElementById("ch3").checked = document.getElementById("checkbox3").checked;
-    document.getElementById("da1").value = document.getElementById("date1").value
-    document.getElementById("da2").value = document.getElementById("date2").value
-
-    document.getElementById("inpAuthForm").value = document.getElementById("InputAuthor").value
-    document.getElementById("inpRespForm").value = document.getElementById("InputResponse").value
-
-    // document.getElementById("radioAP").checked = document.getElementById("radioAllProblems").checked
-    // document.getElementById("radioMP").checked = document.getElementById("radioMyProblems").checked
-    // document.getElementById("radioSP").checked = document.getElementById("radioSubscribeProblems").checked
-
-}
+// function setFilterParam() {
+//     document.getElementById("ch0").checked = document.getElementById("checkbox0").checked;
+//     document.getElementById("ch1").checked = document.getElementById("checkbox1").checked;
+//     document.getElementById("ch2").checked = document.getElementById("checkbox2").checked;
+//     document.getElementById("ch3").checked = document.getElementById("checkbox3").checked;
+//     document.getElementById("da1").value = document.getElementById("date1").value
+//     document.getElementById("da2").value = document.getElementById("date2").value
+//
+//     document.getElementById("inpAuthForm").value = document.getElementById("InputAuthor").value
+//     document.getElementById("inpRespForm").value = document.getElementById("InputResponse").value
+//
+// }
 
 function setFilterParamAuth() {
     document.getElementById("ch0").checked = document.getElementById("checkbox0").checked;
@@ -70,9 +66,20 @@ function setFilterParamAuth() {
     document.getElementById("inpAuthForm").value = document.getElementById("InputAuthor").value
     document.getElementById("inpRespForm").value = document.getElementById("InputResponse").value
 
-    document.getElementById("radioAP").checked = document.getElementById("radioAllProblems").checked
-    document.getElementById("radioMP").checked = document.getElementById("radioMyProblems").checked
-    document.getElementById("radioSP").checked = document.getElementById("radioSubscribeProblems").checked
+
+    var radio;
+
+    radio = document.getElementById("radioAllProblems");
+    if ( radio != undefined)  document.getElementById("radioAP").checked = radio.checked;
+
+    radio = document.getElementById("radioMyProblems");
+    if ( radio != undefined)  document.getElementById("radioMP").checked = radio.checked;
+
+    radio = document.getElementById("radioSubscribeProblems");
+    if ( radio != undefined)  document.getElementById("radioSP").checked = radio.checked;
+
+    radio = document.getElementById("radioMyProblemsForStaff");
+    if (radio != undefined) document.getElementById("radioMAP").checked =  radio.checked;
 
 }
 

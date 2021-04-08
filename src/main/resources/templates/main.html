@@ -36,7 +36,7 @@
 <header th:insert="blocks/header :: header"></header>
 
 
-<form th:id="formFilterConst" hidden>
+<form th:id="formFilterConst"  >
     <label>hiden form for parametors</label>
     <input id="ch0"
            name="checkbox"
@@ -68,6 +68,7 @@
     <input type="radio" name="radioAP" th:id="radioAP">
     <input type="radio" name="radioMP" th:id="radioMP">
     <input type="radio" name="radioSP" th:id="radioSP">
+    <input type="radio" name="radioMAP" th:id="radioMAP">
 
     <div sec:authorize="isAuthenticated()">
         <input th:name="userId" th:id="userId" th:value="${#authentication.getPrincipal().getId()}" type="text"/>
@@ -75,7 +76,7 @@
 </form>
 
 
-<script type="text/javascript"  th:if="${param.myTasks == null && param.mySubs == null}">
+<script type="text/javascript"  th:if="${param.myTasks == null && param.mySubs == null && param.myTasksStaff == null}">
     $(document).ready(function() {
         setPage(1);
     });
@@ -92,6 +93,14 @@
        getMySubsList()
     });
 </script>
+
+<script type="text/javascript"  th:if="${param.myTasksStaff} ">
+    $(document).ready(function() {
+        getMyTasksStaff()
+    });
+</script>
+
+
 
 
 <div class="tableMain">
@@ -183,14 +192,14 @@
                                 <div class="form-group">
                                     <label for="InputAuthor"> Автор</label>
                                     <input type="text" class="form-control" id="InputAuthor"
-                                           placeholder="Имя Фамилия Отчесвто">
+                                           placeholder="Имя Фамилия Отчество">
                                     <!--                                    <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>-->
                                 </div>
 
                                 <div class="form-group">
                                     <label for="InputResponse">Ответственный</label>
                                     <input type="text" class="form-control" id="InputResponse"
-                                           placeholder="Имя Фамилия Отчесвто">
+                                           placeholder="Имя Фамилия Отчество">
                                     <!--                                    <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>-->
                                 </div>
 
@@ -212,7 +221,7 @@
                                             Мои проблемы
                                         </label>
                                     </div>
-                                    <div class="form-check">
+                                    <div class="form-check" sec:authorize="hasAnyAuthority('Пользователь')">
                                         <input class="form-check-input" type="radio" name="flexRadioDefault"
                                                id="radioSubscribeProblems">
                                         <label class="form-check-label" for="radioSubscribeProblems">
@@ -220,8 +229,14 @@
                                         </label>
                                     </div>
 
+                                    <div class="form-check" sec:authorize="hasAnyAuthority('Соц. работник','Ответственный')">
+                                        <input class="form-check-input" type="radio" name="flexRadioDefault"
+                                               id="radioMyProblemsForStaff">
+                                        <label class="form-check-label" for="radioMyProblemsForStaff">
+                                            Мои актуальные проблемы
+                                        </label>
+                                    </div>
                                 </div>
-
 
                                 <br>
                                 <div class="form-check">
@@ -229,13 +244,13 @@
                                            onclick="resetChecked()" th:value="Сбросить"/>
                                     <br>
                                     <br>
-                                    <div sec:authorize="!isAuthenticated()">
-                                        <input onclick=" setFilterParam(), setPage(1)" style=" min-width: 200px "
-                                               id="submitFilter" type="button"
-                                               class="btn btn-primary"
-                                               th:value="Применить"/>
-                                    </div>
-                                    <div sec:authorize="isAuthenticated()">
+<!--                                    <div sec:authorize="!isAuthenticated()">-->
+<!--                                        <input onclick=" setFilterParam(), setPage(1)" style=" min-width: 200px "-->
+<!--                                               id="submitFilter" type="button"-->
+<!--                                               class="btn btn-primary"-->
+<!--                                               th:value="Применить"/>-->
+<!--                                    </div>-->
+                                    <div >
                                         <input onclick=" setFilterParamAuth(), setPage(1)" style=" min-width: 200px "
                                                id="submitFilterAuth" type="button"
                                                class="btn btn-primary"
@@ -524,7 +539,9 @@
                 $('#listTaskId').html(data);
             }
         });
-        document.getElementById("radioMyProblems").checked = true;
+
+        var radio = document.getElementById("radioMyProblems");
+        if ( radio != undefined) radio.checked = true;
     }
 
     function getMySubsList() {
@@ -539,8 +556,30 @@
                 $('#listTaskId').html(data);
             }
         });
-        document.getElementById("radioSubscribeProblems").checked = true;
+
+        var radio = document.getElementById("radioSubscribeProblems");
+        if ( radio != undefined) radio.checked = true;
+
     }
+
+    function getMyTasksStaff() {
+        var userIdVal = document.getElementById("userId");
+        console.log("getMyTaskList")
+        $.ajax({
+            method: 'get',
+            dataType: 'html',
+            data: {userId: userIdVal.value},
+            url: "/api/v1/main-page/filterMyProblemsStaff",
+            success: function (data) {
+                $('#listTaskId').html(data);
+            }
+        });
+
+        var radio = document.getElementById("radioMyProblemsForStaff");
+        if ( radio != undefined) radio.checked = true;
+
+    }
+
 
 
     // $(document).ready(function () {

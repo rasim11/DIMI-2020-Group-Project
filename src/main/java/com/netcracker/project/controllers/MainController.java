@@ -158,8 +158,8 @@ public class MainController {
                              @RequestParam(required = false) Boolean radioAP,
                              @RequestParam(required = false) Boolean radioMP,
                              @RequestParam(required = false) Boolean radioSP,
+                             @RequestParam(required = false) Boolean radioMAP,
                              @RequestParam(required = false) Integer userId,
-
                              Model model
     ) {
 
@@ -182,7 +182,15 @@ public class MainController {
                 String infMessage = "Отслеживаемые задачи" ;
                 model.addAttribute("infMessage", infMessage);
             }
+        } else if (radioMAP != null)
+        if (radioMAP) {
+            filterRadio = new FilterRadio();
+            filterRadio.setMyTaskForStaff();
+            filterRadio.setUserId(userId);
+            String infMessage = "Мои актуальные задачи" ;
+            model.addAttribute("infMessage", infMessage);
         }
+
 
 
         if (inpAuthForm != null)
@@ -280,6 +288,14 @@ public class MainController {
         return "taskList";
     }
 
+    @GetMapping(LOCAL_URL_MAIN_PAGE + "/filterMyProblemsStaff")
+    public String filterMyProblemsStaff( @RequestParam(required = false) Integer userId, Model model) {
+        setRadios(2, userId, model);
+        String infMessage = "Отслеживаемые задачи" ;
+        model.addAttribute("infMessage", infMessage);
+        return "taskList";
+    }
+
     void setRadios(Integer valeOfRadio, Integer userId, Model model)
     {
         System.out.println("filterPost " + userId);
@@ -292,6 +308,8 @@ public class MainController {
             filterRadio.setMyTasks();
             if (valeOfRadio == 1)
                 filterRadio.setSubscribeTasks();
+            if (valeOfRadio == 2)
+                filterRadio.setMyTaskForStaff();
 
             filterRadio.setUserId(userId);
             filterParams.setFilterRadio(filterRadio);

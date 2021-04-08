@@ -47,7 +47,7 @@
                        th:href="@{${url}}" class="btn btn-outline-success mt-1 mb-1">
                         Создать проблему
                     </a>
-                    <a href="#" sec:authorize="hasAnyAuthority('Соц. работник','Ответственный')"
+                    <a href="/api/v1/main-page?myTasksStaff=true" sec:authorize="hasAnyAuthority('Соц. работник','Ответственный')"
                        class="btn btn-outline-success mt-1 mb-1">
                         Мои актуальные проблемы
                     </a>
