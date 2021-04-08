@@ -11,7 +11,10 @@
     <link href="/css/closeCustom.css" rel="stylesheet">
     <script src=/js/validation.js></script>
     <script src=/js/jointFunctions.js></script>
-    <script src=/js/task.js></script>
+    <script src="https://api-maps.yandex.ru/2.1/?apikey=5694d7f9-f8dc-4349-9d30-9dc5a908a417&lang=ru_RU"
+            type="text/javascript">
+    </script>
+    <script src="/js/mapForTaskAdding.js"></script>
 </head>
 <body onload="loadTask()">
 <header th:insert="blocks/header :: header"></header>
@@ -25,8 +28,13 @@
                    oninput="checkEmpty(this)">
             <textarea class="form-control mb-3" placeholder="Описание" name="taskDescription"
                       style="height: 200px;" oninput="checkEmpty(this)"></textarea>
-            <input type="text" class="form-control mb-3" placeholder="Адрес проблемы" name="taskLocation"
-                   oninput="checkEmpty(this)">
+            <div class="input-group mb-3">
+                <input type="text" class="form-control required" id="location" placeholder="Адрес проблемы" name="taskLocation" oninput="checkEmpty(this)">
+                <div class="input-group-append">
+                    <button type="button" class="btn btn-primary" id="check-address">Проверить</button>
+                </div>
+            </div>
+            <div id="map" style="width: 735px; height: 400px"></div>
             <div class="div-comment-allow mb-2">
                 <label>Возможность комментирования:</label>
                 <label>
@@ -55,6 +63,7 @@
         </form>
     </div>
 </div>
+<script src=/js/task.js></script>
 <footer th:insert="blocks/footer :: footer"></footer>
 </body>
 </html>

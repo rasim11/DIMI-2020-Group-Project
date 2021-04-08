@@ -1,7 +1,6 @@
 package com.netcracker.project.controllers.rest;
 
 import com.netcracker.project.model.Region;
-import com.netcracker.project.model.Task;
 import com.netcracker.project.model.User;
 import com.netcracker.project.service.EntityService;
 import com.netcracker.project.service.SecurityService;
@@ -9,6 +8,7 @@ import com.netcracker.project.service.impl.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -16,7 +16,7 @@ import static com.netcracker.project.url.UrlTemplates.*;
 
 @RestController
 public class PersonalAccountRestController {
-    private static final Long USERS_COUNT_ON_PAGE = 2L;
+    private static final Long USERS_COUNT_ON_PAGE = 10L;
 
     @Autowired
     private SecurityService securityService;
@@ -60,20 +60,92 @@ public class PersonalAccountRestController {
     }
 
     @GetMapping(LOCAL_URL_GET_EMPLOYEES)
-    public Map<String, Object> getEmployees(@PathVariable String email) {
+    public Map<String, Object> getEmployees(@PathVariable String actualTask, @PathVariable Integer criterion,
+                                            @PathVariable String email, @PathVariable Long page,
+                                            @PathVariable String regDate, @PathVariable String resolvedTask,
+                                            @PathVariable String searchString, @PathVariable Integer sort) {
         Region region = entityService.getRegionByResponsibleEmail(email);
         Iterable<User> users = userDetailsService.getUsersByRegionId(region.getId());
         for (User user : users) {
+            user.setActiveTasks(entityService.getActiveTaskBySocialWorkersId(user.getId()));
             user.setPassword(null);
         }
 
         List<User> userList = new ArrayList<>();
         users.forEach(userList::add);
 
+        userList = userList.stream().sorted((a, b) -> {
+            int res = 0;
+            switch (sort) {
+                case 0:
+                    res = a.getRegDate().compareTo(b.getRegDate());
+                    break;
+                case 1:
+                    res = b.calculateActiveTask().compareTo(a.calculateActiveTask());
+                    break;
+                case 2:
+                    res = b.getTasksCount().compareTo(a.getTasksCount());
+                    break;
+            }
+            return res;
+        }).filter(x -> {
+            if (searchString.equals("null")) {
+                return true;
+            }
+
+            boolean res = false;
+            switch (criterion) {
+                case 0:
+                    res = String.join(" ", x.getLastname(), x.getFirstname(),
+                            x.getMiddlename()).contains(searchString);
+                    break;
+                case 1:
+                    res = x.getEmail().contains(searchString);
+                    break;
+                case 2:
+                    res = x.getPhoneNumber().contains(searchString);
+                    break;
+            }
+            return res;
+        }).filter(x -> {
+            if (regDate.equals("null")) {
+                return true;
+            }
+
+            List<LocalDate> localDates = Arrays.stream(regDate.split("\\|")).map(y -> {
+                String[] arr = y.split("-");
+                return LocalDate.of(Integer.parseInt(arr[0]), Integer.parseInt(arr[1]),
+                        Integer.parseInt(arr[2]));
+            }).collect(Collectors.toList());
+
+            return x.getRegDate().compareTo(localDates.get(0)) >= 0 && x.getRegDate().compareTo(localDates.get(1)) <= 0;
+        }).filter(x -> {
+            if (resolvedTask.equals("null")) {
+                return true;
+            }
+
+            String[] resolvedTaskTemp = resolvedTask.split("\\|");
+            Long[] resolvedTaskRange = {Long.parseLong(resolvedTaskTemp[0]),
+                    resolvedTaskTemp[1].equals("maxLong") ? Long.MAX_VALUE : Long.parseLong(resolvedTaskTemp[1])};
+
+            return resolvedTaskRange[0] <= x.getTasksCount() && x.getTasksCount() <= resolvedTaskRange[1];
+        }).filter(x -> {
+            if (actualTask.equals("null")) {
+                return true;
+            }
+
+            String[] actualTaskTemp = actualTask.split("\\|");
+            Long[] actualTaskRange = {Long.parseLong(actualTaskTemp[0]),
+                    actualTaskTemp[1].equals("maxLong") ? Long.MAX_VALUE : Long.parseLong(actualTaskTemp[1])};
+
+            return actualTaskRange[0] <= x.calculateActiveTask() && x.calculateActiveTask() <= actualTaskRange[1];
+        }).collect(Collectors.toList());
+
         Map<String, Object> result = new HashMap<>();
-        result.put("employees", userList.stream().sorted((a, b) -> b.getTasksCount().compareTo(a.getTasksCount())).
+        result.put("employees", userList.stream().skip(page * USERS_COUNT_ON_PAGE).
                 limit(USERS_COUNT_ON_PAGE).collect(Collectors.toList()));
         result.put("pageCount", (long) Math.ceil(1.0 * userList.size() / USERS_COUNT_ON_PAGE));
+        result.put("employeesCount", userList.size());
 
         return result;
     }

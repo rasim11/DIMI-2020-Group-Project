@@ -37,6 +37,10 @@ function setValidFormat(element) {
 function isRoleChecked() {
     const selectRoles = document.getElementById("select-roles");
 
+    if (!selectRoles) {
+        return true;
+    }
+
     if (!selectRoles.value) {
         setInvalidFormat(selectRoles, "Роль не выбрана");
         return false;

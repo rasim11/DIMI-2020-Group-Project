@@ -153,3 +153,13 @@ function isNoDuplicate() {
         document.getElementsByName(inputTaskLocationName)[0].value !== defaultTaskLocation ||
         taskCommentAllow.id !== defaultTaskCommentAllow.id || !isImgDefault);
 }
+
+if ($("#location").val()===''){
+    $("#check-address").attr('disabled',true);
+}else {
+    $("#check-address").attr('disabled',false);
+}
+$("#location").on('change checked',function (){
+    console.log("sdsfsdf");
+    $("#check-address").attr('disabled',false);
+});

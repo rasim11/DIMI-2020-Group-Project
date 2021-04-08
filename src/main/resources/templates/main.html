@@ -11,6 +11,9 @@
     <link href="/css/tasksList.css" rel="stylesheet">
 
     <link rel="stylesheet" href="https://formden.com/static/cdn/bootstrap-iso.css"/>
+    <script src="https://api-maps.yandex.ru/2.1/?apikey=5694d7f9-f8dc-4349-9d30-9dc5a908a417&lang=ru_RU"
+            type="text/javascript">
+    </script>
 
     <!-- Inline CSS based on choices in "Settings" tab -->
     <style>.bootstrap-iso .formden_header h2, .bootstrap-iso .formden_header p, .bootstrap-iso form {
@@ -245,14 +248,14 @@
                 </li>
                 <li class="nav-item">
                     <br><br>
-                    <a class="btn btn-primary" role="button" href="#" style=" min-width: 200px ">
-                        <span style="font-size: larger">Показать на карте</span>
-                    </a>
+                    <div>
+                        <a href="#exampleModalCenter" data-toggle="modal">
+                            <img id="show-on-map" src="/img/map.jpg" alt="Открыть карту" width="300px">
+                        </a>
+                    </div>
                 </li>
             </ul>
-
         </form>
-
     </div>
 
 
@@ -357,14 +360,34 @@
         </div>
     </div>
 </div>
-
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg bd-example-modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Задачи на карте</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="map-div">
+                    <div id="mapForAllTasks" style="width: 100%; height: 400px"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <br>
 <form id="pageForm" hidden>
     <input th:id="page" th:type="text" th:name="page" th:value="1">
 </form>
 <br>
 
-
+<script th:inline="javascript">
+    var tasks = [[${taskList}]];
+    console.log(tasks)//Make sure this is bills and not bill as you have done it.
+</script>
+<script src="/js/mapForAllTasksLocation.js" type="text/javascript"></script>
 <footer th:insert="blocks/footer :: footer"></footer>
 
 <script>
