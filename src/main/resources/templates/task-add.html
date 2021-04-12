@@ -19,8 +19,8 @@
 <body onload="loadTask()">
 <header th:insert="blocks/header :: header"></header>
 <div id="div-main-block" class="external-cont">
-    <div class="form-data" style="width: 800px; text-align: center; font-size: 20px">
-        <h3>
+    <div class="form-data" style="width: 800px; font-size: 20px">
+        <h3 style="text-align: center;">
             Создание проблемы
         </h3>
         <form id="form-task" method="post" th:object="${taskForm}">
@@ -28,13 +28,14 @@
                    oninput="checkEmpty(this)">
             <textarea class="form-control mb-3" placeholder="Описание" name="taskDescription"
                       style="height: 200px;" oninput="checkEmpty(this)"></textarea>
-            <div class="input-group mb-3">
-                <input type="text" class="form-control required" id="location" placeholder="Адрес проблемы" name="taskLocation" oninput="checkEmpty(this)">
-                <div class="input-group-append">
-                    <button type="button" class="btn btn-primary" id="check-address">Проверить</button>
-                </div>
+            <div class="mb-2" style="display: flex; width: 100%;">
+                <input type="text" class="form-control required mr-1" id="location" placeholder="Адрес проблемы"
+                       name="taskLocation" oninput="checkEmpty(this)">
+                <button type="button" style="width: 107px;" class="btn btn-primary" id="check-address">
+                    Проверить
+                </button>
             </div>
-            <div id="map" style="width: 735px; height: 400px"></div>
+            <div id="map" class="mb-3" style="height: 400px"></div>
             <div class="div-comment-allow mb-2">
                 <label>Возможность комментирования:</label>
                 <label>
@@ -49,7 +50,7 @@
             <div class="div-input-images mb-4" style="display: table; width: 100%;">
                 <span class="pr-4" style="display: table-cell; vertical-align: middle;
                 width: 165px;">Фотографии (не более 3):</span>
-                <div class="div-images" style="display: table-cell;text-align: start;">
+                <div class="div-images" style="display: table-cell;">
                     <input type="file" id="input-load-img" accept="image/jpeg,image/jpg,image/png,image/bmp"
                            style="display: none;" multiple onchange="processingImages(this)">
                     <img class="task-preview-img mb-2" src="/img/add-photo.jpg" title="Добавить фотографии"
@@ -57,7 +58,7 @@
                 </div>
             </div>
 
-            <button type="submit" class="btn btn-primary">
+            <button type="submit" class="btn btn-primary" style="display: block; margin: 0 auto;">
                 Создать
             </button>
         </form>
