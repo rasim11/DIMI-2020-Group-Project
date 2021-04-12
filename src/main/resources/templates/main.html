@@ -36,7 +36,7 @@
 <header th:insert="blocks/header :: header"></header>
 
 
-<form th:id="formFilterConst"  >
+<form th:id="formFilterConst"  hidden>
     <label>hiden form for parametors</label>
     <input id="ch0"
            name="checkbox"
@@ -542,6 +542,8 @@
 
         var radio = document.getElementById("radioMyProblems");
         if ( radio != undefined) radio.checked = true;
+        radio = document.getElementById("radioMP");
+        if ( radio != undefined) radio.checked = true;
     }
 
     function getMySubsList() {
@@ -558,6 +560,8 @@
         });
 
         var radio = document.getElementById("radioSubscribeProblems");
+        if ( radio != undefined) radio.checked = true;
+        radio = document.getElementById("radioSP");
         if ( radio != undefined) radio.checked = true;
 
     }
@@ -577,7 +581,8 @@
 
         var radio = document.getElementById("radioMyProblemsForStaff");
         if ( radio != undefined) radio.checked = true;
-
+        radio = document.getElementById("radioMAP");
+        if ( radio != undefined) radio.checked = true;
     }
 
 

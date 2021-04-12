@@ -273,8 +273,10 @@ public class MainController {
     @GetMapping(LOCAL_URL_MAIN_PAGE + "/filterMyProblems")
     public String filterMyProblemsGet( @RequestParam(required = false) Integer userId,  Model model    ) {
         setRadios(0, userId, model);
-        String infMessage = "Созданные задачи" ;
-        model.addAttribute("infMessage", infMessage);
+        System.out.println("filterMyProblems");
+
+//        String infMessage = "Созданные задачи" ;
+//        model.addAttribute("infMessage", infMessage);
 
 //        return "redirect:/api/v1/main-page";
         return "taskList";
@@ -320,6 +322,9 @@ public class MainController {
                 model.addAttribute("taskList", response.getTaskList());
                 Integer allTaskCount = response.getAllTaskCount();
                 setButtons(1, allTaskCount, model);
+//                setButtons(response.getAllTaskCount(), );
+                setButtons(1, response.getAllTaskCount(), model);
+                System.out.println("response.getAllTaskCount() " + response.getAllTaskCount());
                 System.out.println("size " +  response.getTaskList().size());
             }
         }
