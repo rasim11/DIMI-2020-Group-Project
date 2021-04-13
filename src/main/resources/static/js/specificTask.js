@@ -70,12 +70,13 @@ function printComments() {
 
     for (let i = 0; i < taskComments.length; i++) {
         const anyComment = document.createElement("div");
+        anyComment.style.display = "table";
+        anyComment.style.width = "100%";
 
         if (!taskComments[i].tag) {
             anyComment.className = divCommentClass + " pb-4";
             allComments.prepend(anyComment);
         } else {
-            anyComment.className = divCommentClass;
             const divFeedback = document.createElement("div");
             divFeedback.className = "bg-success mb-4";
             divFeedback.style.borderRadius = "15px";
@@ -86,6 +87,7 @@ function printComments() {
             feedbackTitle.textContent = taskComments[i].tag === "Причина" ? "Причина отмены" : "Отзыв автора";
             divFeedback.append(feedbackTitle);
 
+            anyComment.className = divCommentClass;
             anyComment.style.padding = "10px";
             anyComment.style.borderRadius = "15px";
             anyComment.style.backgroundColor = "white";
@@ -95,6 +97,8 @@ function printComments() {
 
         const aUserProfile = document.createElement("a");
         aUserProfile.href = LOCAL_URL_USER_PROFILE + "/" + taskComments[i].author.id;
+        aUserProfile.style.display = "table-cell";
+        aUserProfile.style.width = "40px";
         anyComment.append(aUserProfile);
 
         const userImage = document.createElement("img");
@@ -103,9 +107,8 @@ function printComments() {
         aUserProfile.append(userImage);
 
         const commentCreatorInfo = document.createElement("div");
-        commentCreatorInfo.style.display = "inline-block";
-        commentCreatorInfo.style.marginLeft = "10px";
-        commentCreatorInfo.style.textAlign = "start";
+        commentCreatorInfo.style.display = "table-cell";
+        commentCreatorInfo.className = "pl-2";
         anyComment.append(commentCreatorInfo);
 
         const authorFirstname = document.createElement("span");
@@ -124,7 +127,6 @@ function printComments() {
 
         const commentText = document.createElement("textarea");
         commentText.className = "form-control";
-        commentText.style.width = "650px";
         commentText.value = taskComments[i].comment;
         commentText.readOnly = true;
         commentText.style.minHeight = "70px";
@@ -132,7 +134,7 @@ function printComments() {
     }
 
     const commentBox = document.getElementById(divCommentBoxId);
-    commentBox.querySelector("h4").textContent = "Всего комментариев: " + taskComments.length;
+    commentBox.querySelector("span").textContent = "Всего комментариев: " + taskComments.length;
 
     activationScrollBarExt();
 }
@@ -337,7 +339,12 @@ function getSubscriptionByTaskId(btn) {
                 }
             }
         } else {
-            btn.remove();
+            const divActionsElements = btn.parentNode.parentNode;
+            btn.parentNode.remove();
+
+            if (divActionsElements.querySelectorAll("*").length === 0) {
+                document.getElementById("div-actions").parentNode.remove();
+            }
         }
     }
 }
