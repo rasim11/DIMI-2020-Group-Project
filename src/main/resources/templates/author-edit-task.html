@@ -20,8 +20,8 @@
 <body onload="loadTaskEdit();document.getElementById('check-address').click();">
 <header th:insert="blocks/header :: header"></header>
 <div id="div-main-block" class="external-cont">
-    <div class="form-data" style="width: 800px; text-align: center; font-size: 20px">
-        <h3>
+    <div class="form-data" style="width: 800px; font-size: 20px">
+        <h3 style="text-align: start;">
             Редактирование проблемы
         </h3>
         <form id="form-task" method="post" th:object="${taskForm}">
@@ -29,13 +29,15 @@
                    th:value="${taskForm.getTaskName()}" oninput="checkEmpty(this);isNoDuplicate();">
             <textarea class="form-control mb-3" placeholder="Описание" name="taskDescription" style="height: 200px;"
                       th:text="${taskForm.getTaskDescription()}" oninput="checkEmpty(this);isNoDuplicate();"/>
-            <div class="input-group mb-3">
-                <input type="text" class="form-control required" id="location" placeholder="Адрес проблемы" name="taskLocation" th:value="${taskForm.getTaskLocation()}" oninput="checkEmpty(this);isNoDuplicate();">
-                <div class="input-group-append">
-                    <button type="button" class="btn btn-primary" id="check-address">Проверить</button>
-                </div>
+            <div class="mb-2" style="display: flex; width: 100%;">
+                <input type="text" class="form-control required mr-1" id="location" placeholder="Адрес проблемы"
+                       name="taskLocation" th:value="${taskForm.getTaskLocation()}"
+                       oninput="checkEmpty(this);isNoDuplicate();">
+                <button type="button" style="width: 107px;" class="btn btn-primary" id="check-address">
+                    Проверить
+                </button>
             </div>
-            <div id="map" style="width: 735px; height: 400px"></div>
+            <div id="map" class="mb-3" style="height: 400px"></div>
             <div class="div-comment-allow mb-2">
                 <label>Возможность комментирования:</label>
                 <label onclick="isNoDuplicate()">
@@ -52,7 +54,7 @@
             <div class="div-input-images mb-4" style="display: table; width: 100%;">
                 <span class="pr-4" style="display: table-cell; vertical-align: middle;
                 width: 165px;">Фотографии (не более 3):</span>
-                <div class="div-images" style="display: table-cell;text-align: start;">
+                <div class="div-images" style="display: table-cell;">
                     <div class="div-image mr-2 mb-2" style="position: relative; display: inline-block;"
                          th:each="taskImage, iter : ${taskImages}" th:id="'div-task-img'+${iter.index}">
                         <img th:src="${taskImage}" class="task-preview-img any-img" onclick="showFullImg(this);">
@@ -67,7 +69,8 @@
                          onclick="loadImages();">
                 </div>
             </div>
-            <button id="btn-save" type="submit" class="btn btn-primary" disabled>
+            <button id="btn-save" type="submit" class="btn btn-primary" style="display: block; margin: 0 auto;"
+                    disabled>
                 Сохранить
             </button>
         </form>
