@@ -61,15 +61,6 @@
                         </div>
                     </div>
                 </li>
-
-
-
-
-
-
-
-
-
                 <li th:if="${task.commentAllow}==true" class="nav-item mb-3">
                     <button class="btn dropdown-toggle font-weight-bold" type="button" data-toggle="collapse"
                             aria-expanded="true" data-target="#div-commentaries" aria-controls="div-images"
@@ -80,9 +71,9 @@
                         <div class="card card-body" style="background: none; border: none;">
                             <div id="div-comment-box">
                                 <span class="task-attr mb-3">Всего комментариев:</span>
-                                <span th:if="${commentForbidden}!=null" class="task-attr mb-4"
+                                <span th:if="${commentForbidden}!=null" class="task-attr"
                                       th:text="${commentForbidden}"/>
-                                <div class="comment mb-4" th:if="${commentPermission}!=null">
+                                <div class="comment" th:if="${commentPermission}!=null">
                                     <div class="mb-4" style="display: table; width: 100%;">
                                         <div style="display: table-cell; width: 40px;">
                                             <img th:src="${#authentication.getPrincipal().getUserImage()}"
@@ -107,25 +98,14 @@
                                             Отмена
                                         </button>
                                     </div>
-                                    <hr>
                                 </div>
+                                <hr>
                                 <div id="div-print-comments" style="overflow: auto;">
                                 </div>
                             </div>
                         </div>
                     </div>
                 </li>
-
-
-
-
-
-
-
-
-
-
-
             </ul>
             <ul class="nav flex-column pr-3" style="display: table-cell; width: 35%;">
                 <li th:if="${isEditAuthor}!=null or ${isEditResponsible}!=null or ${isFeedback} != null and
