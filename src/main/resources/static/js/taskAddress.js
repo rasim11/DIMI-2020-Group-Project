@@ -2,9 +2,7 @@ let show_map_link = document.getElementById("location");
 var request = show_map_link.innerText;
 var map;
 show_map_link.addEventListener("click", function (e) {
-	if (map===undefined) {
         ymaps.ready(init);
-    }
 });
 function init() {
     // Забираем запрос из поля ввода.
@@ -35,7 +33,6 @@ function init() {
 
     function createMap(state, caption) {
         // Если карта еще не была создана, то создадим ее и добавим метку с адресом.
-        if (map === undefined) {
             map = new ymaps.Map('map', state);
             placemark = new ymaps.Placemark(
                 map.getCenter(), {
@@ -46,5 +43,4 @@ function init() {
                 });
             map.geoObjects.add(placemark);
         }
-    }
 }

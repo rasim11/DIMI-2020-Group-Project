@@ -62,48 +62,72 @@
                         </div>
                     </div>
                 </li>
-                <li th:if="${task.commentAllow}==true" class="nav-item mb-3">
-                    <button class="btn dropdown-toggle font-weight-bold" type="button" data-toggle="collapse"
-                            aria-expanded="true" data-target="#div-commentaries" aria-controls="div-images"
-                            style="box-shadow: none;">
-                        Комментарии
-                    </button>
-                    <div class="collapse show" id="div-commentaries">
-                        <div class="card card-body" style="background: none; border: none;">
-                            <div id="div-comment-box">
-                                <span class="task-attr mb-3">Всего комментариев:</span>
-                                <span th:if="${commentForbidden}!=null" class="task-attr"
-                                      th:text="${commentForbidden}"/>
-                                <div class="comment" th:if="${commentPermission}!=null">
-                                    <div class="mb-4" style="display: table; width: 100%;">
-                                        <div style="display: table-cell; width: 40px;">
-                                            <img th:src="${#authentication.getPrincipal().getUserImage()}"
-                                                 class="comment-author-img">
-                                        </div>
-                                        <div class="pl-2" style="display: table-cell;">
+                <li class="nav-item mb-3">
+                    <nav>
+                        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                            <a class="nav-item nav-link active" id="nav-comment-tab" data-toggle="tab" href="#div-comment-box" role="tab" aria-controls="div-comment-box" aria-selected="true">Комментарии</a>
+                            <a class="nav-item nav-link" id="nav-history-tab" data-toggle="tab" href="#history-box" role="tab" aria-controls="history-box" aria-selected="false">История</a>
+                        </div>
+                    </nav>
+                    <div class="tab-content" id="nav-tabContent">
+                        <div class="tab-pane fade show active" id="div-comment-box" role="tabpanel" aria-labelledby="nav-comment-tab">
+                            <span class="task-attr mb-3">Всего комментариев:</span>
+                            <span th:if="${commentForbidden}!=null" class="task-attr"
+                                  th:text="${commentForbidden}"/>
+                            <div class="comment" th:if="${commentPermission}!=null">
+                                <div class="mb-4" style="display: table; width: 100%;">
+                                    <div style="display: table-cell; width: 40px;">
+                                        <img th:src="${#authentication.getPrincipal().getUserImage()}"
+                                             class="comment-author-img">
+                                    </div>
+                                    <div class="pl-2" style="display: table-cell;">
                                             <span class="font-weight-bold"
                                                   th:text="${#authentication.getPrincipal().getFirstname()}"/>
-                                            <textarea class="form-control" style="min-height: 70px;"
-                                                      id="textarea-comment-text"
-                                                      placeholder="Оставьте комментарий"
-                                                      oninput="isCommentValid(this);"></textarea>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <button type="button" class="btn btn-outline-success" disabled
-                                                onclick="postComment();printComments();">
-                                            Оставить комментарий
-                                        </button>
-                                        <button type="button" class="btn btn-outline-danger" disabled
-                                                onclick="cancelCommentBtn()">
-                                            Отмена
-                                        </button>
+                                        <textarea class="form-control" style="min-height: 70px;"
+                                                  id="textarea-comment-text"
+                                                  placeholder="Оставьте комментарий"
+                                                  oninput="isCommentValid(this);"></textarea>
                                     </div>
                                 </div>
-                                <hr>
-                                <div id="div-print-comments" style="overflow: auto;">
+                                <div>
+                                    <button type="button" class="btn btn-outline-success" disabled
+                                            onclick="postComment();printComments();">
+                                        Оставить комментарий
+                                    </button>
+                                    <button type="button" class="btn btn-outline-danger" disabled
+                                            onclick="cancelCommentBtn()">
+                                        Отмена
+                                    </button>
                                 </div>
                             </div>
+                            <hr>
+                            <div id="div-print-comments" style="overflow: auto;">
+                            </div>
+                        </div>
+                        <div class="tab-pane fade show " id="history-box" role="tabpanel" aria-labelledby="nav-history-tab">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th scope="col" style="max-width: 300px;overflow: hidden">Предыдущий ответственный</th>
+                                        <th scope="col" style="max-width: 300px;overflow: hidden">Текущий ответственный</th>
+                                        <th scope="col" style="max-width: 163px;">Дата переназначения</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="history : ${histories}" >
+                                        <td style="max-width: 300px;overflow: hidden">
+                                            <a th:with="url=${T(com.netcracker.project.url.UrlTemplates).LOCAL_URL_USER_PROFILE}"
+                                               th:href="@{${url}(id=${history.previousResponsible.id})}"
+                                               th:text="${history.previousResponsible.lastname + ' ' + history.previousResponsible.firstname}"/></td>
+                                        <td style="max-width: 300px;overflow: hidden">
+                                            <a th:with="url=${T(com.netcracker.project.url.UrlTemplates).LOCAL_URL_USER_PROFILE}"
+                                               th:href="@{${url}(id=${history.currentResponsible.id})}"
+                                               th:text="${history.currentResponsible.lastname + ' ' + history.currentResponsible.firstname}"/>
+                                        </td>
+                                        <td th:text="${history.dateToString(history.changedDate)}" style="max-width: 163px;"/>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </li>

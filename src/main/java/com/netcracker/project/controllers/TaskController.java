@@ -53,6 +53,7 @@ public class TaskController {
         task.setFeedback(entityService.getFeedbackByTaskId(task.getId()));
         String[] taskImages = task.getTaskImage().length() != 0 ? task.getTaskImage().split(" ") : null;
 
+        model.addAttribute("histories", entityService.getHistoryByTaskId(id));
         model.addAttribute("task", task);
         model.addAttribute("taskImages", taskImages);
 

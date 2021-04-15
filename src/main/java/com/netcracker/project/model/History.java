@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -15,4 +16,8 @@ public class History {
     private User previousResponsible;
     private User currentResponsible;
     private LocalDateTime changedDate;
+
+    public String dateToString(LocalDateTime localDateTime) {
+        return localDateTime.format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"));
+    }
 }

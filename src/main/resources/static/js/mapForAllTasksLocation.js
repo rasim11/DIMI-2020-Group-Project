@@ -2,9 +2,7 @@ var tasksLocation = [];
 // var page = [[${taskList}]];
 var map;
 $("#show-on-map").on('click', function () {
-    if (map === undefined) {
         ymaps.ready(init);
-    }
 });
 console.log(tasks);
 
