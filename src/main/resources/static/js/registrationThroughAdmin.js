@@ -38,19 +38,19 @@ function roleChecked(selectRoles) {
 
         const selectTitle = document.createElement("option");
         selectTitle.value = "";
-        selectTitle.textContent = selectRoles.value === "SOCIAL_WORKER" ? "Регион | Ответственный" : "Регион";
+        selectTitle.textContent = selectRoles.value === "SOCIAL_WORKER" ? "Регион | Региональный ответственный" : "Регион";
         selectTitle.disabled = true;
         selectTitle.selected = true;
         selectRegion.appendChild(selectTitle);
 
         for (let i = 0; i < regions.length; i++) {
-            if (selectRoles.value !== "SOCIAL_WORKER" && regions[i].responsible) {
+            if (selectRoles.value === "RESPONSIBLE" && regions[i].responsible) {
                 continue;
             }
 
             const regionName = document.createElement("option");
 
-            if (selectRoles.value === "SOCIAL_WORKER") {
+            if (["SOCIAL_WORKER","DEPUTY"].includes(selectRoles.value)) {
                 regionName.textContent = regions[i].responsible ? regions[i].regionName + " | " +
                     regions[i].responsible.lastname + " " +
                     regions[i].responsible.firstname + " " +

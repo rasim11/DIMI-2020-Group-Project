@@ -25,6 +25,7 @@ public class Task {
     private LocalDateTime completeDate;
     private Status status;
     private Set<User> socialWorkers;
+    private User currResponsible;
     private Feedback feedback;
 
     public void dataExtension(User author) {

@@ -26,6 +26,7 @@ public class EntityService {
             throw new UsernameNotFoundException("DB fatal error. User Region not found!");
         }
         task.setRegion(region);
+        task.setCurrResponsible(region.getResponsible());
 
         task.trim();
         task.dataExtension(user);
@@ -115,5 +116,23 @@ public class EntityService {
 
     public void postSubscription(Subscription subscription) {
         restTemplate.postForLocation(URL_POST_SUBSCRIPTION, subscription);
+    }
+
+    public Iterable<Task> getTasksByCurrResponsibleId(Long id){
+        JsonNode objects = restTemplate.getForObject(URL_GET_TASKS_BY_CURR_RESPONSIBLE_ID, JsonNode.class, id);
+        return mapper.convertValue(objects,
+                new TypeReference<Iterable<Task>>() {
+                }
+        );
+    }
+    public Iterable<History> getHistoryByTaskId(Long id){
+        JsonNode objects = restTemplate.getForObject(URL_GET_HISTORY_BY_TASK_ID , JsonNode.class, id);
+        return mapper.convertValue(objects,
+                new TypeReference<Iterable<History>>() {
+                }
+        );
+    }
+    public void postHistory(History history){
+        restTemplate.postForLocation(URL_POST_HISTORY, history);
     }
 }

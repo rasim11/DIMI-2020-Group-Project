@@ -50,6 +50,7 @@ public final class UrlTemplates {
     public static final String COMMENT_DELETE = "/comment-delete";
     public static final String FEEDBACK_GET = "/feedback-get";
     public static final String SUBSCRIPTION_MANAGEMENT = "/subscription-management";
+    public static final String HISTORY_MANAGEMENT = "/history-management";
 
     public static final String LOCAL_URL_ADMINISTRATION = API + VERSION + ADMIN_MANAGEMENT;
     public static final String LOCAL_URL_USER_ROLE_EDIT = API + VERSION + ADMIN_MANAGEMENT +
@@ -131,5 +132,8 @@ public final class UrlTemplates {
     public static final String URL_DELETE_SUBSCRIPTION_BY_ID = SERVER + LOCAL_URL_DELETE_SUBSCRIPTION_BY_ID;
     public static final String URL_DELETE_SUBSCRIPTIONS_BY_USER_ID = SERVER + API + VERSION + SUBSCRIPTION_MANAGEMENT +
             "/subscriptions-delete-by-user-id/{id}";
-
+    public static final String URL_GET_USER_BY_ROLE_REGION_ID = SERVER+API + VERSION + USER_MANAGEMENT + USER_GET + "-by-role-region-id/{id}";
+    public static final String URL_GET_TASKS_BY_CURR_RESPONSIBLE_ID = SERVER+API + VERSION + TASK_MANAGEMENT + TASK_GET + "-by-curr-responsible-id/{id}";
+    public static final String URL_GET_HISTORY_BY_TASK_ID = SERVER + API + VERSION + HISTORY_MANAGEMENT + "/history-get-by-task-id/{id}";
+    public static final String URL_POST_HISTORY = SERVER + API + VERSION + HISTORY_MANAGEMENT + "/history-post";
 }

@@ -106,6 +106,8 @@ function getRoleName(role) {
         case "SOCIAL_WORKER":
             return "Соц. работник";
         case "RESPONSIBLE":
+            return "Региональный ответственный";
+        case "DEPUTY":
             return "Ответственный";
         default:
             return "Ошибка";

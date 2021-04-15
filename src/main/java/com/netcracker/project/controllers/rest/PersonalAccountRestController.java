@@ -65,7 +65,7 @@ public class PersonalAccountRestController {
                                             @PathVariable String regDate, @PathVariable String resolvedTask,
                                             @PathVariable String searchString, @PathVariable Integer sort) {
         Region region = entityService.getRegionByResponsibleEmail(email);
-        Iterable<User> users = userDetailsService.getUsersByRegionId(region.getId());
+        Iterable<User> users = userDetailsService.getUsersByRegionId(URL_GET_USERS_BY_REGION_ID,region.getId());
         for (User user : users) {
             user.setActiveTasks(entityService.getActiveTaskBySocialWorkersId(user.getId()));
             user.setPassword(null);
