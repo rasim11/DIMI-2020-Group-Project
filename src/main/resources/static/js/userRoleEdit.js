@@ -102,7 +102,7 @@ function roleChecked(selectRoles, isFirstLoad) {
 
         const selectTitle = document.createElement("option");
         selectTitle.value = "";
-        selectTitle.textContent = selectRoles.value === "SOCIAL_WORKER" ? "Регион | Ответственный" : "Регион";
+        selectTitle.textContent = selectRoles.value === "SOCIAL_WORKER" ? "Регион | Региональный ответственный" : "Регион";
         selectTitle.selected = true;
         selectTitle.disabled = true;
         selectRegion.appendChild(selectTitle);
@@ -110,7 +110,7 @@ function roleChecked(selectRoles, isFirstLoad) {
         for (let i = 0; i < regions.length; i++) {
             const regionName = document.createElement("option");
 
-            if (selectRoles.value === "SOCIAL_WORKER") {
+            if (["SOCIAL_WORKER","DEPUTY"].includes(selectRoles.value)) {
                 if (regions[i].id.toString() === targetUserRegionId && isFirstLoad) {
                     selectTitle.selected = false;
                     regionName.selected = true;

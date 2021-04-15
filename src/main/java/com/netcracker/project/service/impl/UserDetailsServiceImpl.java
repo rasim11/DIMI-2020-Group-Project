@@ -167,8 +167,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         }
     }
 
-    public Iterable<User> getUsersByRegionId(Long id) {
-        JsonNode users = restTemplate.getForObject(URL_GET_USERS_BY_REGION_ID, JsonNode.class, id);
+    public Iterable<User> getUsersByRegionId(String url,Long id) {
+        JsonNode users = restTemplate.getForObject(url, JsonNode.class, id);
         return mapper.convertValue(users,
                 new TypeReference<Iterable<User>>() {
                 }

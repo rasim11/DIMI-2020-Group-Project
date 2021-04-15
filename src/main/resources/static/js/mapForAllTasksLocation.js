@@ -1,28 +1,32 @@
-
 var tasksLocation = [];
+// var page = [[${taskList}]];
 var map;
-$("#show-on-map").on('click' ,function (){
-    if(map===undefined) {
+$("#show-on-map").on('click', function () {
+    if (map === undefined) {
         ymaps.ready(init);
     }
 });
+console.log(tasks);
 
 function init() {
     // Забираем запрос из поля ввода.
     var i = 0;
     var obj;
-    for (let task of tasks) {
-        ymaps.geocode(task.taskLocation).then(function (res) {
-            obj = res.geoObjects.get(0);
-            tasksLocation[i]=showResult(obj, task.taskName);
-            if(i+1>tasks.length-1){
-                createMap();
-            }
-            i++;
-        });
+    if (tasks.length!==0) {
+        for (let task of tasks) {
+            ymaps.geocode(task.taskLocation).then(function (res) {
+                obj = res.geoObjects.get(0);
+                tasksLocation[i] = showResult(obj, task.taskName);
+                if (i + 1 > tasks.length - 1) {
+                    createMap();
+                }
+                i++;
+            });
+        }
+    }else {
+        createMap();
     }
 
-    //createMap(temp);
 
     function showResult(obj, taskName) {
         var mapContainer = $('#mapForAllTasks'),
@@ -33,12 +37,11 @@ function init() {
                 [mapContainer.width(), mapContainer.height()]
             ),
             // Сохраняем полный адрес для сообщения под картой.
-            address = [obj.getCountry(), obj.getAddressLine()].join(', '),
+            address = [obj.getAddressLine()].join(', '),
             // Сохраняем укороченный адрес для подписи метки.
             shortAddress = [obj.getThoroughfare(), obj.getPremiseNumber(), obj.getPremise()].join(' ');
         // Убираем контролы с карты.
         temp = createPlaceMark(mapState.center, address, taskName);
-        console.log("before: " + taskName);
 
         return temp;
         // Создаём карту.
@@ -49,8 +52,8 @@ function init() {
     function createPlaceMark(coords, iconText, balloonText) {
         return new ymaps.Placemark(
             coords, {
-                iconCaption: balloonText,
-                balloonContent: iconText,
+                iconCaption: iconText,
+                balloonContent: balloonText,
             }, {
                 preset: 'islands#redDotIconWithCaption'
             });
@@ -58,6 +61,7 @@ function init() {
 
     function createMap() {
         // Если карта еще не была создана, то создадим ее и добавим метку с адресом.
+        let ballons = new ymaps.GeoObjectCollection();
         map = new ymaps.Map('mapForAllTasks', {
             center: [53.507836, 49.420393],
             zoom: 11,
@@ -67,14 +71,23 @@ function init() {
             searchControlProvider: 'yandex#search'
         });
 
-
-        console.log(tasksLocation[0]);
-        for (let location = 0; location < tasksLocation.length; location++) {
-            map.geoObjects.add(tasksLocation[location]);
-            // map.setBounds(tasksLocation[location], {
-            //     // Проверяем наличие тайлов на данном масштабе.
-            //     checkZoomRange: true
-            // });
+        while (tasksLocation.length!==0){
+            let tempTaskName = tasksLocation[0];
+            tasksLocation.splice(0, 1);
+            for (let i=0;i<tasksLocation.length;i++){
+                if (tempTaskName.properties.get('iconCaption').trim() === tasksLocation[i].properties.get('iconCaption').trim()) {
+                    let tasksWithSameAddress = tempTaskName.properties.get('balloonContent').trim()+'<br>'+tasksLocation[i].properties.get('balloonContent').trim()
+                    tempTaskName.properties.set('balloonContent', tasksWithSameAddress);
+                    tasksLocation.splice(i, 1);
+                    i--;
+                }
+            }
+            ballons.add(tempTaskName);
+        }
+        map.geoObjects.add(ballons);
+        map.setBounds(ballons.getBounds());
+        if(ballons.length===1) {
+            map.setZoom(11);
         }
     }
 }

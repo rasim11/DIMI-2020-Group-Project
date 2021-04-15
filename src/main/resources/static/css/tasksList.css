@@ -6,16 +6,21 @@
   display: table;
   width: 100%;
   height: 250px;
+  padding-top: 10px;
+  border-radius: 10%;
 }
 .table-itemS{
   display: table-cell;
   vertical-align: top;
+  border-radius: 10%;
   /*border: 1px solid #000;*/
 }
 
 .table-itemS2{
   width: 200px;
   display: table-cell;
+  padding: 10px 20px;
+  border-radius: 10%;
 }
 
 .table-item-rowS{
@@ -30,7 +35,7 @@ button.page-button{
   border-radius:5px;
 }
 button.page-button-current{
-  background-color: rgb(44, 0, 240);
+  background-color: #007bff;
   color: white;
   border-radius:5px;
 }

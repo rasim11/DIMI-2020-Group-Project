@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 import static com.netcracker.project.url.UrlTemplates.*;
@@ -73,9 +74,15 @@ public class TaskController {
             if (curUser.getRole().equals(Role.USER) && author.getEmail().equals(curUser.getEmail())) {
                 String param = task.getStatus().equals(Status.RESOLVED) ? "isFeedback" : "isEditAuthor";
                 model.addAttribute(param, true);
-            } else if (curUser.getRole().equals(Role.RESPONSIBLE) && !task.getStatus().equals(Status.RESOLVED) &&
-                    task.getRegion().getRegionName().equals(curRegion.getRegionName())) {
+            } else if (!task.getStatus().equals(Status.RESOLVED) && (curUser.getRole().equals(Role.RESPONSIBLE) &&
+                    task.getRegion().getRegionName().equals(curRegion.getRegionName()) || curUser.getRole().equals(Role.DEPUTY) &&
+                    task.getCurrResponsible() != null && task.getCurrResponsible().getEmail().equals(curUser.getEmail()))) {
                 model.addAttribute("isEditResponsible", true);
+                ArrayList<User> responsibles = new ArrayList<>();
+                userDetailsService.getUsersByRegionId(URL_GET_USER_BY_ROLE_REGION_ID, curRegion.getId()).forEach(responsibles::add);
+                responsibles.add(task.getRegion().getResponsible());
+                responsibles.remove(task.getCurrResponsible());
+                model.addAttribute("responsibleList", responsibles);
             }
         } else {
             model.addAttribute("commentForbidden",
@@ -83,6 +90,19 @@ public class TaskController {
         }
 
         return "specific-task";
+    }
+
+    @PostMapping(LOCAL_URL_GET_TASK_BY_ID)
+    public String changeResponsible(@PathVariable Long id, @RequestParam("changedResponsible") Long responsibleId) {
+        Task task = entityService.getTaskById(id);
+        User previousResponsible = task.getCurrResponsible()!=null?task.getCurrResponsible():task.getRegion().getResponsible();
+        User responsible = userDetailsService.getUserById(responsibleId);
+
+        task.setCurrResponsible(responsible);
+        entityService.putTask(task);
+        History history = new History(null,task,previousResponsible,responsible,LocalDateTime.now());
+        entityService.postHistory(history);
+        return "redirect:" + LOCAL_URL_GET_TASK_BY_ID.replace("{id}", id.toString());
     }
 
     @GetMapping(LOCAL_URL_AUTHOR_PUT_TASK)
@@ -136,7 +156,7 @@ public class TaskController {
 
         task.setSocialWorkers(entityService.getSocialWorkersByActiveTaskId(task.getId()));
         Set<User> socialWorkers = new LinkedHashSet<>();
-        userDetailsService.getUsersByRegionId(task.getRegion().getId()).forEach(socialWorkers::add);
+        userDetailsService.getUsersByRegionId(URL_GET_USERS_BY_REGION_ID, task.getRegion().getId()).forEach(socialWorkers::add);
 
         for (User socialWorker : task.getSocialWorkers()) {
             socialWorkers.remove(socialWorker);

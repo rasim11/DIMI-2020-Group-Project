@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <title>TF|Просмотр проблемы</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
@@ -113,14 +114,24 @@
                             </label>
                             <label class="task-attr mb-2">
                                 Ответственный:
-                                <a th:if="${task.getRegion().getResponsible()}!=null"
-                                   th:text="${task.getRegion().getResponsible().getLastname() + ' ' +
-                                    task.getRegion().getResponsible().getFirstname()}"
+                                <a th:if="${task.getCurrResponsible()}!=null"
+                                   th:text="${task.getCurrResponsible().getLastname() + ' ' +
+                                    task.getCurrResponsible().getFirstname()}"
                                    th:with="url=${T(com.netcracker.project.url.UrlTemplates).LOCAL_URL_USER_PROFILE}"
-                                   th:href="@{${url}(id=${task.getRegion().getResponsible().getId()})}"/>
-                                <span th:if="${task.getRegion().getResponsible()}==null">
-                                    У данного региона ответственный не назначен
+                                   th:href="@{${url}(id=${task.getCurrResponsible().getId()})}"/>
+                                <span th:if="${task.getCurrResponsible()}==null">
+                                    У данной задачи ответственный не назначен
                                 </span>
+                                <form th:if="${isEditResponsible}!=null and ${!responsibleList.isEmpty()}" class="dropdown" style="display: inline-block;" method="post">
+                                    (<a class="btn-link" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        Изменить
+                                    </a>)
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <button type="submit" name="changedResponsible"  class="dropdown-item" th:each="responsible : ${responsibleList}"
+                                                th:text="${responsible.getLastname() + ' ' +  responsible.getFirstname() + ' ' + responsible.getMiddlename()}"
+                                                th:value="${responsible.getId()}"/>
+                                    </div>
+                                </form>
                             </label>
                         </div>
                     </div>
@@ -213,7 +224,7 @@
     <div class="modal-dialog modal-dialog-centered modal-lg bd-example-modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">Задачи на карте</h5>
+                <h5 class="modal-title" id="exampleModalLongTitle" th:text="${task.taskName}"/>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
