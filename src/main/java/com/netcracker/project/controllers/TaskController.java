@@ -90,6 +90,18 @@ public class TaskController {
                     "Комментировать может только зарегистрированный пользователь!");
         }
 
+        if (task.getStatus().getValue() == 4)
+        {
+            Task  originTask =   entityService.getOriginTaskFromDuplicate(task.getId() );
+            model.addAttribute("originTask",  originTask);
+        }
+
+        if (task.getStatus().getValue() == 7)
+        {
+            Iterable<Task>  firstTasks =   entityService.getFirstFromBlocked(task.getId() );
+            model.addAttribute("firstTasks",  firstTasks);
+        }
+
         return "specific-task";
     }
 

@@ -22,11 +22,8 @@ public class FilterParams {
         if (params != null) {
             listTasksStatus = new ArrayList<Status>();
             for (int i = 0; i < params.length; ++i) {
-                if (params[i] > -1 && params[i] < 4)
-                {
                     Status status = Status.valueOf(params[i]);
                     listTasksStatus.add(status);
-                }
             }
         }
     }
@@ -49,6 +46,8 @@ public class FilterParams {
            if (  listTasksStatus.size() > 0)
             empty = false;
         }
+
+        System.out.println("listTasksStatus " + listTasksStatus.size());
 
         if (authorFilter != null)
         {

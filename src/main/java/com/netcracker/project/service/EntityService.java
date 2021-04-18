@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.Set;
 
 import static com.netcracker.project.url.UrlTemplates.*;
@@ -35,6 +36,14 @@ public class EntityService {
 
     public Task getTaskById(Long id) {
         return restTemplate.getForObject(URL_GET_TASK_BY_ID, Task.class, id);
+    }
+    public Task getOriginTaskFromDuplicate(Long taskId) { return restTemplate.getForObject(URL_GET_ORIGIN_FROM_DUPLICATE, Task.class, taskId);}
+    public Iterable<Task> getFirstFromBlocked(Long taskId) {
+        JsonNode objects =  restTemplate.getForObject(URL_GET_FIRST_FROM_BLOCKED, JsonNode.class , taskId);
+        return mapper.convertValue(objects,
+                new TypeReference<Iterable<Task>>() {
+                }
+        );
     }
 
     public JsonNode getAllObjects(String url) {
@@ -135,4 +144,6 @@ public class EntityService {
     public void postHistory(History history){
         restTemplate.postForLocation(URL_POST_HISTORY, history);
     }
+
+
 }

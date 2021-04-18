@@ -208,6 +208,7 @@ public class MainController {
         if (checkbox != null) {
             filterParams.setParams(checkbox);
             for (int i = 0; i < checkbox.length; ++i) {
+                System.out.println(" | " + checkbox[i]);
                 String checkParam = "checkbox" + checkbox[i];
                 model.addAttribute(checkParam, 1);
             }

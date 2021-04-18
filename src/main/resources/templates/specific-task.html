@@ -62,6 +62,42 @@
                         </div>
                     </div>
                 </li>
+
+                <li th:if="${originTask} != null" class="nav-item mb-3">
+                    <button class="btn dropdown-toggle font-weight-bold" type="button" data-toggle="collapse"
+                            aria-expanded="true" data-target="#div-duplicate" aria-controls="div-description"
+                            style="box-shadow: none;">
+                        Оригинальная проблема
+                    </button>
+                    <div class="collapse show" id="div-duplicate">
+                        <div class="card card-body" style="background: none; border: none;">
+                            <a  th:with="url=${T(com.netcracker.project.url.UrlTemplates).LOCAL_URL_GET_TASK }"
+                                th:href="@{${url+originTask.getId()}}"
+                                th:text="${originTask.getTaskName()}"
+                                class="mb-4 task-attr"  style="max-height: 600px; overflow: auto; white-space: pre-wrap;" />
+                        </div>
+                    </div>
+                </li>
+
+                <li th:if="${firstTasks} != null" class="nav-item mb-3">
+                    <button class="btn dropdown-toggle font-weight-bold" type="button" data-toggle="collapse"
+                            aria-expanded="true" data-target="#div-blocked" aria-controls="div-description"
+                            style="box-shadow: none;">
+                        Блокирущая проблема
+                    </button>
+                    <div class="collapse show" id="div-blocked">
+                        <div class="card card-body" style="background: none; border: none;">
+                            <p th:each="first : ${firstTasks}" >
+                                <a  th:with="url=${T(com.netcracker.project.url.UrlTemplates).LOCAL_URL_GET_TASK }"
+                                    th:href="@{${url+first.getId()}}"
+                                    th:text="${first.getTaskName()}"
+                                    class="mb-4 task-attr"  style="max-height: 600px; overflow: auto; white-space: pre-wrap;" />
+                            </p>
+                         </div>
+                    </div>
+                </li>
+
+
                 <li class="nav-item mb-3">
                     <nav>
                         <div class="nav nav-tabs" id="nav-tab" role="tablist">

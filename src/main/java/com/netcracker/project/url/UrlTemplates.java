@@ -70,6 +70,7 @@ public final class UrlTemplates {
     public static final String LOCAL_URL_USER_REGISTRATION = API + VERSION + USER_MANAGEMENT + USER_REGISTRATION;
     public static final String LOCAL_URL_POST_TASK = API + VERSION + TASK_MANAGEMENT + TASK_POST;
     public static final String LOCAL_URL_GET_TASK_BY_ID = API + VERSION + TASK_MANAGEMENT + TASK_GET + BY_ID + "/{id}";
+    public static final String LOCAL_URL_GET_TASK = API + VERSION + TASK_MANAGEMENT + TASK_GET + BY_ID + "/";
     public static final String LOCAL_URL_AUTHOR_PUT_TASK = API + VERSION + TASK_MANAGEMENT + TASK_PUT +
             BY_ID + "-by-author/{id}";
     public static final String LOCAL_URL_POST_COMMENT = API + VERSION + COMMENT_MANAGEMENT + COMMENT_POST;
@@ -136,4 +137,6 @@ public final class UrlTemplates {
     public static final String URL_GET_TASKS_BY_CURR_RESPONSIBLE_ID = SERVER+API + VERSION + TASK_MANAGEMENT + TASK_GET + "-by-curr-responsible-id/{id}";
     public static final String URL_GET_HISTORY_BY_TASK_ID = SERVER + API + VERSION + HISTORY_MANAGEMENT + "/history-get-by-task-id/{id}";
     public static final String URL_POST_HISTORY = SERVER + API + VERSION + HISTORY_MANAGEMENT + "/history-post";
+    public static final String URL_GET_ORIGIN_FROM_DUPLICATE = SERVER + API + VERSION + "/get-origin-from-duplicate/{id}";
+    public static final String URL_GET_FIRST_FROM_BLOCKED = SERVER +  API + VERSION + "/get-first-from-blocked/{id}";
 }
