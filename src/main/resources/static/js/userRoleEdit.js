@@ -1,17 +1,23 @@
 const selectIdRoles = "select-roles";
 const selectIdRegions = "select-regions";
+const selectMunicipalitiesId = "select-municipalities";
+const inputAppointmentId = "input-appointment";
 const btnChangeId = "btn-change";
 
-let roles;
-let regions;
+let roles = [];
+let regions = [];
 let rolesNames = [];
+let municipalities = [];
 let targetUserId;
 let targetUserRole;
 let targetUserRegionId;
+let targetUserMunicipalityId = "";
+let targetUserAppointment;
 
 function loadFormUserRoleEdit() {
     roles = getAllObjectsFromRequest(URL_GET_ALL_ROLES);
     regions = getAllObjectsFromRequest(URL_GET_ALL_REGIONS);
+    municipalities = getAllObjectsFromRequest(URL_GET_MUNICIPALITIES);
 
     for (let i = 0; i < roles.length; i++) {
         rolesNames[i] = getRoleName(roles[i]);
@@ -24,6 +30,16 @@ function loadFormUserRoleEdit() {
     elem = document.getElementById("input-cur-role-name");
     targetUserRole = elem.value;
     elem.remove();
+
+    elem = document.getElementById("input-appointment");
+    targetUserAppointment = elem.value;
+    elem.remove();
+
+    elem = document.getElementById("input-municipality");
+    if (elem) {
+        targetUserMunicipalityId = elem.value;
+        elem.remove();
+    }
 
     elem = document.getElementById("input-region-id");
     if (elem) {
@@ -89,6 +105,16 @@ function roleChecked(selectRoles, isFirstLoad) {
         selectRegion.remove();
     }
 
+    const inputAppointment = document.getElementById(inputAppointmentId);
+    if (inputAppointment) {
+        inputAppointment.remove();
+    }
+
+    const selectMunicipalities = document.getElementById(selectMunicipalitiesId);
+    if (selectMunicipalities) {
+        selectMunicipalities.remove();
+    }
+
     if (selectRoles.value !== "USER") {
         const selectRegion = document.createElement("select");
         selectRegion.className = "form-control mb-2";
@@ -102,7 +128,8 @@ function roleChecked(selectRoles, isFirstLoad) {
 
         const selectTitle = document.createElement("option");
         selectTitle.value = "";
-        selectTitle.textContent = selectRoles.value === "SOCIAL_WORKER" ? "Регион | Региональный ответственный" : "Регион";
+        selectTitle.textContent = selectRoles.value !== "RESPONSIBLE" ? "Регион | Региональный ответственный" :
+            "Регион";
         selectTitle.selected = true;
         selectTitle.disabled = true;
         selectRegion.appendChild(selectTitle);
@@ -110,7 +137,7 @@ function roleChecked(selectRoles, isFirstLoad) {
         for (let i = 0; i < regions.length; i++) {
             const regionName = document.createElement("option");
 
-            if (["SOCIAL_WORKER","DEPUTY"].includes(selectRoles.value)) {
+            if (selectRoles.value !== "RESPONSIBLE") {
                 if (regions[i].id.toString() === targetUserRegionId && isFirstLoad) {
                     selectTitle.selected = false;
                     regionName.selected = true;
@@ -135,30 +162,60 @@ function roleChecked(selectRoles, isFirstLoad) {
             regionName.value = regions[i].id;
             selectRegion.appendChild(regionName);
         }
+
+        if (selectRoles.value !== "SOCIAL_WORKER") {
+            const inputAppointment = document.createElement("input");
+            inputAppointment.type = "text";
+            inputAppointment.id = inputAppointmentId;
+            inputAppointment.className = "form-control mb-2";
+            inputAppointment.placeholder = "Должность";
+            inputAppointment.name = "appointment";
+            inputAppointment.value = isFirstLoad ? targetUserAppointment : "";
+            inputAppointment.oninput = isNoDuplicate;
+            selectRegion.after(inputAppointment);
+
+            const selectMunicipalities = document.createElement("select");
+            selectMunicipalities.className = "form-control mb-2";
+            selectMunicipalities.id = selectMunicipalitiesId;
+            selectMunicipalities.name = "municipality.id";
+            selectMunicipalities.onchange = isNoDuplicate;
+            inputAppointment.after(selectMunicipalities);
+
+            const selectTitle = document.createElement("option");
+            selectTitle.value = "";
+            selectTitle.textContent = "Муниципалитет";
+            selectTitle.disabled = true;
+            selectTitle.selected = true;
+            selectMunicipalities.append(selectTitle);
+
+            for (let i = 0; i < municipalities.length; i++) {
+                const selectEl = document.createElement("option");
+                selectEl.value = municipalities[i].id;
+                selectEl.textContent = municipalities[i].name;
+                selectMunicipalities.append(selectEl);
+
+                if (selectEl.value === targetUserMunicipalityId && isFirstLoad) {
+                    selectTitle.selected = false;
+                    selectEl.selected = true;
+                }
+            }
+        }
     }
 }
 
 function isNoDuplicate() {
     const selectRoles = document.getElementById(selectIdRoles);
     const selectRegion = document.getElementById(selectIdRegions);
+    const inputAppointment = document.getElementById(inputAppointmentId);
+    const selectMunicipalities = document.getElementById(selectMunicipalitiesId);
 
-    if (!selectRegion) {
-        document.getElementById(btnChangeId).disabled = selectRoles.value === targetUserRole;
+    const btn = document.getElementById(btnChangeId);
+    if (selectRoles.value === "USER") {
+        btn.disabled = selectRoles.value === targetUserRole;
+    } else if (selectRoles.value === "SOCIAL_WORKER") {
+        btn.disabled = selectRoles.value === targetUserRole && selectRegion.value === targetUserRegionId;
     } else {
-        document.getElementById(btnChangeId).disabled = selectRoles.value === targetUserRole &&
-            selectRegion.value === targetUserRegionId;
+        btn.disabled = selectRoles.value === targetUserRole && selectRegion.value === targetUserRegionId &&
+            inputAppointment.value === targetUserAppointment && selectMunicipalities.value === targetUserMunicipalityId;
     }
-}
-
-function resetBtn() {
-    const selectRoles = document.getElementById(selectIdRoles);
-    const selectRegion = document.getElementById(selectIdRegions);
-
-    if (selectRegion) {
-        selectRegion.remove();
-    }
-    selectRoles.remove();
-
-    addBegData();
-    document.getElementById(btnChangeId).disabled = true;
 }

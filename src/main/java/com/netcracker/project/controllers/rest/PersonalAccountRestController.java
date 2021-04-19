@@ -1,6 +1,7 @@
 package com.netcracker.project.controllers.rest;
 
 import com.netcracker.project.model.Region;
+import com.netcracker.project.model.Role;
 import com.netcracker.project.model.User;
 import com.netcracker.project.service.EntityService;
 import com.netcracker.project.service.SecurityService;
@@ -63,16 +64,21 @@ public class PersonalAccountRestController {
     public Map<String, Object> getEmployees(@PathVariable String actualTask, @PathVariable Integer criterion,
                                             @PathVariable String email, @PathVariable Long page,
                                             @PathVariable String regDate, @PathVariable String resolvedTask,
-                                            @PathVariable String searchString, @PathVariable Integer sort) {
-        Region region = entityService.getRegionByResponsibleEmail(email);
-        Iterable<User> users = userDetailsService.getUsersByRegionId(URL_GET_USERS_BY_REGION_ID,region.getId());
-        for (User user : users) {
+                                            @PathVariable String searchString, @PathVariable Integer sort,
+                                            @PathVariable Role role, @PathVariable Long regionId) {
+        Region region = regionId != -1 ? entityService.getRegionById(regionId) :
+                entityService.getRegionByResponsibleEmail(email);
+        List<User> userList = new ArrayList<>();
+
+        userDetailsService.getUsersByRegionId(URL_GET_WORKERS_BY_REGION_ID, region.getId()).forEach(userList::add);
+        if (role.equals(Role.RESPONSIBLE)) {
+            userDetailsService.getUsersByRegionId(URL_GET_DEPUTIES_BY_REGION_ID, region.getId()).forEach(userList::add);
+        }
+
+        for (User user : userList) {
             user.setActiveTasks(entityService.getActiveTaskBySocialWorkersId(user.getId()));
             user.setPassword(null);
         }
-
-        List<User> userList = new ArrayList<>();
-        users.forEach(userList::add);
 
         userList = userList.stream().sorted((a, b) -> {
             int res = 0;

@@ -37,9 +37,13 @@ public class EntityService {
     public Task getTaskById(Long id) {
         return restTemplate.getForObject(URL_GET_TASK_BY_ID, Task.class, id);
     }
-    public Task getOriginTaskFromDuplicate(Long taskId) { return restTemplate.getForObject(URL_GET_ORIGIN_FROM_DUPLICATE, Task.class, taskId);}
+
+    public Task getOriginTaskFromDuplicate(Long taskId) {
+        return restTemplate.getForObject(URL_GET_ORIGIN_FROM_DUPLICATE, Task.class, taskId);
+    }
+
     public Iterable<Task> getFirstFromBlocked(Long taskId) {
-        JsonNode objects =  restTemplate.getForObject(URL_GET_FIRST_FROM_BLOCKED, JsonNode.class , taskId);
+        JsonNode objects = restTemplate.getForObject(URL_GET_FIRST_FROM_BLOCKED, JsonNode.class, taskId);
         return mapper.convertValue(objects,
                 new TypeReference<Iterable<Task>>() {
                 }
@@ -127,23 +131,36 @@ public class EntityService {
         restTemplate.postForLocation(URL_POST_SUBSCRIPTION, subscription);
     }
 
-    public Iterable<Task> getTasksByCurrResponsibleId(Long id){
+    public Iterable<Task> getTasksByCurrResponsibleId(Long id) {
         JsonNode objects = restTemplate.getForObject(URL_GET_TASKS_BY_CURR_RESPONSIBLE_ID, JsonNode.class, id);
         return mapper.convertValue(objects,
                 new TypeReference<Iterable<Task>>() {
                 }
         );
     }
-    public Iterable<History> getHistoryByTaskId(Long id){
-        JsonNode objects = restTemplate.getForObject(URL_GET_HISTORY_BY_TASK_ID , JsonNode.class, id);
+
+    public Iterable<History> getHistoryByTaskId(Long id) {
+        JsonNode objects = restTemplate.getForObject(URL_GET_HISTORY_BY_TASK_ID, JsonNode.class, id);
         return mapper.convertValue(objects,
                 new TypeReference<Iterable<History>>() {
                 }
         );
     }
-    public void postHistory(History history){
+
+    public void postHistory(History history) {
         restTemplate.postForLocation(URL_POST_HISTORY, history);
     }
 
+    public Municipality getMunicipalityById(Long id) {
+        return restTemplate.getForObject(URL_GET_MUNICIPALITY_BY_ID, Municipality.class, id);
+    }
 
+    public Iterable<History> getHistoriesByPreviousCurrentResponsibleId(Long id) {
+        JsonNode objects = restTemplate.getForObject(URL_GET_HISTORIES_BY_PREVIOUS_CURRENT_RESPONSIBLE_ID,
+                JsonNode.class, id);
+        return mapper.convertValue(objects,
+                new TypeReference<Iterable<History>>() {
+                }
+        );
+    }
 }

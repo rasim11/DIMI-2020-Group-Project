@@ -25,6 +25,7 @@ const TASK_MANAGEMENT = "/task-management";
 const TASK_GET = "/task-get";
 const SUBSCRIPTION_MANAGEMENT = "/subscription-management";
 const TASK_SOCIAL_WORKERS_MANAGEMENT = "/task-social-workers-management";
+const MUNICIPALITY_MANAGEMENT = "/municipality-management";
 
 const URL_GET_ALL_USER = SERVER + API + VERSION + USER_MANAGEMENT + ALL_USERS_GET;
 const URL_GET_EMPLOYEES = SERVER + API + VERSION + USER_MANAGEMENT + "/get-employees-by-responsible-email";
@@ -44,3 +45,4 @@ const URL_GET_SUBSCRIPTION_BY_TASK_USER_IDS = SERVER + API + VERSION + SUBSCRIPT
 const URL_DELETE_SUBSCRIPTION_BY_ID = SERVER + API + VERSION + SUBSCRIPTION_MANAGEMENT +
     "/subscription-delete-by-id";
 const URL_POST_SUBSCRIPTION = SERVER + API + VERSION + SUBSCRIPTION_MANAGEMENT + "/subscription-post";
+const URL_GET_MUNICIPALITIES = SERVER + API + VERSION + MUNICIPALITY_MANAGEMENT + "/municipalities-get";

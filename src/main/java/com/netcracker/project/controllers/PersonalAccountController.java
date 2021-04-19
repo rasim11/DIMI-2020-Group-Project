@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -80,18 +81,29 @@ public class PersonalAccountController {
 
     @GetMapping(LOCAL_URL_POST_EMP)
     public String registrationEmpGet(Model model) {
+        Role curRole = securityService.getCurrentUser().getRole();
+
+        List<Role> roles = new ArrayList<>();
+        roles.add(Role.SOCIAL_WORKER);
+
+        if (curRole.equals(Role.RESPONSIBLE)) {
+            roles.add(Role.DEPUTY);
+        }
+
         model.addAttribute("title", "TF|Регистрация сотрудника");
         model.addAttribute("userForm", new User());
+        model.addAttribute("roles", roles);
         return "registration-through-admin";
     }
 
     @PostMapping(LOCAL_URL_POST_EMP)
     public String registrationEmpPost(@ModelAttribute("userForm") User userForm) {
         User curUser = securityService.getCurrentUser();
-        Role role = Role.SOCIAL_WORKER;
-        userForm.setRegion(entityService.getRegionByResponsibleEmail(curUser.getEmail()));
+        Region region = curUser.getRole().equals(Role.RESPONSIBLE) ?
+                entityService.getRegionByResponsibleEmail(curUser.getEmail()) : curUser.getRegion();
+        userForm.setRegion(region);
 
-        userDetailsService.addWorkerOrResponsible(userForm, role, userForm.getRegion().getId());
+        userDetailsService.addWorkerOrResponsible(userForm);
 
         return "redirect:" + LOCAL_URL_PERSONAL_ACCOUNT;
     }

@@ -194,6 +194,7 @@ function addDataBasic(divDataBasic) {
 
     let imgUserAvatar = document.createElement("img");
     imgUserAvatar.id = imgIdAvatar;
+    imgUserAvatar.className = "img-user-profile";
     imgUserAvatar.src = curUser.userImage;
     imgUserAvatar.style.cursor = "pointer";
     imgUserAvatar.addEventListener("click", showAvatarMenu);
@@ -365,7 +366,7 @@ function addDataResponsible() {
 
     let imgResponsibleAvatar = document.createElement("img");
     imgResponsibleAvatar.src = curUserJson.region.responsible.userImage;
-    imgResponsibleAvatar.className = "mb-4";
+    imgResponsibleAvatar.className = "mb-4 img-user-profile";
     divInternalCont.appendChild(imgResponsibleAvatar);
 
     const responsibleNames = document.createElement("h4");
@@ -1188,12 +1189,13 @@ function getFilterValues(key) {
 
 function getUrlWithFilters() {
     let url = URL_GET_EMPLOYEES + "/" + curUserJson.email;
+    url += curUserJson.region ? "/" + curUserJson.region.id : "/-1";
 
     for (let i = 0; i < defaultFilters.length; i++) {
         url += "/" + defaultFilters[i];
     }
 
-    return url + "/" + selectedPage;
+    return url + "/" + selectedPage + "/" + curUserJson.role;
 }
 
 function updateListEmployees() {

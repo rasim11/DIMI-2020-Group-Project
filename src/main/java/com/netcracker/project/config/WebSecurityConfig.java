@@ -19,6 +19,7 @@ import static com.netcracker.project.url.UrlTemplates.*;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private UserDetailsServiceImpl userService;
+
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
@@ -31,15 +32,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .disable()
                 .authorizeRequests()
                 .antMatchers(
-                        LOCAL_URL_USER_LOGIN,
-                        LOCAL_URL_USER_REGISTRATION).not().fullyAuthenticated()
-                .antMatchers(LOCAL_URL_POST_TASK, LOCAL_URL_AUTHOR_PUT_TASK).hasAuthority("Пользователь")
+                        LOCAL_URL_USER_LOGIN + "/**",
+                        LOCAL_URL_USER_REGISTRATION + "/**").not().fullyAuthenticated()
+                .antMatchers(LOCAL_URL_POST_TASK + "/**",
+                        LOCAL_URL_AUTHOR_PUT_TASK + "/**").hasAuthority("Пользователь")
                 .antMatchers(
-                        LOCAL_URL_ADMINISTRATION,
-                        LOCAL_URL_USER_ROLE_EDIT,
-                        LOCAL_URL_USER_REGISTRATION_ADMIN).hasAuthority("Админ")
-                .antMatchers(LOCAL_URL_RESPONSIBLE_PUT_TASK).hasAuthority("Ответственный")
-                .antMatchers(LOCAL_URL_PERSONAL_ACCOUNT).fullyAuthenticated()
+                        LOCAL_URL_ADMINISTRATION + "/**",
+                        LOCAL_URL_USER_ROLE_EDIT + "/**",
+                        LOCAL_URL_USER_REGISTRATION_ADMIN + "/**").hasAuthority("Админ")
+                .antMatchers(LOCAL_URL_RESPONSIBLE_PUT_TASK + "/**")
+                    .hasAnyAuthority("Ответственный", "Региональный ответственный")
+                .antMatchers(LOCAL_URL_PERSONAL_ACCOUNT + "/**").fullyAuthenticated()
                 .antMatchers(
                         "/resources/**",
                         LOCAL_URL_MAIN_PAGE,

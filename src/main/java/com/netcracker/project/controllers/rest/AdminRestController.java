@@ -50,4 +50,9 @@ public class AdminRestController {
         User user = userDetailsService.getUserByEmail(email);
         return user == null;
     }
+
+    @GetMapping(LOCAL_URL_GET_MUNICIPALITIES)
+    public JsonNode getMunicipalities() {
+        return entityService.getAllObjects(URL_GET_MUNICIPALITIES);
+    }
 }

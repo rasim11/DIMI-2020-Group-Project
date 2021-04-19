@@ -76,30 +76,34 @@ public class TaskController {
                 String param = task.getStatus().equals(Status.RESOLVED) ? "isFeedback" : "isEditAuthor";
                 model.addAttribute(param, true);
             } else if (!task.getStatus().equals(Status.RESOLVED) && (curUser.getRole().equals(Role.RESPONSIBLE) &&
-                    task.getRegion().getRegionName().equals(curRegion.getRegionName()) || curUser.getRole().equals(Role.DEPUTY) &&
-                    task.getCurrResponsible() != null && task.getCurrResponsible().getEmail().equals(curUser.getEmail()))) {
+                    task.getRegion().getRegionName().equals(curRegion.getRegionName()) ||
+                    curUser.getRole().equals(Role.DEPUTY) && task.getCurrResponsible() != null &&
+                            task.getCurrResponsible().getEmail().equals(curUser.getEmail()))) {
+                List<User> responsibleList = new ArrayList<>();
+                userDetailsService.getUsersByRegionId(URL_GET_DEPUTIES_BY_REGION_ID,
+                        task.getRegion().getId()).forEach(responsibleList::add);
+
+                if (task.getRegion().getResponsible() != null) {
+                    responsibleList.add(task.getRegion().getResponsible());
+                }
+                responsibleList.remove(task.getCurrResponsible());
+
                 model.addAttribute("isEditResponsible", true);
-                ArrayList<User> responsibles = new ArrayList<>();
-                userDetailsService.getUsersByRegionId(URL_GET_USER_BY_ROLE_REGION_ID, curRegion.getId()).forEach(responsibles::add);
-                responsibles.add(task.getRegion().getResponsible());
-                responsibles.remove(task.getCurrResponsible());
-                model.addAttribute("responsibleList", responsibles);
+                model.addAttribute("responsibleList", responsibleList);
             }
         } else {
             model.addAttribute("commentForbidden",
                     "Комментировать может только зарегистрированный пользователь!");
         }
 
-        if (task.getStatus().getValue() == 4)
-        {
-            Task  originTask =   entityService.getOriginTaskFromDuplicate(task.getId() );
-            model.addAttribute("originTask",  originTask);
+        if (task.getStatus().getValue() == 4) {
+            Task originTask = entityService.getOriginTaskFromDuplicate(task.getId());
+            model.addAttribute("originTask", originTask);
         }
 
-        if (task.getStatus().getValue() == 7)
-        {
-            Iterable<Task>  firstTasks =   entityService.getFirstFromBlocked(task.getId() );
-            model.addAttribute("firstTasks",  firstTasks);
+        if (task.getStatus().getValue() == 7) {
+            Iterable<Task> firstTasks = entityService.getFirstFromBlocked(task.getId());
+            model.addAttribute("firstTasks", firstTasks);
         }
 
         return "specific-task";
@@ -108,12 +112,13 @@ public class TaskController {
     @PostMapping(LOCAL_URL_GET_TASK_BY_ID)
     public String changeResponsible(@PathVariable Long id, @RequestParam("changedResponsible") Long responsibleId) {
         Task task = entityService.getTaskById(id);
-        User previousResponsible = task.getCurrResponsible()!=null?task.getCurrResponsible():task.getRegion().getResponsible();
+        User previousResponsible = task.getCurrResponsible() != null ? task.getCurrResponsible() :
+                task.getRegion().getResponsible();
         User responsible = userDetailsService.getUserById(responsibleId);
 
         task.setCurrResponsible(responsible);
         entityService.putTask(task);
-        History history = new History(null,task,previousResponsible,responsible,LocalDateTime.now());
+        History history = new History(null, task, previousResponsible, responsible, LocalDateTime.now());
         entityService.postHistory(history);
         return "redirect:" + LOCAL_URL_GET_TASK_BY_ID.replace("{id}", id.toString());
     }
@@ -152,8 +157,9 @@ public class TaskController {
         Task task = entityService.getTaskById(id);
         User curUser = securityService.getCurrentUser();
 
-        if (task == null || task.getRegion().getResponsible() == null ||
-                !task.getRegion().getResponsible().getId().equals(curUser.getId()) ||
+        if (task == null || (task.getRegion().getResponsible() == null ||
+                !task.getRegion().getResponsible().getId().equals(curUser.getId())) &&
+                (task.getCurrResponsible() == null || !task.getCurrResponsible().getId().equals(curUser.getId())) ||
                 task.getStatus().equals(Status.RESOLVED) || task.getStatus().equals(Status.CANCELED)) {
             return REDIRECT_ON_MAIN_PAGE;
         }
@@ -169,7 +175,8 @@ public class TaskController {
 
         task.setSocialWorkers(entityService.getSocialWorkersByActiveTaskId(task.getId()));
         Set<User> socialWorkers = new LinkedHashSet<>();
-        userDetailsService.getUsersByRegionId(URL_GET_USERS_BY_REGION_ID, task.getRegion().getId()).forEach(socialWorkers::add);
+        userDetailsService.getUsersByRegionId(URL_GET_WORKERS_BY_REGION_ID,
+                task.getRegion().getId()).forEach(socialWorkers::add);
 
         for (User socialWorker : task.getSocialWorkers()) {
             socialWorkers.remove(socialWorker);
@@ -211,10 +218,25 @@ public class TaskController {
 
         if (task.getStatus().equals(Status.RESOLVED)) {
             User responsible = task.getRegion().getResponsible();
-            responsible.setTasksCount(responsible.getTasksCount() + 1);
-            userDetailsService.putUser(responsible);
+            User curResponsible = task.getCurrResponsible();
 
-            securityService.autoLogin(responsible.getEmail(), securityService.getCurrentUser().getPasswordConfirm());
+            if (responsible != null && curResponsible != null && responsible.getId().equals(curResponsible.getId())) {
+                responsible.setTasksCount(responsible.getTasksCount() + 1);
+                userDetailsService.putUser(responsible);
+            } else {
+                if (responsible != null) {
+                    responsible.setTasksCount(responsible.getTasksCount() + 1);
+                    userDetailsService.putUser(responsible);
+                }
+
+                if (curResponsible != null) {
+                    curResponsible.setTasksCount(curResponsible.getTasksCount() + 1);
+                    userDetailsService.putUser(curResponsible);
+                }
+            }
+
+            securityService.autoLogin(securityService.getCurrentUser().getEmail(),
+                    securityService.getCurrentUser().getPasswordConfirm());
         }
 
         return "redirect:" + LOCAL_URL_GET_TASK_BY_ID.replace("{id}", id.toString());

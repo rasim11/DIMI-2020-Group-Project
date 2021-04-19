@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org/" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
     <meta charset="UTF-8">
-    <title>TF|Изменение роли</title>
+    <title>TF|Изменение учётной записи</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <link href="/css/imgProfile.css" rel="stylesheet">
@@ -23,9 +23,9 @@
     <form id="form-user-role-edit" method="post" th:object="${user}" class="form-data"
           style="width: 600px; text-align: center;">
         <h3>
-            Изменение роли
+            Изменение учётной записи
         </h3>
-        <img th:src="${user.getUserImage()}" class="mb-4"/>
+        <img th:src="${user.getUserImage()}" class="mb-4 img-user-profile">
         <h4 class="mb-4" th:text="${user.getLastname() + ' ' + user.getFirstname() + ' ' + user.getMiddlename()}"/>
         <input type="text" class="form-control mb-2" th:value="${user.getEmail()}" readonly>
         <input type="text" class="form-control mb-2" id="input-phone-number" th:value="${user.getPhoneNumber()}"
@@ -34,6 +34,9 @@
         <input type="hidden" id="input-user-id" th:value="${user.getId()}">
         <input type="hidden" id="input-region-id" th:if="${user.getRegion()} != null"
                th:value="${user.getRegion().getId()}">
+        <input type="hidden" id="input-appointment" th:value="${user.appointment}">
+        <input type="hidden" id="input-municipality" th:if="${user.municipality} != null"
+               th:value="${user.municipality.id}">
         <button type="submit" id="btn-change" class="btn btn-primary mt-4" disabled>
             Изменить
         </button>        
