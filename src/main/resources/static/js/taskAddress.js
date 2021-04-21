@@ -2,7 +2,10 @@ let show_map_link = document.getElementById("location");
 var request = show_map_link.innerText;
 var map;
 show_map_link.addEventListener("click", function (e) {
-        ymaps.ready(init);
+    if(map!==undefined){
+        map.destroy();
+    }
+    ymaps.ready(init);
 });
 function init() {
     // Забираем запрос из поля ввода.

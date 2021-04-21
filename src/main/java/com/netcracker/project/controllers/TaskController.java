@@ -1,17 +1,25 @@
 package com.netcracker.project.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netcracker.project.model.*;
 import com.netcracker.project.service.EntityService;
 import com.netcracker.project.service.SecurityService;
 import com.netcracker.project.service.impl.UserDetailsServiceImpl;
+import jdk.nashorn.internal.runtime.JSONListAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.converter.json.JsonbHttpMessageConverter;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.thymeleaf.exceptions.TemplateInputException;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.function.Consumer;
 
 import static com.netcracker.project.url.UrlTemplates.*;
 import static java.util.stream.Collectors.toCollection;

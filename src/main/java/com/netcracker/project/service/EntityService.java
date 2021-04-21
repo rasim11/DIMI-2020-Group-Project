@@ -19,9 +19,10 @@ public class EntityService {
     private RestTemplate restTemplate;
     @Autowired
     private ObjectMapper mapper;
-
     public void postTask(User user, Task task) {
-        Region region = getRegionById(1L);
+        System.out.println(task.getTaskLocation().split(",")[1].trim());
+        Region region=restTemplate.getForObject(URL_GET_REGION_BY_NAME,Region.class,task.getTaskLocation().split(",")[1].trim());
+        System.out.println(region);
         if (region == null) {
             throw new UsernameNotFoundException("DB fatal error. User Region not found!");
         }
@@ -47,6 +48,9 @@ public class EntityService {
 
     public void putRegion(Region region) {
         restTemplate.put(URL_PUT_REGION, region);
+    }
+    public void putRegions(Iterable<Region> region) {
+        restTemplate.postForLocation(URL_POST_STANDARD_REGIONS, region);
     }
 
     public Region getRegionByResponsibleEmail(String email) {

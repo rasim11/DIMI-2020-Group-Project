@@ -2,7 +2,10 @@ var tasksLocation = [];
 // var page = [[${taskList}]];
 var map;
 $("#show-on-map").on('click', function () {
-        ymaps.ready(init);
+    if(map!==undefined){
+        map.destroy();
+    }
+    ymaps.ready(init);
 });
 console.log(tasks);
 
@@ -69,6 +72,7 @@ function init() {
             searchControlProvider: 'yandex#search'
         });
 
+        console.log(tasksLocation[0]);
         while (tasksLocation.length!==0){
             let tempTaskName = tasksLocation[0];
             tasksLocation.splice(0, 1);
@@ -87,5 +91,27 @@ function init() {
         if(ballons.length===1) {
             map.setZoom(11);
         }
+        ymaps.borders.load('RU', {
+            lang: 'ru',
+            quality:2
+        }).then(function (geojson) {
+            var regions = [];
+            console.log(geojson.features[0]);
+            for (var i = 0; i < geojson.features.length; i++) {
+                regions[i] = geojson.features[i].properties.name;
+            }
+            getAllObjectsFromRequest('save-regions',regions);
+        });
+    }
+}
+function getAllObjectsFromRequest(url,regions) {
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', url, false);
+    xhr.setRequestHeader('Content-Type', 'text/plain;utf-8');
+    xhr.send(regions);
+
+    if (xhr.status !== 200) {
+        alert(xhr.status + ': ' + xhr.statusText);
+        return null;
     }
 }

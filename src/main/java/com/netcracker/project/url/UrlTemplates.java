@@ -36,6 +36,7 @@ public final class UrlTemplates {
     public static final String EMAIL_FREE = "/email-free";
     public static final String REGION_GET = "/region-get";
     public static final String REGION_PUT = "/region-put";
+    public static final String REGIONS_PUT = "/regions-put";
     public static final String USER_ROLE_EDIT = "/user-role-edit";
     public static final String REDIRECT_ON_ADMINISTRATION = "redirect:" + API + VERSION + ADMIN_MANAGEMENT;
     public static final String COMMENT_POST = "/comment-post";
@@ -104,8 +105,11 @@ public final class UrlTemplates {
     public static final String URL_GET_REGION_BY_ID = SERVER + API + VERSION +
             REGION_MANAGEMENT + REGION_GET + BY_ID + "/{id}";
     public static final String URL_PUT_REGION = SERVER + API + VERSION + REGION_MANAGEMENT + REGION_PUT;
+    public static final String URL_POST_STANDARD_REGIONS = SERVER + API + VERSION + REGION_MANAGEMENT + "/add-standard-regions";
     public static final String URL_GET_REGION_BY_RESPONSIBLE_EMAIL = SERVER + API + VERSION +
             REGION_MANAGEMENT + REGION_GET + "-by-responsible" + BY_EMAIL + "/{email}";
+    public static final String URL_GET_REGION_BY_NAME = SERVER + API + VERSION +
+            REGION_MANAGEMENT + REGION_GET + "-by-name" + "/{name}";
     public static final String URL_GET_TASKS_BY_AUTHORS_EMAIL = SERVER + API + VERSION +
             TASK_MANAGEMENT + TASK_GET + "-by-author" + BY_EMAIL + "/{email}";
     public static final String URL_GET_TASK_LIST = SERVER + API + VERSION + TASK_LIST_GET;

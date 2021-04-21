@@ -51,12 +51,11 @@ function init(mapState) {
     function showResult(obj) {
         var mapContainer = $('#map'),
             bounds = obj.properties.get('boundedBy');
-        // Рассчитываем видимую область для текущего положения пользователя.
-        coords = ymaps.util.bounds.getCenterAndZoom(
+            // Рассчитываем видимую область для текущего положения пользователя.
+            coords = ymaps.util.bounds.getCenterAndZoom(
             bounds,
             [mapContainer.width(), mapContainer.height()]
         );
-        console.log(coords.center);
         // Россия, Самарская область, Тольятти, Белорусская улица, 31
         // // Сохраняем полный адрес для сообщения под картой.
         address = [obj.getCountry(), obj.getAddressLine()].join(', '),
