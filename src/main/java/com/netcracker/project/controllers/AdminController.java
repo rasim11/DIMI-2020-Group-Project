@@ -45,7 +45,7 @@ public class AdminController {
         if (curRole.equals(Role.USER)) {
             userDetailsService.addUser(userForm);
         } else {
-            userDetailsService.addWorkerOrResponsible(userForm, curRole, userForm.getRegion().getId());
+            userDetailsService.addWorkerOrResponsible(userForm);
         }
 
         return REDIRECT_ON_ADMINISTRATION;
@@ -68,6 +68,7 @@ public class AdminController {
         Role newRole = userForm.getRole();
         Role curRole = user.getRole();
 
+        userDetailsService.severTies(user, newRole, userForm.getRegion());
         userDetailsService.severTies(user);
 
         if (!userDetailsService.isWorker(curRole).equals(userDetailsService.isWorker(newRole))) {
@@ -77,7 +78,7 @@ public class AdminController {
         if (newRole.equals(Role.USER)) {
             userDetailsService.editUser(user);
         } else {
-            userDetailsService.editWorkerOrResponsible(user, newRole, userForm.getRegion().getId());
+            userDetailsService.editWorkerOrResponsible(user, userForm);
         }
 
         return REDIRECT_ON_ADMINISTRATION;

@@ -40,12 +40,10 @@
     <input type="text" class="form-control input-ctrl mb-2" placeholder="Номер телефона" name="phoneNumber"
            style="width: 100%" oninput="checkInvalidFormat(this, /^(8|\+7)\d{10}$/)"
            th:value="${userForm.getPhoneNumber()}">
-    <select sec:authorize="hasAuthority('Админ')" name="role" id="select-roles" class="form-control mb-2"
+    <select name="role" id="select-roles" class="form-control mb-2"
             onchange="roleChecked(this)">
         <option value="" disabled selected>Роль</option>
-        <div th:each="role : ${roles}">
-            <option th:value="${role}" th:text="${role.getName()}"/>
-        </div>
+        <option th:each="role : ${roles}" th:value="${role}" th:text="${role.getName()}"/>
     </select>
     <div class="pas mb-2" style="width: 100%">
         <input type="password" class="form-control input-ctrl" id="pas-input" placeholder="Пароль" name="password"

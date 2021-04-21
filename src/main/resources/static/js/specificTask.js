@@ -178,6 +178,13 @@ function calledOnLoad() {
 
         getSubscriptionByTaskId(btnSubscription);
     }
+
+    const divHistory = document.getElementById("history-box");
+    const aHistory = document.getElementById("nav-history-tab");
+    if (aHistory && !document.getElementById("nav-comment-tab")) {
+        aHistory.className += " active";
+        divHistory.className += " active";
+    }
 }
 
 function activationScrollBarExt() {
@@ -322,7 +329,7 @@ function getSubscriptionByTaskId(btn) {
                     getSubscriptionByTaskId(btn);
                 }
             }
-        } else if (!["Решённые", "Отменённые"].includes(
+        } else if (!["Решена", "Отменена"].includes(
             document.getElementById(spanStatusId).innerText.split(": ")[1])) {
             btn.textContent = "Подписаться";
             btn.className = "btn btn-outline-success";

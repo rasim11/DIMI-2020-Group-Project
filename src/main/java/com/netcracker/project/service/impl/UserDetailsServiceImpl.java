@@ -51,17 +51,28 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         restTemplate.postForLocation(URL_POST_USER, user);
     }
 
-    public void addWorkerOrResponsible(User user, Role role, Long idRegion) {
-        Region region = entityService.getRegionById(idRegion);
+    public void addWorkerOrResponsible(User user) {
+        Role role = user.getRole();
+
+        Region region = entityService.getRegionById(user.getRegion().getId());
         if (region == null) {
-            throw new UsernameNotFoundException("DB fatal error. User Region not found!");
+            throw new UsernameNotFoundException("DB fatal error. Region not found!");
         }
+
+        user.setAppointment(user.getAppointment() != null && user.getAppointment().equals("") ? null :
+                user.getAppointment());
 
         user.setUserImage(DEFAULT_AVATAR);
         if (role.equals(Role.RESPONSIBLE)) {
+            Municipality municipality = entityService.getMunicipalityById(user.getMunicipality().getId());
+            if (municipality == null) {
+                throw new UsernameNotFoundException("DB fatal error. Municipality not found!");
+            }
+
             user.dataExtension(role, null);
 
             user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+            user.setMunicipality(municipality);
             restTemplate.postForLocation(URL_POST_USER, user);
 
             region.setResponsible(getUserByEmail(user.getEmail()));
@@ -112,6 +123,23 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             entityService.putTask(task);
         }
 
+        if (user.getRole().equals(Role.RESPONSIBLE) || user.getRole().equals(Role.DEPUTY)) {
+            tasks = entityService.getTasksByCurrResponsibleId(user.getId());
+            for (Task task : tasks) {
+                if (task.getRegion().getResponsible() != null) {
+                    task.setCurrResponsible(task.getRegion().getResponsible());
+                } else {
+                    task.setCurrResponsible(null);
+                }
+                entityService.putTask(task);
+            }
+        }
+
+        Iterable<History> histories = entityService.getHistoriesByPreviousCurrentResponsibleId(user.getId());
+        for (History history : histories) {
+            entityService.deleteObject(history.getId(), URL_DELETE_HISTORY);
+        }
+
         restTemplate.delete(URL_DELETE_SUBSCRIPTIONS_BY_USER_ID, user.getId());
         restTemplate.delete(URL_DELETE_COMMENT_BY_AUTHOR_ID, user.getId());
         restTemplate.delete(URL_DELETE_USER, user.getEmail());
@@ -126,25 +154,31 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
 
     public Boolean isWorker(Role role) {
-        return role.equals(Role.RESPONSIBLE) || role.equals(Role.SOCIAL_WORKER);
+        return role.equals(Role.RESPONSIBLE) || role.equals(Role.SOCIAL_WORKER) || role.equals(Role.DEPUTY);
     }
 
     public void editUser(User user) {
-        Role role = Role.USER;
-        user.setRole(role);
+        user.setRole(Role.USER);
         user.setRegion(null);
+        user.setAppointment(null);
+        user.setMunicipality(null);
 
         restTemplate.postForLocation(URL_POST_USER, user);
     }
 
-    public void editWorkerOrResponsible(User user, Role role, Long idRegion) {
-        Region region = entityService.getRegionById(idRegion);
+    public void editWorkerOrResponsible(User user, User userForm) {
+        Region region = entityService.getRegionById(userForm.getRegion().getId());
         if (region == null) {
-            throw new UsernameNotFoundException("DB fatal error. User Region not found!");
+            throw new UsernameNotFoundException("DB fatal error. Region not found!");
         }
 
-        user.setRole(role);
-        if (role.equals(Role.RESPONSIBLE)) {
+        user.setRole(userForm.getRole());
+        user.setAppointment(userForm.getAppointment() != null && !userForm.getAppointment().equals("") ?
+                userForm.getAppointment() : null);
+        user.setMunicipality(userForm.getMunicipality() != null ?
+                entityService.getMunicipalityById(userForm.getMunicipality().getId()) : null);
+
+        if (user.getRole().equals(Role.RESPONSIBLE)) {
             user.setRegion(null);
             restTemplate.postForLocation(URL_POST_USER, user);
 
@@ -167,7 +201,32 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         }
     }
 
-    public Iterable<User> getUsersByRegionId(String url,Long id) {
+    public void severTies(User user, Role newRole, Region newRegion) {
+        Region region = user.getRole().equals(Role.RESPONSIBLE) ?
+                entityService.getRegionByResponsibleEmail(user.getEmail()) :
+                user.getRegion();
+
+        if (!((newRole.equals(Role.RESPONSIBLE) && user.getRole().equals(Role.DEPUTY) ||
+                newRole.equals(Role.DEPUTY) && user.getRole().equals(Role.RESPONSIBLE) ||
+                user.getRole().equals(newRole)) && region.getId().equals(newRegion.getId()))) {
+            Iterable<Task> tasks = entityService.getTasksByCurrResponsibleId(user.getId());
+
+            for (Task task : tasks) {
+                if (task.getRegion().getResponsible() != null &&
+                        !task.getRegion().getResponsible().getId().equals(user.getId())) {
+                    task.setCurrResponsible(task.getRegion().getResponsible());
+                    History history = new History(null, task, user, task.getRegion().getResponsible(),
+                            LocalDateTime.now());
+                    entityService.postHistory(history);
+                } else {
+                    task.setCurrResponsible(null);
+                }
+                entityService.putTask(task);
+            }
+        }
+    }
+
+    public Iterable<User> getUsersByRegionId(String url, Long id) {
         JsonNode users = restTemplate.getForObject(url, JsonNode.class, id);
         return mapper.convertValue(users,
                 new TypeReference<Iterable<User>>() {

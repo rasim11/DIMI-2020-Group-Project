@@ -48,7 +48,9 @@ function isRoleChecked() {
 
     if (selectRoles.value !== "USER") {
         const selectRegion = document.getElementById(selectIdRegions);
-        if (!selectRegion.value) {
+        if (!selectRegion) {
+            return true;
+        } else if (!selectRegion.value) {
             setInvalidFormat(selectRegion, "Регион не выбран");
             return false;
         }

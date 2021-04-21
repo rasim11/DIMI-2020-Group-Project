@@ -52,6 +52,7 @@ public final class UrlTemplates {
     public static final String FEEDBACK_GET = "/feedback-get";
     public static final String SUBSCRIPTION_MANAGEMENT = "/subscription-management";
     public static final String HISTORY_MANAGEMENT = "/history-management";
+    public static final String MUNICIPALITY_MANAGEMENT = "/municipality-management";
 
     public static final String LOCAL_URL_ADMINISTRATION = API + VERSION + ADMIN_MANAGEMENT;
     public static final String LOCAL_URL_USER_ROLE_EDIT = API + VERSION + ADMIN_MANAGEMENT +
@@ -71,6 +72,7 @@ public final class UrlTemplates {
     public static final String LOCAL_URL_USER_REGISTRATION = API + VERSION + USER_MANAGEMENT + USER_REGISTRATION;
     public static final String LOCAL_URL_POST_TASK = API + VERSION + TASK_MANAGEMENT + TASK_POST;
     public static final String LOCAL_URL_GET_TASK_BY_ID = API + VERSION + TASK_MANAGEMENT + TASK_GET + BY_ID + "/{id}";
+    public static final String LOCAL_URL_GET_TASK = API + VERSION + TASK_MANAGEMENT + TASK_GET + BY_ID + "/";
     public static final String LOCAL_URL_AUTHOR_PUT_TASK = API + VERSION + TASK_MANAGEMENT + TASK_PUT +
             BY_ID + "-by-author/{id}";
     public static final String LOCAL_URL_POST_COMMENT = API + VERSION + COMMENT_MANAGEMENT + COMMENT_POST;
@@ -86,11 +88,13 @@ public final class UrlTemplates {
     public static final String LOCAL_URL_POST_SUBSCRIPTION = API + VERSION + SUBSCRIPTION_MANAGEMENT +
             "/subscription-post";
     public static final String LOCAL_URL_GET_EMPLOYEES = API + VERSION + USER_MANAGEMENT +
-            "/get-employees-by-responsible-email/{email}/{searchString}/{criterion}/{sort}/{actualTask}" +
-            "/{resolvedTask}/{regDate}/{page}";
+            "/get-employees-by-responsible-email/{email}/{regionId}/{searchString}/{criterion}/{sort}/{actualTask}" +
+            "/{resolvedTask}/{regDate}/{page}/{role}";
     public static final String LOCAL_URL_GET_TASKS_BY_WORKER_ID = API + VERSION + TASK_SOCIAL_WORKERS_MANAGEMENT +
             "/active-tasks-get-by-social-worker" + BY_ID + "/{id}";
     public static final String LOCAL_URL_POST_EMP = API + VERSION + USER_MANAGEMENT + "/post-emp";
+    public static final String LOCAL_URL_GET_MUNICIPALITIES = API + VERSION + MUNICIPALITY_MANAGEMENT +
+            "/municipalities-get";
 
     public static final String URL_GET_ALL_REGIONS = SERVER + LOCAL_URL_GET_ALL_REGIONS;
     public static final String URL_GET_ALL_USERS = SERVER + LOCAL_URL_GET_ALL_USERS;
@@ -113,7 +117,8 @@ public final class UrlTemplates {
     public static final String URL_GET_TASKS_BY_AUTHORS_EMAIL = SERVER + API + VERSION +
             TASK_MANAGEMENT + TASK_GET + "-by-author" + BY_EMAIL + "/{email}";
     public static final String URL_GET_TASK_LIST = SERVER + API + VERSION + TASK_LIST_GET;
-    public static final String URL_GET_USERS_BY_REGION_ID = URL_GET_ALL_USERS + "-by-region" + BY_ID + "/{id}";
+    public static final String URL_GET_WORKERS_BY_REGION_ID = SERVER + API + VERSION + USER_MANAGEMENT +
+            "/workers-get-by-region-id/{id}";
     public static final String URL_GET_WORKERS_BY_TASK_ID = SERVER + API + VERSION + TASK_SOCIAL_WORKERS_MANAGEMENT +
             SOCIAL_WORKERS_GET + "-by-active-task" + BY_ID + "/{id}";
     public static final String URL_GET_TASKS_BY_WORKER_ID = SERVER + LOCAL_URL_GET_TASKS_BY_WORKER_ID;
@@ -136,8 +141,20 @@ public final class UrlTemplates {
     public static final String URL_DELETE_SUBSCRIPTION_BY_ID = SERVER + LOCAL_URL_DELETE_SUBSCRIPTION_BY_ID;
     public static final String URL_DELETE_SUBSCRIPTIONS_BY_USER_ID = SERVER + API + VERSION + SUBSCRIPTION_MANAGEMENT +
             "/subscriptions-delete-by-user-id/{id}";
-    public static final String URL_GET_USER_BY_ROLE_REGION_ID = SERVER+API + VERSION + USER_MANAGEMENT + USER_GET + "-by-role-region-id/{id}";
-    public static final String URL_GET_TASKS_BY_CURR_RESPONSIBLE_ID = SERVER+API + VERSION + TASK_MANAGEMENT + TASK_GET + "-by-curr-responsible-id/{id}";
-    public static final String URL_GET_HISTORY_BY_TASK_ID = SERVER + API + VERSION + HISTORY_MANAGEMENT + "/history-get-by-task-id/{id}";
+    public static final String URL_GET_DEPUTIES_BY_REGION_ID = SERVER + API + VERSION + USER_MANAGEMENT +
+            "/deputies-get-by-region-id/{id}";
+    public static final String URL_GET_TASKS_BY_CURR_RESPONSIBLE_ID = SERVER + API + VERSION + TASK_MANAGEMENT +
+            TASK_GET + "-by-curr-responsible-id/{id}";
+    public static final String URL_GET_HISTORY_BY_TASK_ID = SERVER + API + VERSION +
+            HISTORY_MANAGEMENT + "/history-get-by-task-id/{id}";
     public static final String URL_POST_HISTORY = SERVER + API + VERSION + HISTORY_MANAGEMENT + "/history-post";
+    public static final String URL_GET_ORIGIN_FROM_DUPLICATE = SERVER + API + VERSION + "/get-origin-from-duplicate/{id}";
+    public static final String URL_GET_FIRST_FROM_BLOCKED = SERVER + API + VERSION + "/get-first-from-blocked/{id}";
+    public static final String URL_GET_MUNICIPALITIES = SERVER + LOCAL_URL_GET_MUNICIPALITIES;
+    public static final String URL_GET_MUNICIPALITY_BY_ID = SERVER + API + VERSION + MUNICIPALITY_MANAGEMENT +
+            "/municipality-get-by-id/{id}";
+    public static final String URL_GET_HISTORIES_BY_PREVIOUS_CURRENT_RESPONSIBLE_ID = SERVER + API + VERSION +
+            HISTORY_MANAGEMENT + "/history-get-by-previous-current-responsible-id/{id}";
+    public static final String URL_DELETE_HISTORY = SERVER + API + VERSION + HISTORY_MANAGEMENT +
+            "/history-delete/{id}";
 }

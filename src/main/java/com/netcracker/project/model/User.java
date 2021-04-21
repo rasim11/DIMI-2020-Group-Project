@@ -1,5 +1,6 @@
 package com.netcracker.project.model;
 
+import com.netcracker.project.service.EntityService;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,10 +26,12 @@ public class User implements UserDetails {
     private String phoneNumber;
     private String password;
     private String passwordConfirm;
+    private String appointment;
     private Role role;
     private LocalDate regDate;
     private Long tasksCount;
     private Region region;
+    private Municipality municipality;
     private Set<Task> activeTasks;
 
     @Override

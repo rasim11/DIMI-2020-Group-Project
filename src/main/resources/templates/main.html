@@ -36,7 +36,7 @@
 <header th:insert="blocks/header :: header"></header>
 
 
-<form th:id="formFilterConst"  hidden>
+<form th:id="formFilterConst"   hidden>
     <label>hiden form for parametors</label>
     <input id="ch0"
            name="checkbox"
@@ -58,6 +58,36 @@
            type="checkbox"
            th:value="3"
            th:checked="${checkbox3 != null} ? checked">
+    <input id="ch4"
+           name="checkbox"
+           type="checkbox"
+           th:value="4"
+           th:checked="${checkbox4 != null} ? checked">
+    <input id="ch5"
+           name="checkbox"
+           type="checkbox"
+           th:value="5"
+           th:checked="${checkbox5 != null} ? checked">
+    <input id="ch6"
+           name="checkbox"
+           type="checkbox"
+           th:value="6"
+           th:checked="${checkbox6 != null} ? checked">
+    <input id="ch7"
+           name="checkbox"
+           type="checkbox"
+           th:value="7"
+           th:checked="${checkbox7 != null} ? checked">
+    <input id="ch8"
+           name="checkbox"
+           type="checkbox"
+           th:value="8"
+           th:checked="${checkbox8 != null} ? checked">
+    <input id="ch9"
+           name="checkbox"
+           type="checkbox"
+           th:value="9"
+           th:checked="${checkbox9 != null} ? checked">
 
     <input th:id="da1" th:name="date" type="text"/>
     <input th:id="da2" th:name="date" type="text"/>
@@ -179,6 +209,74 @@
                                     <label class="form-check-label" for="checkbox3"
                                            style="font-size: large">Отменённые</label>
                                 </div>
+
+                                <div class="form-check">
+                                    <input name="checkbox"
+                                           id="checkbox4"
+                                           type="checkbox"
+                                           class="form-check-input"
+                                           th:value="4"
+                                           th:checked="${checkbox4 != null} ? checked">
+
+                                    <label class="form-check-label" for="checkbox4"
+                                           style="font-size: large">Отмененные как дубликат</label>
+                                </div>
+                                <div class="form-check">
+                                    <input name="checkbox"
+                                           id="checkbox5"
+                                           type="checkbox"
+                                           class="form-check-input"
+                                           th:value="5"
+                                           th:checked="${checkbox5 != null} ? checked">
+
+                                    <label class="form-check-label" for="checkbox5"
+                                           style="font-size: large">Отклоненные</label>
+                                </div>
+                                <div class="form-check">
+                                    <input name="checkbox"
+                                           id="checkbox6"
+                                           type="checkbox"
+                                           class="form-check-input"
+                                           th:value="6"
+                                           th:checked="${checkbox6 != null} ? checked">
+
+                                    <label class="form-check-label" for="checkbox6"
+                                           style="font-size: large">Открытые</label>
+                                </div>
+                                <div class="form-check">
+                                    <input name="checkbox"
+                                           id="checkbox7"
+                                           type="checkbox"
+                                           class="form-check-input"
+                                           th:value="7"
+                                           th:checked="${checkbox7 != null} ? checked">
+
+                                    <label class="form-check-label" for="checkbox7"
+                                           style="font-size: large">Заблокированные</label>
+                                </div>
+                                <div class="form-check">
+                                    <input name="checkbox"
+                                           id="checkbox8"
+                                           type="checkbox"
+                                           class="form-check-input"
+                                           th:value="8"
+                                           th:checked="${checkbox8 != null} ? checked">
+
+                                    <label class="form-check-label" for="checkbox8"
+                                           style="font-size: large">Ожидают решения</label>
+                                </div>
+                                <div class="form-check">
+                                    <input name="checkbox"
+                                           id="checkbox9"
+                                           type="checkbox"
+                                           class="form-check-input"
+                                           th:value="9"
+                                           th:checked="${checkbox9 != null} ? checked">
+
+                                    <label class="form-check-label" for="checkbox9"
+                                           style="font-size: large">В процессе устранения</label>
+                                </div>
+
                                 <br>
                                 <div class="form-group ">
                                     <label class="control-label" for="date1">
@@ -460,6 +558,12 @@
         arr.push(document.getElementById("ch1"));
         arr.push(document.getElementById("ch2"));
         arr.push(document.getElementById("ch3"));
+        arr.push(document.getElementById("ch4"));
+        arr.push(document.getElementById("ch5"));
+        arr.push(document.getElementById("ch6"));
+        arr.push(document.getElementById("ch7"));
+        arr.push(document.getElementById("ch8"));
+        arr.push(document.getElementById("ch9"));
 
         let arrDate = new Array();
         arrDate.push(document.getElementById("da1"));

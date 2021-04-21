@@ -60,6 +60,12 @@ function setFilterParamAuth() {
     document.getElementById("ch1").checked = document.getElementById("checkbox1").checked;
     document.getElementById("ch2").checked = document.getElementById("checkbox2").checked;
     document.getElementById("ch3").checked = document.getElementById("checkbox3").checked;
+    document.getElementById("ch4").checked = document.getElementById("checkbox4").checked;
+    document.getElementById("ch5").checked = document.getElementById("checkbox5").checked;
+    document.getElementById("ch6").checked = document.getElementById("checkbox6").checked;
+    document.getElementById("ch7").checked = document.getElementById("checkbox7").checked;
+    document.getElementById("ch8").checked = document.getElementById("checkbox8").checked;
+    document.getElementById("ch9").checked = document.getElementById("checkbox9").checked;
     document.getElementById("da1").value = document.getElementById("date1").value
     document.getElementById("da2").value = document.getElementById("date2").value
 
@@ -88,6 +94,13 @@ function resetChecked() {
     document.getElementById("checkbox1").checked = false;
     document.getElementById("checkbox2").checked = false;
     document.getElementById("checkbox3").checked = false;
+    document.getElementById("checkbox4").checked = false;
+    document.getElementById("checkbox5").checked = false;
+    document.getElementById("checkbox6").checked = false;
+    document.getElementById("checkbox7").checked = false;
+    document.getElementById("checkbox8").checked = false;
+    document.getElementById("checkbox9").checked = false;
+
     document.getElementById("date1").value = "";
     document.getElementById("date2").value = "";
 

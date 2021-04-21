@@ -5,6 +5,7 @@
     <title>TF|Профиль</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <link href="/css/imgProfile.css" rel="stylesheet">
     <link href="/css/formData.css" rel="stylesheet">
 </head>
@@ -19,30 +20,100 @@
             <h2 th:text="${msgErr}"/>
         </div>
         <div sec:authorize="isAuthenticated()" class="internal-cont">
-            <h3>
-                Профиль пользователя
-            </h3>
-            <img th:src="${user.getUserImage()}" class="mb-4"/>
-            <h4 class="mb-4" th:text="${user.getLastname() + ' ' + user.getFirstname() + ' ' + user.getMiddlename()}"/>
-            <p th:text="'Дата регистрации: '+${user.dateToString(user.getRegDate())}"/>
-            <p th:if="${roleName} == 'Админ' or ${roleName} == 'Ответственный' or ${isEmp} or
-        ${isCurUser} or ${#authentication.getPrincipal().getRole().getName()} == 'Админ'"
-               th:text="'Электронная почта: '+${user.getEmail()}"/>
-            <p th:if="${isEmp} or ${isCurUser} or ${#authentication.getPrincipal().getRole().getName()} == 'Админ'"
-               th:text="'Номер телефона: '+${user.getPhoneNumber()}"/>
-            <div class="mb-4" th:if="${roleName} != 'Админ'" style="width: fit-content;margin: 0 auto;">
-                <div th:if="${roleName} == 'Пользователь'">
-                    <p th:text="'Опубликованных проблем: '+${user.getTasksCount()}"/>
+            <div th:if="${roleName} == 'Ответственный' or ${roleName} == 'Региональный ответственный'"
+                 class="mb-4" style="text-align: start; white-space: normal;">
+                <h3 style="text-align: center;">
+                    Профиль ответственного
+                </h3>
+                <div style="display: flex;">
+                    <img th:src="${user.getUserImage()}" class="img-responsible-profile">
+                    <ul class="nav flex-column ml-4">
+                        <li class="nav-item mb-3">
+                            <button class="btn dropdown-toggle font-weight-bold" type="button" data-toggle="collapse"
+                                    aria-expanded="true" data-target="#div-user-main-data"
+                                    aria-controls="div-user-main-data" style="box-shadow: none;">
+                                Основные данные
+                            </button>
+                            <div class="collapse show" id="div-user-main-data">
+                                <div class="card card-body" style="background: none; border: none;">
+                                    <span class="mb-2" style="display: block;" th:text="'ФИО: ' + ${user.getLastname() +
+                                     ' ' + user.getFirstname() + ' ' + user.getMiddlename()}"/>
+                                    <span class="mb-2" style="display: block;" th:text="'Должность: ' +
+                                     ${user.appointment != null ?
+                                        user.appointment : 'Не указана'}"/>
+                                    <span class="mb-2" style="display: block;" th:text="'Email: ' + ${user.email}"/>
+                                    <span class="mb-2" style="display: block;"
+                                          th:text="'Дата регистрации: ' + ${user.dateToString(user.regDate) }"/>
+                                    <span class="mb-2" style="display: block;" th:text="'Регион: ' + ${region}"/>
+                                </div>
+                            </div>
+                        </li>
+                        <li th:if="${user.municipality} != null" class="nav-item mb-3">
+                            <button class="btn dropdown-toggle font-weight-bold" type="button" data-toggle="collapse"
+                                    aria-expanded="true" data-target="#div-municipality"
+                                    aria-controls="div-municipality" style="box-shadow: none;">
+                                Муниципалитет
+                            </button>
+                            <div class="collapse show" id="div-municipality">
+                                <div class="card card-body" style="background: none; border: none;">
+                                    <span class="mb-2" style="display: block;" th:text="'Название: ' +
+                                     ${user.municipality.name}"/>
+                                    <span class="mb-2" style="display: block;" th:text="'Адрес: ' +
+                                     ${user.municipality.location}"/>
+                                    <span class="mb-2" style="display: block;" th:text="'Номер телефона: ' +
+                                    ${user.municipality.phoneNumber}"/>
+                                    <span class="mb-2" style="display: block;" th:text="'Email: ' +
+                                     ${user.municipality.email}"/>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="nav-item mb-3">
+                            <button class="btn dropdown-toggle font-weight-bold" type="button" data-toggle="collapse"
+                                    aria-expanded="true" data-target="#div-efficiency"
+                                    aria-controls="div-efficiency" style="box-shadow: none;">
+                                Эффективность работы
+                            </button>
+                            <div class="collapse show" id="div-efficiency">
+                                <div class="card card-body" style="background: none; border: none;">
+                                    <span class="mb-2" style="display: block;" th:text="'Решённых проблем: ' +
+                                    ${user.getTasksCount()}"/>
+                                    <a class="mb-2" href="#">
+                                        Проблемы пользователя
+                                    </a>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
                 </div>
-                <div th:if="${roleName} != 'Пользователь'">
-                    <p th:text="'Регион: '+${region}"/>
-                    <p th:text="'Решённых проблем: '+${user.getTasksCount()}"/>
+            </div>
+            <div th:if="!(${roleName} == 'Ответственный' or ${roleName} == 'Региональный ответственный')"
+                 class="mb-4">
+                <h3>
+                    Профиль пользователя
+                </h3>
+                <img th:src="${user.getUserImage()}" class="mb-4 img-user-profile">
+                <h4 class="mb-4" th:text="${user.getLastname() + ' ' + user.getFirstname() + ' ' +
+                 user.getMiddlename()}"/>
+                <p th:text="'Дата регистрации: '+${user.dateToString(user.getRegDate())}"/>
+                <p th:if="${roleName} == 'Админ' or ${isEmp} or ${isCurUser} or
+                 ${#authentication.getPrincipal().getRole().getName()} == 'Админ'"
+                   th:text="'Электронная почта: '+${user.getEmail()}"/>
+                <p th:if="${isEmp} or ${isCurUser} or ${#authentication.getPrincipal().getRole().getName()} == 'Админ'"
+                   th:text="'Номер телефона: '+${user.getPhoneNumber()}"/>
+                <div th:if="${roleName} != 'Админ'" style="width: fit-content;margin: 0 auto;">
+                    <div th:if="${roleName} == 'Пользователь'">
+                        <p th:text="'Опубликованных проблем: '+${user.getTasksCount()}"/>
+                    </div>
+                    <div th:if="${roleName} != 'Пользователь'">
+                        <p th:text="'Регион: '+${region}"/>
+                        <p th:text="'Решённых проблем: '+${user.getTasksCount()}"/>
+                    </div>
+                    <a href="#"><p>Проблемы пользователя</p></a>
                 </div>
-                <a href="#"><p>Актуальные проблемы</p></a>
             </div>
             <form th:if="${#authentication.getPrincipal().getRole().getName()} == 'Админ' and ${roleName} != 'Админ'"
-                    class="mb-2" method="post">
-                <button type="submit" name="btn" value="true" class="btn btn-outline-primary">Изменить роль</button>
+                  class="mb-2" method="post">
+                <button type="submit" name="btn" value="true" class="btn btn-outline-primary">Изменить</button>
                 <button type="submit" name="btn" value="false" class="btn btn-outline-danger">Удалить</button>
             </form>
         </div>

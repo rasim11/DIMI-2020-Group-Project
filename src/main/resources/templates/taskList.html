@@ -2,56 +2,56 @@
 
     <h2 th:text="${infMessage}"></h2>
 
-         <table class="table  taskTableList">
-            <thead class="table-light">
-            <tr>
-                <form th:id="findForm">
-                    <div class="input-group mb-3">
-                        <input th:type="text" th:name="find" placeholder="Название проблемы" th:id="textFind"
-                               style="width: 88%;"/>
-                        <div class="input-group-append">
-                            <button type="button" class="btn btn-primary" onclick="findFormPost()">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                                     class="bi bi-search" viewBox="0 0 20 20">
-                                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                </form>
-            </tr>
-            <tr>
-                <th scope="col">Название</th>
-                <th scope="col"></th>
-                <th scope="col">Автор</th>
-                <th scope="col">Дата создания</th>
-                <th scope="col">Статус</th>
-            </tr>
-            </thead>
-            <tbody>
+    <table class="table  taskTableList">
+        <thead class="table-light">
+        <tr>
+            <form th:id="findForm">
+                <div class="input-group mb-3">
+                    <input th:type="text" th:name="find" placeholder="Название проблемы" th:id="textFind"
+                           style="width: 88%;"/>
+                    <button type="button" class="btn btn-primary" onclick="findFormPost()">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                             class="bi bi-search" viewBox="0 0 20 20">
+                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                        </svg>
+                    </button>
+                </div>
+            </form>
+        </tr>
+        <tr>
+            <th scope="col">Название</th>
+            <th scope="col"></th>
+            <th scope="col">Автор</th>
+            <th scope="col">Дата создания</th>
+            <th scope="col">Статус</th>
+        </tr>
+        </thead>
+        <tbody>
 
-            <tbody>
-            <tr th:each="task : ${taskList}" th:onclick="|window.location.href='task-management/task-get-by-id/${task.id}'|"   class="hoverClass" >
+        <tbody>
+        <tr th:each="task : ${taskList}" th:onclick="|window.location.href='task-management/task-get-by-id/${task.id}'|"
+            class="hoverClass">
 
-                <td class="clip" colspan="2" >
-                    <span  th:text="${task.taskName}" th:title="${task.taskName}"></span>
-                </td>
-                <td class="clip">
-                    <div>
-                    <span><img th:src="${task.author.getUserImage()}" style="width: 34px; height: 34px; display: inline-block;border-radius: 100%;"/></span>
+            <td class="clip" colspan="2">
+                <span th:text="${task.taskName}" th:title="${task.taskName}"></span>
+            </td>
+            <td class="clip">
+                <div>
+                    <span><img th:src="${task.author.getUserImage()}"
+                               style="width: 34px; height: 34px; display: inline-block;border-radius: 100%;"/></span>
                     <span th:text="${task.author.firstname}" th:title="${task.author.firstname}"></span>
                     <span th:text="${task.author.lastname}" th:title="${task.author.lastname}"></span>
-                    </div>
-                </td>
-                <td class="clip">
-                    <span th:text="${task.regDate}" th:title="${task.regDate}"></span>
-                </td>
-                <td class="clip">
-                    <span th:text="${task.status.getName}" th:title="${task.status.getName}"></span>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+                </div>
+            </td>
+            <td class="clip">
+                <span th:text="${task.regDate}" th:title="${task.regDate}"></span>
+            </td>
+            <td class="clip">
+                <span th:text="${task.status.getName}" th:title="${task.status.getName}"></span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
 
 
     <div style="display:inline; margin: auto; width: 50%;" align="center">
