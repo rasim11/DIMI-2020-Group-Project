@@ -62,4 +62,8 @@ public class AdminRestController {
         }
         entityService.putRegions(regions1);
     }
+    @GetMapping(LOCAL_URL_GET_MUNICIPALITIES)
+    public JsonNode getMunicipalities() {
+        return entityService.getAllObjects(URL_GET_MUNICIPALITIES);
+    }
 }
