@@ -62,34 +62,36 @@ function init() {
 
     function createMap() {
         // Если карта еще не была создана, то создадим ее и добавим метку с адресом.
-        let ballons = new ymaps.GeoObjectCollection();
-        map = new ymaps.Map('mapForAllTasks', {
-            center: [53.507836, 49.420393],
-            zoom: 11,
-            /*Для удаления элементов управления карты*/
-            controls: []
-        }, {
-            searchControlProvider: 'yandex#search'
-        });
+        if (tasksLocation.length!==0) {
+            let ballons = new ymaps.GeoObjectCollection();
+            map = new ymaps.Map('mapForAllTasks', {
+                center: [53.507836, 49.420393],
+                zoom: 11,
+                /*Для удаления элементов управления карты*/
+                controls: []
+            }, {
+                searchControlProvider: 'yandex#search'
+            });
 
-        console.log(tasksLocation[0]);
-        while (tasksLocation.length!==0){
-            let tempTaskName = tasksLocation[0];
-            tasksLocation.splice(0, 1);
-            for (let i=0;i<tasksLocation.length;i++){
-                if (tempTaskName.properties.get('iconCaption').trim() === tasksLocation[i].properties.get('iconCaption').trim()) {
-                    let tasksWithSameAddress = tempTaskName.properties.get('balloonContent').trim()+'<br>'+tasksLocation[i].properties.get('balloonContent').trim()
-                    tempTaskName.properties.set('balloonContent', tasksWithSameAddress);
-                    tasksLocation.splice(i, 1);
-                    i--;
+            console.log(tasksLocation[0]);
+            while (tasksLocation.length !== 0) {
+                let tempTaskName = tasksLocation[0];
+                tasksLocation.splice(0, 1);
+                for (let i = 0; i < tasksLocation.length; i++) {
+                    if (tempTaskName.properties.get('iconCaption').trim() === tasksLocation[i].properties.get('iconCaption').trim()) {
+                        let tasksWithSameAddress = tempTaskName.properties.get('balloonContent').trim() + '<br>' + tasksLocation[i].properties.get('balloonContent').trim()
+                        tempTaskName.properties.set('balloonContent', tasksWithSameAddress);
+                        tasksLocation.splice(i, 1);
+                        i--;
+                    }
                 }
+                ballons.add(tempTaskName);
             }
-            ballons.add(tempTaskName);
-        }
-        map.geoObjects.add(ballons);
-        map.setBounds(ballons.getBounds());
-        if(ballons.length===1) {
-            map.setZoom(11);
+            map.geoObjects.add(ballons);
+            map.setBounds(ballons.getBounds());
+            if (ballons.length === 1) {
+                map.setZoom(11);
+            }
         }
         ymaps.borders.load('RU', {
             lang: 'ru',
