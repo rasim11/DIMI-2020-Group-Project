@@ -1,4 +1,4 @@
-const SERVER = "http://localhost:8080";
+const SERVER = "https://socialissuetracker.herokuapp.com";
 const API = "/api";
 const VERSION = "/v1";
 const USER_MANAGEMENT = "/user-management";
