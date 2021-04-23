@@ -23,7 +23,7 @@ public final class UrlTemplates {
     public static final String BY_ID = "-by-id";
     public static final String BY_EMAIL = "-by-email";
     public static final String COMMENT_GET = "/comment-get";
-    public static final String SERVER = "http://localhost:8082";
+    public static final String SERVER = "https://projects-db.herokuapp.com";
     public static final String USER_POST = "/user-post";
     public static final String USER_DELETE = "/user-delete";
     public static final String ALL_USERS_GET = "/all-users-get";
