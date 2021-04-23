@@ -1,1 +1,0 @@
-# DIMI-2020-Group-Project
