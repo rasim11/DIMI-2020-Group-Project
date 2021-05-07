@@ -18,8 +18,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.netcracker.projectDb.url.UrlTemplates.FIND;
-import static com.netcracker.projectDb.url.UrlTemplates.URL_GET_TASK_LIST;
+import static com.netcracker.projectDb.url.UrlTemplates.*;
+import static com.netcracker.projectDb.url.UrlTemplates.URL_GET_BLOCKED_FROM_FIRST;
 
 @RestController
 public class TaskController {
@@ -39,8 +39,6 @@ public class TaskController {
     @Autowired
     private SubscriptionService subscriptionService;
 
-    @Autowired
-    private DuplicateTasksService duplicateTasksService;
 
 
     @GetMapping(URL_GET_TASK_LIST + "/page")
@@ -338,9 +336,22 @@ public class TaskController {
 
     @GetMapping(URL_GET_TASK_LIST + FIND)
     public List<Task> returnFindTaskList(@PathVariable String find) {
-        System.out.println("find - " + find);
-        return (List<Task>) taskService.findAllByTaskName(find);
-    }
+//        System.out.println("find - " + find);
+        find = find.toLowerCase();
+        List<Task> allList =  (List<Task>) taskService.findAll();
+        List<Task> findList = new ArrayList<>();
 
+        for (Task elem : allList)
+        {
+            String taskName = elem.getTaskName();
+            taskName = taskName.toLowerCase();
+            System.out.println("find - " + find);
+            System.out.println("taskName - " + taskName);
+            System.out.println("contains - " + ( taskName.contains(find) || find.contains(taskName)));
+            if ( taskName.contains(find) || find.contains(taskName))
+                findList.add(elem);
+        }
+         return findList;
+    }
 
 }

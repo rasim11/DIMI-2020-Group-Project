@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.Optional;
 
 @Transactional
@@ -25,11 +24,9 @@ public class RegionService {
     public void addRegion(Region region) {
         regionRepository.save(region);
     }
-    public void addRegions(Iterable<Region> region) {
-        regionRepository.saveAll(region);
-    }
+
     public Region getRegionByName(String regName){
-        return regionRepository.findByRegionName(regName).get();
+        return regionRepository.findByRegionName(regName).orElse(null);
     }
 
     public Optional<Region> getRegionById(Long id) {

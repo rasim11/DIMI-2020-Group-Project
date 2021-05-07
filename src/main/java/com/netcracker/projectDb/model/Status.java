@@ -9,19 +9,15 @@ import java.util.Map;
 @AllArgsConstructor
 @Getter
 public enum Status {
-    IN_CREATING(0, "В обработке"),
-    IN_PROCESSING(1, "Решается"),
-    RESOLVED(2, "Решена"),
+    IN_CREATING(0, "В процессе рассмотрения"),
+    IN_PROCESSING(1, "В процессе устранения"),
+    RESOLVED(2, "Устранена"),
     CANCELED(3, "Отменена"),
-
-    CANCELED_AS_DUBLICATE(4, "Отменена как дубликат"),
+    CANCELED_AS_DUPLICATE(4, "Отменена как дубликат"),
     REJECTED(5, "Отклонена"),
     OPENED(6, "Открыта"),
     BLOCKED(7, "Заблокирована"),
-    AWAITING_SOLUTION(8, "Ожидает решения"),
-    IN_THE_PROCESS_OF_FIXING(9, "В процессе устранения");
-    //    ACCEPTED_FOR_PROCESSING(5, "Принята в обработку"),
-
+    AWAITING_SOLUTION(8, "В процессе согласования");
 
     private final int value;
     private final String name;

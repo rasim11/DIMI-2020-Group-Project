@@ -3,11 +3,15 @@ package com.netcracker.projectDb.controller;
 import com.netcracker.projectDb.model.*;
 import com.netcracker.projectDb.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 import static com.netcracker.projectDb.url.UrlTemplates.*;
 
@@ -25,19 +29,19 @@ public class DbController {
     @Autowired
     private TaskSocialWorkersService taskSocialWorkersService;
     @Autowired
-    private FeedbackService feedbackService;
-    @Autowired
     private CommentService commentService;
     @Autowired
     private SubscriptionService subscriptionService;
     @Autowired
     private HistoryService historyService;
     @Autowired
-    private DuplicateTasksService duplicateTasksService;
+    private MunicipalityService municipalityService;
     @Autowired
     private BlockingTasksService blockingTasksService;
     @Autowired
-    private MunicipalityService municipalityService;
+    private DuplicateTasksService duplicateTasksService;
+    @Autowired
+    private SimilarTasksService similarTasksService;
 
     @GetMapping(URL_GET_USER_BY_EMAIL)
     public User getUserByEmail(@PathVariable String email) {
@@ -107,17 +111,26 @@ public class DbController {
         return userService.getAllUsers();
     }
 
-    @PostMapping(URL_ADD_STANDARD_REGIONS)
-    public void addStandardRegions(@RequestBody Iterable<Region>regions) {
-        try {
-            regionService.getRegionByName(regions.iterator().next().getRegionName());
-        }catch (NoSuchElementException e){
-            regionService.addRegions(regions);
-        }
+    @GetMapping(URL_ADD_STANDARD_REGIONS)
+    public void addStandardRegions() {
+        try (BufferedReader reader = new BufferedReader(new
+                FileReader("src/main/resources/standardRegion.txt"))) {
+            String line = reader.readLine();
+            while (line != null) {
+                if (regionService.getRegionByName(line) == null) {
+                    Region region = new Region(null, line, null);
+                    regionService.addRegion(region);
+                }
 
+                line = reader.readLine();
+            }
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
     }
+
     @GetMapping(URL_GET_REGION_BY_NAME)
-    public Region getRegionByName(@PathVariable("name") String regionName){
+    public Region getRegionByName(@PathVariable("name") String regionName) {
         return regionService.getRegionByName(regionName);
     }
 
@@ -184,19 +197,14 @@ public class DbController {
         taskSocialWorkersService.addActiveTask(ids);
     }
 
-    @PostMapping(URL_POST_FEEDBACK)
-    public void postFeedback(@RequestBody Feedback feedback) {
-        feedbackService.postFeedback(feedback);
-    }
-
     @DeleteMapping(URL_DELETE_COMMENT_BY_AUTHOR_ID)
     public void deleteCommentByAuthorId(@PathVariable Long id) {
         commentService.deleteCommentsByAuthorId(id);
     }
 
     @GetMapping(URL_GET_FEEDBACK_BY_TASK_ID)
-    public Feedback getFeedbackById(@PathVariable Long id) {
-        return feedbackService.getFeedbackByTaskId(id).orElse(null);
+    public Comment getFeedbackById(@PathVariable Long id) {
+        return commentService.findFeedbackByTaskId(id).orElse(null);
     }
 
     @GetMapping(URL_GET_SUBSCRIPTION_BY_TASK_USER_IDS)
@@ -237,16 +245,6 @@ public class DbController {
     @GetMapping(URL_GET_HISTORY_BY_TASK_ID)
     public Iterable<History> getHistoryByTaskId(@PathVariable Long id) {
         return historyService.getAllByTaskId(id);
-    }
-
-    @GetMapping(URL_GET_ORIGIN_FROM_DUPLICATE)
-    public Task getOriginFromDuplicate(@PathVariable Long id) {
-        return duplicateTasksService.getOriginalByDuplicateId(id);
-    }
-
-    @GetMapping(URL_GET_FIRST_FROM_BLOCKED)
-    public Iterable<Task> getFirstFromBlocked(@PathVariable Long id) {
-        return blockingTasksService.getAllFirstByBLockedId(id);
     }
 
     @GetMapping(URL_ADD_STANDARD_MUNICIPALITY)
@@ -291,5 +289,70 @@ public class DbController {
     @DeleteMapping(URL_DELETE_HISTORY)
     public void deleteHistory(@PathVariable Long id) {
         historyService.delete(id);
+    }
+
+    @PostMapping(URL_POST_BLOCKED_TASKS)
+    public void postTaskBlocked(@RequestBody String strIds) {
+        blockingTasksService.add(strIds);
+    }
+
+    @PostMapping(URL_POST_DUPLICATES_TASKS)
+    public void postTaskDuplicates(@RequestBody String strIds) {
+        duplicateTasksService.add(strIds);
+    }
+
+    @DeleteMapping(URL_DELETE_BLOCKED_BY_ID)
+    public void deleteTaskBlocked(@PathVariable Long id) {
+        blockingTasksService.deleteByBlocked(id);
+    }
+
+    @DeleteMapping(URL_DELETE_DUPLICATES_BY_ID)
+    public void deleteTaskDuplicates(@PathVariable Long id) {
+        duplicateTasksService.deleteByDuplicate(id);
+    }
+
+    @GetMapping(URL_GET_LINKED_TASKS)
+    public Iterable<Task> getLinkedTasks(@PathVariable Long id) {
+        return similarTasksService.getAllLinked(id);
+    }
+
+    @GetMapping(URL_GET_ORIGIN_FROM_DUPLICATE)
+    public Iterable<Task> getOriginFromDuplicate(@PathVariable Long id) {
+        return duplicateTasksService.getAllOriginsByDuplicatesId(id);
+    }
+
+    @GetMapping(URL_GET_DUPLICATE_FROM_ORIGIN)
+    public Iterable<Task> getDuplicateFromOrigin(@PathVariable Long id) {
+        return duplicateTasksService.getAllDuplicatesByOriginId(id);
+    }
+
+    @GetMapping(URL_GET_FIRST_FROM_BLOCKED)
+    public Iterable<Task> getFirstFromBlocked(@PathVariable Long id) {
+        return blockingTasksService.getAllFirstByBLockedId(id);
+    }
+
+    @GetMapping(URL_GET_BLOCKED_FROM_FIRST)
+    public Iterable<Task> getBlockedFromFirst(@PathVariable Long id) {
+        return blockingTasksService.getAllBlockedByFirstId(id);
+    }
+
+    @DeleteMapping(URL_DELETE_LINKED_TASKS)
+    public void deleteTasksById(@PathVariable Long id) {
+        similarTasksService.deleteAllById(id);
+    }
+
+    @PostMapping(URL_POST_LINKED_TASKS)
+    public void postLinkedTasks(@RequestBody String strIds) {
+        similarTasksService.add(strIds);
+    }
+
+    @GetMapping(URL_GET_SUBSCRIPTIONS_BY_TASK_ID)
+    public Iterable<Subscription> getSubscriptionsByTaskId(@PathVariable Long id) {
+        return subscriptionService.getAllByTaskId(id);
+    }
+
+    @GetMapping(URL_GET_COMMENTS_BY_AUTHOR)
+    public Iterable<Comment> getCommentsByAuthorId(@PathVariable Long id) {
+        return commentService.findAllByAuthorId(id);
     }
 }

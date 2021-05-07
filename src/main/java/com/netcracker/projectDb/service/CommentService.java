@@ -33,4 +33,14 @@ public class CommentService {
         Optional<User> author = userService.getUserById(id);
         author.ifPresent(x -> commentRepository.deleteAllByAuthor(x));
     }
+
+    public Optional<Comment> findFeedbackByTaskId(Long id) {
+        Task task = taskService.getTaskById(id).orElse(null);
+        return commentRepository.findByTaskAndTag(task, "Отзыв");
+    }
+
+    public Iterable<Comment> findAllByAuthorId(Long id) {
+        User author = userService.getUserById(id).orElse(null);
+        return commentRepository.findAllByAuthor(author);
+    }
 }

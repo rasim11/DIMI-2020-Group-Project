@@ -6,22 +6,23 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDateTime;
 
 @Entity
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
-public class Feedback {
+@Table(name = "similar_tasks",
+        uniqueConstraints = @UniqueConstraint(columnNames = {"original_id", "similar_id"})
+)
+public class SimilarTasks {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(columnDefinition = "text")
+
+    @ManyToOne
     @NotNull
-    private String feedback;
+    private Task original;
+    @ManyToOne
     @NotNull
-    private LocalDateTime publishDate;
-    @OneToOne
-    @NotNull
-    private Task task;
+    private Task similar;
 }

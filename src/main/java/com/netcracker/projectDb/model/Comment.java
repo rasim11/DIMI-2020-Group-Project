@@ -26,7 +26,7 @@ public class Comment {
     @NotNull
     private LocalDateTime publishDate;
     @ManyToOne
-    @NotNull
+    @Null
     private User author;
     @Null
     private String tag;

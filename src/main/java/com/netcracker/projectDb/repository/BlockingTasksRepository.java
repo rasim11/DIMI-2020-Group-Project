@@ -12,5 +12,8 @@ public interface BlockingTasksRepository extends CrudRepository<BlockingTask, Lo
     Iterable<BlockingTask> findAllByBlocked(Task task);
 
     Iterable<BlockingTask> findAllByBlocked_Id(Long id);
+    Iterable<BlockingTask> findAllByFirstTaskId(Long id);
     Optional<BlockingTask> findById(Long id);
+
+    void deleteAllByBlocked(Task blocked);
 }

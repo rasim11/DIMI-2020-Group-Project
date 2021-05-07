@@ -42,7 +42,12 @@ public class SubscriptionService {
         user.ifPresent(x -> subscriptionRepository.deleteAllByUser(x));
     }
 
-    public ArrayList<Subscription> findAllByUser(User user){
-       return subscriptionRepository.findAllByUser(user);
+    public ArrayList<Subscription> findAllByUser(User user) {
+        return subscriptionRepository.findAllByUser(user);
+    }
+
+    public Iterable<Subscription> getAllByTaskId(Long id) {
+        Task task = taskService.getTaskById(id).orElse(null);
+        return subscriptionRepository.findAllByTask(task);
     }
 }

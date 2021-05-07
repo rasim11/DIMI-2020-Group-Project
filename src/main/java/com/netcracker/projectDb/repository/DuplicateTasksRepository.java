@@ -12,4 +12,8 @@ public interface DuplicateTasksRepository extends CrudRepository<DuplicateTasks,
     ArrayList<DuplicateTasks> findAllByOriginal(Task task);
     Optional<DuplicateTasks> findByDuplicate(Task task);
     Optional<DuplicateTasks> findByDuplicateId(Long id);
+    Iterable<DuplicateTasks> findAllByOriginalId(Long id); // для поиска всех дубликатов
+    Iterable<DuplicateTasks> findAllByDuplicateId(Long id);      // для поиска всех оригиналов
+
+    void deleteAllByDuplicate(Task duplicate);
 }

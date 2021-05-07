@@ -26,7 +26,6 @@ public final class UrlTemplates {
     public static final String REGION_PUT = "/region-put";
     public static final String TASK_LIST_GET = "/task-list-get";
     public static final String FIND = "/{find}";
-    public static final String FILTER = "/filter";
     public static final String TASK_SOCIAL_WORKERS_MANAGEMENT = "/task-social-workers-management";
     public static final String SOCIAL_WORKERS_GET = "/social-workers-get";
     public static final String ACTIVE_TASKS_GET = "/active-tasks-get";
@@ -76,7 +75,6 @@ public final class UrlTemplates {
             ACTIVE_TASK_DELETE + "-by-worker" + BY_ID + "/{id}";
     public static final String URL_POST_ACTIVE_TASK = API + VERSION + TASK_SOCIAL_WORKERS_MANAGEMENT +
             ACTIVE_TASK_POST;
-    public static final String URL_POST_FEEDBACK = API + VERSION + FEEDBACK_MANAGEMENT + FEEDBACK_POST;
     public static final String URL_POST_COMMENT = API + VERSION + COMMENT_MANAGEMENT + COMMENT_POST;
     public static final String URL_GET_COMMENT_BY_TASK_ID = API + VERSION + COMMENT_MANAGEMENT +
             COMMENT_GET + "-by-task/{id}";
@@ -98,13 +96,29 @@ public final class UrlTemplates {
     public static final String URL_GET_HISTORY_BY_TASK_ID = API + VERSION + HISTORY_MANAGEMENT +
             "/history-get-by-task-id/{id}";
     public static final String URL_POST_HISTORY = API + VERSION + HISTORY_MANAGEMENT + "/history-post";
-    public static final String URL_GET_REGION_BY_NAME = API + VERSION + REGION_MANAGEMENT + REGION_GET + "-by-name" + "/{name}";
-    public static final String URL_GET_ORIGIN_FROM_DUPLICATE = API + VERSION + "/get-origin-from-duplicate/{id}";
-    public static final String URL_GET_FIRST_FROM_BLOCKED = API + VERSION + "/get-first-from-blocked/{id}";
+    public static final String URL_GET_REGION_BY_NAME = API + VERSION + REGION_MANAGEMENT + REGION_GET +
+            "-by-name/{name}";
     public static final String URL_GET_MUNICIPALITIES = API + VERSION + MUNICIPALITY_MANAGEMENT + "/municipalities-get";
     public static final String URL_GET_MUNICIPALITY_BY_ID = API + VERSION + MUNICIPALITY_MANAGEMENT +
             "/municipality-get-by-id/{id}";
     public static final String URL_GET_HISTORIES_BY_PREVIOUS_CURRENT_RESPONSIBLE_ID = API + VERSION +
             HISTORY_MANAGEMENT + "/history-get-by-previous-current-responsible-id/{id}";
     public static final String URL_DELETE_HISTORY = API + VERSION + HISTORY_MANAGEMENT + "/history-delete/{id}";
+    public static final String URL_GET_ORIGIN_FROM_DUPLICATE = API + VERSION + "/get-origin-from-duplicate/{id}";
+    public static final String URL_GET_DUPLICATE_FROM_ORIGIN = API + VERSION + "/get-duplicate-from-origin/{id}";
+    public static final String URL_GET_FIRST_FROM_BLOCKED = API + VERSION + "/get-first-from-blocked/{id}";
+    public static final String URL_GET_BLOCKED_FROM_FIRST = API + VERSION + "/get-blocked-from-first/{id}";
+    public static final String URL_GET_LINKED_TASKS = API + VERSION + "/get-linked-tasks/{id}";
+    public static final String URL_POST_DUPLICATES_TASKS = API + VERSION + TASK_MANAGEMENT + "/post-duplicates";
+    public static final String URL_POST_BLOCKED_TASKS = API + VERSION + TASK_MANAGEMENT + "/post-blocked";
+    public static final String URL_DELETE_DUPLICATES_BY_ID = API + VERSION + TASK_MANAGEMENT +
+            "/delete-duplicates-by-id/{id}";
+    public static final String URL_DELETE_BLOCKED_BY_ID = API + VERSION + TASK_MANAGEMENT +
+            "/delete-blocked-by-id/{id}";
+    public static final String URL_DELETE_LINKED_TASKS = API + VERSION + TASK_MANAGEMENT + "/delete-linked-tasks/{id}";
+    public static final String URL_POST_LINKED_TASKS = API + VERSION + TASK_MANAGEMENT + "/post-linked";
+    public static final String URL_GET_SUBSCRIPTIONS_BY_TASK_ID = API + VERSION + SUBSCRIPTION_MANAGEMENT +
+            "/subscriptions-get-by-task-id/{id}";
+    public static final String URL_GET_COMMENTS_BY_AUTHOR = API + VERSION + COMMENT_MANAGEMENT +
+            "/comments-get-by-author/{id}";
 }

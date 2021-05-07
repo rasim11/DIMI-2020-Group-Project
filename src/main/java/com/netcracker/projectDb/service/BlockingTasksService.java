@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Optional;
 
 
@@ -16,53 +17,75 @@ import java.util.Optional;
 public class BlockingTasksService {
     @Autowired
     private BlockingTasksRepository blockingTasksRepository;
+    @Autowired
+    private TaskService taskService;
 
-    public ArrayList<Task> getAllBlocked(Task first)  // все заблокированные проблемы, проблемой first
+
+    public Iterable<Task> getAllFirstByBLockedId(Long id) // берет все задачи, котрые блокируют
     {
-        Iterable<BlockingTask> allBlocked = blockingTasksRepository.findAllByFirstTask(first);
+        Iterable<BlockingTask> allWithBlocked = blockingTasksRepository.findAllByBlocked_Id(id);
+        ArrayList<Task> allFirst = new ArrayList<>();
+        allWithBlocked.forEach((x) -> {
+            allFirst.add(x.getFirstTask());
+        });
+
+        if (allFirst.size() != 0)
+            return allFirst;
+        else return null;
+    }
+
+    public ArrayList<Task> getAllBlockedByFirstId(Long id)  // все заблокированные проблемы, проблемой first
+    {
+        Iterable<BlockingTask> allBlocked = blockingTasksRepository.findAllByFirstTaskId(id);
         ArrayList<Task> allBl = new ArrayList<>();
         allBlocked.forEach((x) -> {
             allBl.add(x.getBlocked());
         });
-        return allBl;
-    }
 
-    public Iterable<Task> getAllFirstByBLockedId(Long id) // берет все задачи, котрые блокируют
-    {
-        Iterable<BlockingTask>  allWithBlocked =  blockingTasksRepository.findAllByBlocked_Id(id);
-
-        ArrayList<Task> allFirst = new ArrayList<>();
-        allWithBlocked.forEach( (x) -> { allFirst.add(x.getFirstTask()); } );
-
-        return allFirst;
+        if (allBl.size() != 0)
+            return allBl;
+        else return null;
     }
 
     public void addBlocking(BlockingTask blockingTask) {
-            blockingTasksRepository.save(blockingTask);
-        }
+        blockingTasksRepository.save(blockingTask);
+    }
 
-        public Iterable<Task> getFirst(Task blockedTask)
-        {
-            Iterable<BlockingTask> firstTasks = blockingTasksRepository.findAllByBlocked(blockedTask);
+    public void add(String strIds) {
+        long[] attr = Arrays.stream(strIds.split("&&&")).mapToLong(Long::parseLong).toArray();
 
-            ArrayList<Task> arrayList = new ArrayList<>();
+        Task original = taskService.getTaskById(attr[0]).orElse(null);
+        Task blocked = taskService.getTaskById(attr[1]).orElse(null);
 
-            firstTasks.forEach((x) -> {
-                arrayList.add(x.getFirstTask());
-            });
+        BlockingTask blockingTask = new BlockingTask(null, original, blocked);
+        blockingTasksRepository.save(blockingTask);
+    }
 
-            return arrayList;
-        }
+    public Iterable<Task> getFirst(Task blockedTask) {
+        Iterable<BlockingTask> firstTasks = blockingTasksRepository.findAllByBlocked(blockedTask);
 
-        public void deleteFirstTasks(Task firsTask)
-        {
-          Iterable<BlockingTask> allFirstTasks =  blockingTasksRepository.findAllByFirstTask(firsTask);
-            allFirstTasks.forEach( (x) -> {blockingTasksRepository.delete(x);});
-        }
+        ArrayList<Task> arrayList = new ArrayList<>();
 
-        public void deleteBlockingTaskById(Long id)
-        {
-            blockingTasksRepository.deleteById(id);
-        }
+        firstTasks.forEach((x) -> {
+            arrayList.add(x.getFirstTask());
+        });
 
+        return arrayList;
+    }
+
+    public void deleteFirstTasks(Task firsTask) {
+        Iterable<BlockingTask> allFirstTasks = blockingTasksRepository.findAllByFirstTask(firsTask);
+        allFirstTasks.forEach((x) -> {
+            blockingTasksRepository.delete(x);
+        });
+    }
+
+    public void deleteBlockingTaskById(Long id) {
+        blockingTasksRepository.deleteById(id);
+    }
+
+    public void deleteByBlocked(Long id) {
+        Optional<Task> blocked = taskService.getTaskById(id);
+        blocked.ifPresent(x -> blockingTasksRepository.deleteAllByBlocked(x));
+    }
 }

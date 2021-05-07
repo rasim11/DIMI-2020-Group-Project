@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 public interface SubscriptionRepository extends CrudRepository<Subscription, Long> {
-//    Iterable<Subscription> findAllByUser(User user);
+    Iterable<Subscription> findAllByTask(Task task);
     Optional<Subscription> findByTaskAndUser(Task task, User user);
     void deleteAllByUser(User user);
 
