@@ -1,7 +1,7 @@
 let show_map_link = document.getElementById("location");
 var request = show_map_link.innerText;
 var map;
-show_map_link.addEventListener("click", function (e) {
+$("#location").on("click", function () {
     if(map!==undefined){
         map.destroy();
     }

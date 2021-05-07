@@ -1,9 +1,5 @@
 var tasksLocation = [];
 var map;
-if (tasks===''){
-    console.log("empty task")
-    $("#show-on-map").hidden;
-}
 $("#show-on-map").on('click', function () {
     if(map!==undefined) {
         map.destroy();
