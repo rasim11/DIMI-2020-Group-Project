@@ -17,7 +17,7 @@
     </script>
     <script src="/js/mapForTaskAdding.js"></script>
 </head>
-<body onload="loadTaskEdit();document.getElementById('check-address').click();">
+<body onload="loadTaskEdit();">
 <header th:insert="blocks/header :: header"></header>
 <div id="div-main-block" class="external-cont">
     <div class="form-data" style="width: 800px; font-size: 20px">
@@ -30,12 +30,9 @@
             <textarea class="form-control mb-3" placeholder="Описание" name="taskDescription" style="height: 200px;"
                       th:text="${taskForm.getTaskDescription()}" oninput="checkEmpty(this);isNoDuplicate();"/>
             <div class="mb-2" style="display: flex; width: 100%;">
-                <input type="text" class="form-control required mr-1" id="location" placeholder="Адрес проблемы"
+                <input type="text" class="form-control" id="location" placeholder="Адрес проблемы"
                        name="taskLocation" th:value="${taskForm.getTaskLocation()}"
                        oninput="checkEmpty(this);isNoDuplicate();">
-                <button type="button" style="width: 107px;" class="btn btn-primary" id="check-address">
-                    Проверить
-                </button>
             </div>
             <div id="map" class="mb-3" style="height: 400px"></div>
             <div class="div-comment-allow mb-2">

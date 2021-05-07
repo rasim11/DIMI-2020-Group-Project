@@ -102,7 +102,7 @@ function compress(inputImg) {
 function getRoleName(role) {
     switch (role) {
         case "USER":
-            return "Пользователь";
+            return "Обычный пользователь";
         case "SOCIAL_WORKER":
             return "Соц. работник";
         case "RESPONSIBLE":
@@ -118,7 +118,7 @@ function showFullImg(targetImg) {
     const divMainBlock = document.getElementById(divMainBlockId);
 
     const divMainWindow = document.createElement("div");
-    divMainWindow.className = "feedback-window";
+    divMainWindow.className = "custom-modal-window";
     divMainBlock.append(divMainWindow);
 
     const divImageFullSize = document.createElement("div");

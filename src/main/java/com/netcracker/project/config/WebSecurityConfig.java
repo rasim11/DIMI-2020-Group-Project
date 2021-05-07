@@ -35,7 +35,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         LOCAL_URL_USER_LOGIN + "/**",
                         LOCAL_URL_USER_REGISTRATION + "/**").not().fullyAuthenticated()
                 .antMatchers(LOCAL_URL_POST_TASK + "/**",
-                        LOCAL_URL_AUTHOR_PUT_TASK + "/**").hasAuthority("Пользователь")
+                        LOCAL_URL_AUTHOR_PUT_TASK + "/**").hasAuthority("Обычный пользователь")
                 .antMatchers(
                         LOCAL_URL_ADMINISTRATION + "/**",
                         LOCAL_URL_USER_ROLE_EDIT + "/**",

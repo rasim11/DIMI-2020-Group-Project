@@ -9,6 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import static com.netcracker.project.url.UrlTemplates.LOCAL_URL_GET_COMMENT_BY_TASK_ID;
 import static com.netcracker.project.url.UrlTemplates.LOCAL_URL_POST_COMMENT;
@@ -32,7 +36,9 @@ public class CommentRestController {
     }
 
     @GetMapping(LOCAL_URL_GET_COMMENT_BY_TASK_ID)
-    public Iterable<Comment> getComment(@PathVariable Long id) {
-        return entityService.getCommentByTaskId(id);
+    public List<Comment> getComment(@PathVariable Long id) {
+        return StreamSupport.stream(entityService.getCommentByTaskId(id).spliterator(), false).
+                sorted((a,b)->b.getPublishDate().compareTo(a.getPublishDate()))
+                .collect(Collectors.toList());
     }
 }

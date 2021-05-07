@@ -12,9 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.netcracker.project.url.UrlTemplates.*;
 
@@ -49,7 +47,7 @@ public class PersonalAccountController {
             model.addAttribute("isCurUser", true);
         }
         model.addAttribute("user", targetUser);
-        model.addAttribute("roleName", targetUser.getRole().getName());
+        model.addAttribute("role", targetUser.getRole());
 
         Region curUserRegion = curUser.getRegion() != null ? curUser.getRegion() :
                 entityService.getRegionByResponsibleEmail(curUser.getEmail());

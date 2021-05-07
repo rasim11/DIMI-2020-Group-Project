@@ -1,60 +1,3 @@
-// function resetChecked() {
-//     var inProgress = document.getElementById("inProgress");
-//     var solved = document.getElementById("solved");
-//     var resolved = document.getElementById("resolved");
-//     var canceled = document.getElementById("canceled");
-//     var textStatus = document.getElementById("textStatus");
-//     var btnReset = document.getElementById("btnReset");
-//
-//     inProgress.checked = false;
-//     solved.checked = false;
-//     resolved.checked = false;
-//     canceled.checked = false;
-//     textStatus.className = "";
-//     btnReset.style.display = "none";
-// }
-//
-// function atLeastOneChecked() {
-//     var inProgress = document.getElementById("inProgress");
-//     var solved = document.getElementById("solved");
-//     var resolved = document.getElementById("resolved");
-//     var canceled = document.getElementById("canceled");
-//     var textStatus = document.getElementById("textStatus");
-//     var btnReset = document.getElementById("btnReset");
-//
-//
-//     if (inProgress.checked || solved.checked || resolved.checked || canceled.checked) {
-//         textStatus.className = "text-primary";
-//         btnReset.style.display = "inline";
-//     } else {
-//         textStatus.className = "";
-//         btnReset.style.display = "none";
-//     }
-// }
-//
-// function setWidth() {
-//     var mainCont = document.getElementById("mainCont");
-//     var sidebarMenu = document.getElementById("sidebarMenu");
-//     var mainTable = document.getElementById("mainTable");
-//
-//     mainTable.style.width = parseFloat(window.getComputedStyle(mainCont, null).width) -
-//         parseFloat(window.getComputedStyle(sidebarMenu, null).width) - parseFloat(mainTable.style.marginLeft) +
-//         "px";
-// }
-
-// function setFilterParam() {
-//     document.getElementById("ch0").checked = document.getElementById("checkbox0").checked;
-//     document.getElementById("ch1").checked = document.getElementById("checkbox1").checked;
-//     document.getElementById("ch2").checked = document.getElementById("checkbox2").checked;
-//     document.getElementById("ch3").checked = document.getElementById("checkbox3").checked;
-//     document.getElementById("da1").value = document.getElementById("date1").value
-//     document.getElementById("da2").value = document.getElementById("date2").value
-//
-//     document.getElementById("inpAuthForm").value = document.getElementById("InputAuthor").value
-//     document.getElementById("inpRespForm").value = document.getElementById("InputResponse").value
-//
-// }
-
 function setFilterParamAuth() {
     document.getElementById("ch0").checked = document.getElementById("checkbox0").checked;
     document.getElementById("ch1").checked = document.getElementById("checkbox1").checked;
@@ -65,27 +8,25 @@ function setFilterParamAuth() {
     document.getElementById("ch6").checked = document.getElementById("checkbox6").checked;
     document.getElementById("ch7").checked = document.getElementById("checkbox7").checked;
     document.getElementById("ch8").checked = document.getElementById("checkbox8").checked;
-    document.getElementById("ch9").checked = document.getElementById("checkbox9").checked;
-    document.getElementById("da1").value = document.getElementById("date1").value
+     document.getElementById("da1").value = document.getElementById("date1").value
     document.getElementById("da2").value = document.getElementById("date2").value
 
     document.getElementById("inpAuthForm").value = document.getElementById("InputAuthor").value
     document.getElementById("inpRespForm").value = document.getElementById("InputResponse").value
 
-
     var radio;
 
     radio = document.getElementById("radioAllProblems");
-    if ( radio != undefined)  document.getElementById("radioAP").checked = radio.checked;
+    if (radio != undefined) document.getElementById("radioAP").checked = radio.checked;
 
     radio = document.getElementById("radioMyProblems");
-    if ( radio != undefined)  document.getElementById("radioMP").checked = radio.checked;
+    if (radio != undefined) document.getElementById("radioMP").checked = radio.checked;
 
     radio = document.getElementById("radioSubscribeProblems");
-    if ( radio != undefined)  document.getElementById("radioSP").checked = radio.checked;
+    if (radio != undefined) document.getElementById("radioSP").checked = radio.checked;
 
     radio = document.getElementById("radioMyProblemsForStaff");
-    if (radio != undefined) document.getElementById("radioMAP").checked =  radio.checked;
+    if (radio != undefined) document.getElementById("radioMAP").checked = radio.checked;
 
 }
 
@@ -99,16 +40,201 @@ function resetChecked() {
     document.getElementById("checkbox6").checked = false;
     document.getElementById("checkbox7").checked = false;
     document.getElementById("checkbox8").checked = false;
-    document.getElementById("checkbox9").checked = false;
 
     document.getElementById("date1").value = "";
     document.getElementById("date2").value = "";
 
-    document.getElementById("InputAuthor").value  = ""
-    document.getElementById("InputResponse").value =  ""
+    document.getElementById("InputAuthor").value = ""
+    document.getElementById("InputResponse").value = ""
 
-    document.getElementById("radioAllProblems").checked =  true
-    document.getElementById("radioMyProblems").checked =  false
-    document.getElementById("radioSubscribeProblems").checked =  false
+    document.getElementById("radioAllProblems").checked = true
+    document.getElementById("radioMyProblems").checked = false
+    document.getElementById("radioSubscribeProblems").checked = false
+}
+
+
+function setPage(val) {
+    var page = document.getElementById("page");
+    page.value = val;
+
+    console.log("pageButtonClick")
+    if (isEmpty()) {
+        console.log("isEmpty")
+        var str = $("#pageForm").serialize();
+        $.ajax({
+            method: 'post',
+            dataType: 'html',
+            data: str,
+            success: function (data) {
+                $('#listTaskId').html(data);
+            }
+        });
+    } else {
+        console.log("is not Empty")
+        var str = $("#formFilterConst, #pageForm").serialize();
+
+        $.ajax({
+            method: 'post',
+            dataType: 'html',
+            data: str,
+            url: "/api/v1/main-page/filter",
+            success: function (data) {
+                $('#listTaskId').html(data);
+                // document.getElementById("tasks").value = document.getElementById("testMap");
+            }
+        });
+    }
+}
+
+function isEmpty() {
+    let arr = new Array();
+    arr.push(document.getElementById("ch0"));
+    arr.push(document.getElementById("ch1"));
+    arr.push(document.getElementById("ch2"));
+    arr.push(document.getElementById("ch3"));
+    arr.push(document.getElementById("ch4"));
+    arr.push(document.getElementById("ch5"));
+    arr.push(document.getElementById("ch6"));
+    arr.push(document.getElementById("ch7"));
+    arr.push(document.getElementById("ch8"));
+
+    let arrDate = new Array();
+    arrDate.push(document.getElementById("da1"));
+    arrDate.push(document.getElementById("da2"));
+
+
+    var filterEmpty = true;
+
+    var size = arr.length;
+    for (var i = 0; i < size; ++i) {
+        if (arr[i].checked == true) {
+            filterEmpty = false;
+            break;
+        }
+    }
+
+    size = arrDate.length;
+    console.log("size arrDate " + size);
+
+    for (var i = 0; i < size; ++i) {
+        console.log("filterEmpty arrDate " + i + " " + arrDate[i].value);
+        if (arrDate[i].value != null) {
+            if (arrDate[i].value.length > 0) {
+                filterEmpty = false;
+                break;
+            }
+        }
+    }
+
+
+    if (document.getElementById("inpAuthForm").value != "") {
+        filterEmpty = false;
+        console.log("  inpAuthForm empty = false; ");
+    }
+
+    if (document.getElementById("inpRespForm").value != "") {
+        filterEmpty = false;
+        console.log("  inpRespForm empty = false; ");
+    }
+
+    if (document.getElementById("radioAllProblems").checked == false)
+        filterEmpty = false;
+
+    return filterEmpty;
+}
+
+
+function pageButtonClick() {
+    console.log("pageButtonClick")
+    if (isEmpty()) {
+        var str = $("#pageForm").serialize();
+        $.ajax({
+            method: 'post',
+            dataType: 'html',
+            data: str,
+            success: function (data) {
+                $('#listTaskId').html(data);
+            }
+        });
+    }
+}
+
+function findFormPost() {
+
+    var textFind = document.getElementById("textFind")
+
+    if (textFind.value != "") {
+        var str = $("#findForm").serialize();
+
+        $.ajax({
+            method: 'post',
+            dataType: 'html',
+            data: str,
+            url: "/api/v1/main-page/find",
+            success: function (data) {
+                $('#listTaskId').html(data);
+            }
+        });
+    } else {
+        setPage(1);
+    }
+}
+
+function getMyTaskList() {
+    var userIdVal = document.getElementById("userId");
+    console.log("getMyTaskList")
+    $.ajax({
+        method: 'get',
+        dataType: 'html',
+        data: {userId: userIdVal.value},
+        url: "/api/v1/main-page/filterMyProblems",
+        success: function (data) {
+            $('#listTaskId').html(data);
+        }
+    });
+
+    var radio = document.getElementById("radioMyProblems");
+    if (radio != undefined) radio.checked = true;
+    radio = document.getElementById("radioMP");
+    if (radio != undefined) radio.checked = true;
+}
+
+function getMySubsList() {
+    var userIdVal = document.getElementById("userId");
+    console.log("getMyTaskList")
+    $.ajax({
+        method: 'get',
+        dataType: 'html',
+        data: {userId: userIdVal.value},
+        url: "/api/v1/main-page/filterSubsProblems",
+        success: function (data) {
+            $('#listTaskId').html(data);
+        }
+    });
+
+    var radio = document.getElementById("radioSubscribeProblems");
+    if (radio != undefined) radio.checked = true;
+    radio = document.getElementById("radioSP");
+    if (radio != undefined) radio.checked = true;
 
 }
+
+function getMyTasksStaff() {
+    var userIdVal = document.getElementById("userId");
+    console.log("getMyTaskList")
+    $.ajax({
+        method: 'get',
+        dataType: 'html',
+        data: {userId: userIdVal.value},
+        url: "/api/v1/main-page/filterMyProblemsStaff",
+        success: function (data) {
+            $('#listTaskId').html(data);
+        }
+    });
+
+    var radio = document.getElementById("radioMyProblemsForStaff");
+    if (radio != undefined) radio.checked = true;
+    radio = document.getElementById("radioMAP");
+    if (radio != undefined) radio.checked = true;
+}
+

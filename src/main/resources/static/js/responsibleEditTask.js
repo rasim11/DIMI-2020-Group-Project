@@ -11,8 +11,6 @@ const selectPriorityName = "priority";
 const inputSearchNamesId = "input-search-names";
 const inputSearchStringId = "input-search-string";
 const maxCountUsers = 10;
-let defaultStatus;
-let defaultPriority;
 let defaultAssignmentUser = [];
 
 
@@ -68,9 +66,6 @@ function calculateCount(spanId, count) {
 }
 
 function setDefaultValue() {
-    defaultStatus = document.getElementsByName(selectStatusName)[0].value;
-    defaultPriority = document.getElementsByName(selectPriorityName)[0].value;
-
     const inputEmails = document.getElementById(divDesignatedUsersId).querySelectorAll("input");
     for (let i = 0; i < inputEmails.length; i++) {
         defaultAssignmentUser[i] = inputEmails[i].value;
@@ -98,21 +93,16 @@ function setDefaultValue() {
 function isNoDuplicate() {
     const btnSave = document.getElementById(btnSaveId);
 
-    btnSave.disabled = !(defaultStatus !== document.getElementsByName(selectStatusName)[0].value ||
-        defaultPriority !== document.getElementsByName(selectPriorityName)[0].value);
+    const inputEmails = document.getElementById(divDesignatedUsersId).querySelectorAll("input");
+    if (inputEmails.length !== defaultAssignmentUser.length) {
+        btnSave.disabled = false;
+        return;
+    }
 
-    if (btnSave.disabled) {
-        const inputEmails = document.getElementById(divDesignatedUsersId).querySelectorAll("input");
-        if (inputEmails.length !== defaultAssignmentUser.length) {
+    for (let i = 0; i < inputEmails.length; i++) {
+        if (!defaultAssignmentUser.includes(inputEmails[i].value)) {
             btnSave.disabled = false;
             return;
-        }
-
-        for (let i = 0; i < inputEmails.length; i++) {
-            if (!defaultAssignmentUser.includes(inputEmails[i].value)) {
-                btnSave.disabled = false;
-                return;
-            }
         }
     }
 }

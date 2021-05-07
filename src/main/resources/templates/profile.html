@@ -6,8 +6,12 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link href="/css/blockTitles.css" rel="stylesheet">
     <link href="/css/imgProfile.css" rel="stylesheet">
     <link href="/css/formData.css" rel="stylesheet">
+    <script src="https://api-maps.yandex.ru/2.1/?apikey=5694d7f9-f8dc-4349-9d30-9dc5a908a417&lang=ru_RU"
+            type="text/javascript">
+    </script>
 </head>
 
 <body>
@@ -20,7 +24,7 @@
             <h2 th:text="${msgErr}"/>
         </div>
         <div sec:authorize="isAuthenticated()" class="internal-cont">
-            <div th:if="${roleName} == 'Ответственный' or ${roleName} == 'Региональный ответственный'"
+            <div th:if="${role.equals(role.RESPONSIBLE) || role.equals(role.DEPUTY)}"
                  class="mb-4" style="text-align: start; white-space: normal;">
                 <h3 style="text-align: center;">
                     Профиль ответственного
@@ -29,7 +33,8 @@
                     <img th:src="${user.getUserImage()}" class="img-responsible-profile">
                     <ul class="nav flex-column ml-4">
                         <li class="nav-item mb-3">
-                            <button class="btn dropdown-toggle font-weight-bold" type="button" data-toggle="collapse"
+                            <button class="btn dropdown-toggle font-weight-bold title-block"
+                                    type="button" data-toggle="collapse"
                                     aria-expanded="true" data-target="#div-user-main-data"
                                     aria-controls="div-user-main-data" style="box-shadow: none;">
                                 Основные данные
@@ -41,15 +46,29 @@
                                     <span class="mb-2" style="display: block;" th:text="'Должность: ' +
                                      ${user.appointment != null ?
                                         user.appointment : 'Не указана'}"/>
-                                    <span class="mb-2" style="display: block;" th:text="'Email: ' + ${user.email}"/>
                                     <span class="mb-2" style="display: block;"
                                           th:text="'Дата регистрации: ' + ${user.dateToString(user.regDate) }"/>
                                     <span class="mb-2" style="display: block;" th:text="'Регион: ' + ${region}"/>
                                 </div>
                             </div>
                         </li>
+                        <li class="nav-item mb-3">
+                            <button class="btn dropdown-toggle font-weight-bold title-block"
+                                    type="button" data-toggle="collapse"
+                                    aria-expanded="true" data-target="#div-user-contact-data"
+                                    aria-controls="div-user-contact-data" style="box-shadow: none;">
+                                Контактные данные
+                            </button>
+                            <div class="collapse show" id="div-user-contact-data">
+                                <div class="card card-body" style="background: none; border: none;">
+                                    <span class="mb-2" style="display: block;" th:text="'Email: ' + ${user.email}"/>
+                                    <span class="mb-2" style="display: block;" th:text="'Номер телефона: ' + ${user.phoneNumber}"/>
+                                </div>
+                            </div>
+                        </li>
                         <li th:if="${user.municipality} != null" class="nav-item mb-3">
-                            <button class="btn dropdown-toggle font-weight-bold" type="button" data-toggle="collapse"
+                            <button class="btn dropdown-toggle font-weight-bold title-block"
+                                    type="button" data-toggle="collapse"
                                     aria-expanded="true" data-target="#div-municipality"
                                     aria-controls="div-municipality" style="box-shadow: none;">
                                 Муниципалитет
@@ -68,7 +87,8 @@
                             </div>
                         </li>
                         <li class="nav-item mb-3">
-                            <button class="btn dropdown-toggle font-weight-bold" type="button" data-toggle="collapse"
+                            <button class="btn dropdown-toggle font-weight-bold title-block"
+                                    type="button" data-toggle="collapse"
                                     aria-expanded="true" data-target="#div-efficiency"
                                     aria-controls="div-efficiency" style="box-shadow: none;">
                                 Эффективность работы
@@ -86,7 +106,7 @@
                     </ul>
                 </div>
             </div>
-            <div th:if="!(${roleName} == 'Ответственный' or ${roleName} == 'Региональный ответственный')"
+            <div th:if="!(${role.equals(role.RESPONSIBLE) || role.equals(role.DEPUTY)})"
                  class="mb-4">
                 <h3>
                     Профиль пользователя
@@ -95,23 +115,23 @@
                 <h4 class="mb-4" th:text="${user.getLastname() + ' ' + user.getFirstname() + ' ' +
                  user.getMiddlename()}"/>
                 <p th:text="'Дата регистрации: '+${user.dateToString(user.getRegDate())}"/>
-                <p th:if="${roleName} == 'Админ' or ${isEmp} or ${isCurUser} or
-                 ${#authentication.getPrincipal().getRole().getName()} == 'Админ'"
+                <p th:if="${role.equals(role.ADMIN)} or ${isEmp} or ${isCurUser} or
+                 ${#authentication.principal.role.equals(role.ADMIN)}"
                    th:text="'Электронная почта: '+${user.getEmail()}"/>
-                <p th:if="${isEmp} or ${isCurUser} or ${#authentication.getPrincipal().getRole().getName()} == 'Админ'"
+                <p th:if="${isEmp} or ${isCurUser} or ${#authentication.principal.role.equals(role.ADMIN)}"
                    th:text="'Номер телефона: '+${user.getPhoneNumber()}"/>
-                <div th:if="${roleName} != 'Админ'" style="width: fit-content;margin: 0 auto;">
-                    <div th:if="${roleName} == 'Пользователь'">
+                <div th:if="${!role.equals(role.ADMIN)}" style="width: fit-content;margin: 0 auto;">
+                    <div th:if="${role.equals(role.USER)}">
                         <p th:text="'Опубликованных проблем: '+${user.getTasksCount()}"/>
                     </div>
-                    <div th:if="${roleName} != 'Пользователь'">
+                    <div th:if="${!role.equals(role.USER)}">
                         <p th:text="'Регион: '+${region}"/>
                         <p th:text="'Решённых проблем: '+${user.getTasksCount()}"/>
                     </div>
                     <a href="#"><p>Проблемы пользователя</p></a>
                 </div>
             </div>
-            <form th:if="${#authentication.getPrincipal().getRole().getName()} == 'Админ' and ${roleName} != 'Админ'"
+            <form th:if="${!role.equals(role.ADMIN) && #authentication.principal.role.equals(role.ADMIN)}"
                   class="mb-2" method="post">
                 <button type="submit" name="btn" value="true" class="btn btn-outline-primary">Изменить</button>
                 <button type="submit" name="btn" value="false" class="btn btn-outline-danger">Удалить</button>

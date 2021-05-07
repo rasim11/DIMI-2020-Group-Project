@@ -59,20 +59,17 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             throw new UsernameNotFoundException("DB fatal error. Region not found!");
         }
 
-        user.setAppointment(user.getAppointment() != null && user.getAppointment().equals("") ? null :
+        user.setAppointment(user.getAppointment() != null && user.getAppointment().trim().equals("") ? null :
                 user.getAppointment());
+
+        user.setMunicipality(user.getMunicipality() != null ?
+                entityService.getMunicipalityById(user.getMunicipality().getId()) : null);
 
         user.setUserImage(DEFAULT_AVATAR);
         if (role.equals(Role.RESPONSIBLE)) {
-            Municipality municipality = entityService.getMunicipalityById(user.getMunicipality().getId());
-            if (municipality == null) {
-                throw new UsernameNotFoundException("DB fatal error. Municipality not found!");
-            }
-
             user.dataExtension(role, null);
 
             user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-            user.setMunicipality(municipality);
             restTemplate.postForLocation(URL_POST_USER, user);
 
             region.setResponsible(getUserByEmail(user.getEmail()));
@@ -108,15 +105,17 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         Iterable<Task> tasks = entityService.getTasksByAuthorsEmail(user.getEmail());
         for (Task task : tasks) {
-            if (!task.getStatus().equals(Status.RESOLVED)) {
+            if (!(task.getStatus().equals(Status.RESOLVED) || task.getStatus().equals(Status.REJECTED) ||
+                    task.getStatus().equals(Status.CANCELED_AS_DUPLICATE))) {
                 task.setStatus(Status.CANCELED);
                 task.setCompleteDate(LocalDateTime.now());
 
-                Feedback feedback = entityService.getFeedbackByTaskId(task.getId());
+                Comment feedback = entityService.getFeedbackByTaskId(task.getId());
                 if (feedback == null) {
-                    feedback = new Feedback();
-                    feedback.dataExtension(task, "Связанный с данной проблемой аккаунт был удалён!");
-                    entityService.postFeedback(feedback);
+                    Comment comment = new Comment(null, task,
+                            "Связанный с данной проблемой аккаунт был удалён!",
+                            LocalDateTime.now(), null, "Причина");
+                    entityService.postComment(comment);
                 }
             }
             task.setAuthor(null);
@@ -140,8 +139,13 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             entityService.deleteObject(history.getId(), URL_DELETE_HISTORY);
         }
 
+        Iterable<Comment> comments = entityService.getCommentsByAuthorId(user.getId());
+        for (Comment comment : comments) {
+            comment.setAuthor(null);
+            entityService.postComment(comment);
+        }
+
         restTemplate.delete(URL_DELETE_SUBSCRIPTIONS_BY_USER_ID, user.getId());
-        restTemplate.delete(URL_DELETE_COMMENT_BY_AUTHOR_ID, user.getId());
         restTemplate.delete(URL_DELETE_USER, user.getEmail());
     }
 
@@ -173,7 +177,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         }
 
         user.setRole(userForm.getRole());
-        user.setAppointment(userForm.getAppointment() != null && !userForm.getAppointment().equals("") ?
+        user.setAppointment(userForm.getAppointment() != null && !userForm.getAppointment().trim().equals("") ?
                 userForm.getAppointment() : null);
         user.setMunicipality(userForm.getMunicipality() != null ?
                 entityService.getMunicipalityById(userForm.getMunicipality().getId()) : null);

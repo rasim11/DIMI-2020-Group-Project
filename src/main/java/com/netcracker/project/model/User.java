@@ -97,7 +97,9 @@ public class User implements UserDetails {
         }
 
         for (Task task : activeTasks) {
-            if (task.getStatus().equals(Status.IN_CREATING) || task.getStatus().equals(Status.IN_PROCESSING)) {
+            if (!(task.getStatus().equals(Status.CANCELED) || task.getStatus().equals(Status.RESOLVED) ||
+                    task.getStatus().equals(Status.REJECTED) ||
+                    task.getStatus().equals(Status.CANCELED_AS_DUPLICATE))) {
                 count++;
             }
         }

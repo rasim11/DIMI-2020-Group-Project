@@ -1,25 +1,16 @@
 package com.netcracker.project.controllers;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netcracker.project.model.*;
 import com.netcracker.project.service.EntityService;
 import com.netcracker.project.service.SecurityService;
 import com.netcracker.project.service.impl.UserDetailsServiceImpl;
-import jdk.nashorn.internal.runtime.JSONListAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.converter.json.JsonbHttpMessageConverter;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.thymeleaf.exceptions.TemplateInputException;
 
-import java.time.LocalDateTime;
 import java.util.*;
-import java.util.function.Consumer;
 
 import static com.netcracker.project.url.UrlTemplates.*;
 import static java.util.stream.Collectors.toCollection;
@@ -40,15 +31,24 @@ public class TaskController {
     }
 
     @PostMapping(LOCAL_URL_POST_TASK)
-    public String addNewTask(@ModelAttribute("taskForm") Task taskForm) {
+    public String addNewTask(@ModelAttribute("taskForm") Task taskForm, Model model) {
         User user = securityService.getCurrentUser();
-        user.setTasksCount(user.getTasksCount() + 1);
-        userDetailsService.putUser(user);
+        if (entityService.postTask(user, taskForm)) {
+            user.setTasksCount(user.getTasksCount() + 1);
+            userDetailsService.putUser(user);
 
-        entityService.postTask(user, taskForm);
-        securityService.autoLogin(user.getEmail(), user.getPasswordConfirm());
+            securityService.autoLogin(user.getEmail(), user.getPasswordConfirm());
 
-        return REDIRECT_ON_MAIN_PAGE;
+            return REDIRECT_ON_MAIN_PAGE;
+        } else {
+            String[] taskImages = taskForm.getTaskImage().length() != 0 ?
+                    taskForm.getTaskImage().split(" ") : null;
+
+            model.addAttribute("regionNotFound",
+                    "В данном регионе платформа Social Issues Tracker не поддерживается!");
+            model.addAttribute("taskImages", taskImages);
+            return "task-add";
+        }
     }
 
     @GetMapping(LOCAL_URL_GET_TASK_BY_ID)
@@ -61,74 +61,95 @@ public class TaskController {
         task.setFeedback(entityService.getFeedbackByTaskId(task.getId()));
         String[] taskImages = task.getTaskImage().length() != 0 ? task.getTaskImage().split(" ") : null;
 
+        Iterable<Task> originTask = entityService.getOriginTaskFromDuplicate(task.getId());
+        model.addAttribute("originTask", originTask);
+
+        Iterable<Task> duplicateTask = entityService.getDuplicateTasksFromOrigin(task.getId());
+        model.addAttribute("duplicateTask", duplicateTask);
+
+        Iterable<Task> firstTasks = entityService.getFirstFromBlocked(task.getId());
+        model.addAttribute("firstTasks", firstTasks);
+
+        Iterable<Task> blockedTask = entityService.getBlockedFromFirst(task.getId());
+        model.addAttribute("blockedTask", blockedTask);
+
+        Iterable<Task> linkedTask = entityService.getLinkedTasks(task.getId());
+        model.addAttribute("linkedTask", linkedTask);
+
         model.addAttribute("histories", entityService.getHistoryByTaskId(id));
         model.addAttribute("task", task);
         model.addAttribute("taskImages", taskImages);
+        model.addAttribute("checkFeedback", entityService.getCommentByTaskId(id));
 
         if (securityService.isAuthenticated()) {
-            model.addAttribute("commentPermission", true);
-
             User curUser = securityService.getCurrentUser();
             User author = task.getAuthor();
             Region curRegion = entityService.getRegionByResponsibleEmail(curUser.getEmail());
 
-            if (curUser.getRole().equals(Role.USER) && !author.getEmail().equals(curUser.getEmail())) {
+            if (!author.getEmail().equals(curUser.getEmail())) {
                 model.addAttribute("isSubscription", true);
             }
 
-            if (task.getStatus().equals(Status.CANCELED)) {
-                return "specific-task";
-            }
-
-            if (curUser.getRole().equals(Role.USER) && author.getEmail().equals(curUser.getEmail())) {
-                String param = task.getStatus().equals(Status.RESOLVED) ? "isFeedback" : "isEditAuthor";
-                model.addAttribute(param, true);
-            } else if (!task.getStatus().equals(Status.RESOLVED) && (curUser.getRole().equals(Role.RESPONSIBLE) &&
+            if (curUser.getRole().equals(Role.RESPONSIBLE) && curRegion != null &&
                     task.getRegion().getRegionName().equals(curRegion.getRegionName()) ||
                     curUser.getRole().equals(Role.DEPUTY) && task.getCurrResponsible() != null &&
-                            task.getCurrResponsible().getEmail().equals(curUser.getEmail()))) {
-                List<User> responsibleList = new ArrayList<>();
-                userDetailsService.getUsersByRegionId(URL_GET_DEPUTIES_BY_REGION_ID,
-                        task.getRegion().getId()).forEach(responsibleList::add);
+                            task.getCurrResponsible().getEmail().equals(curUser.getEmail())) {
+                model.addAttribute("isLinkedProblemsChange", true);
 
-                if (task.getRegion().getResponsible() != null) {
-                    responsibleList.add(task.getRegion().getResponsible());
+                if (task.getStatus().equals(Status.CANCELED) || task.getStatus().equals(Status.REJECTED) ||
+                        task.getStatus().equals(Status.CANCELED_AS_DUPLICATE)) {
+                    if (task.getStatus().equals(Status.CANCELED_AS_DUPLICATE)) {
+                        model.addAttribute("isMainProblemsChange", true);
+
+                        if (originTask == null) {
+                            List<Status> statuses = Arrays.stream(Status.values()).collect(toCollection(ArrayList::new));
+                            statuses.remove(task.getStatus());
+                            statuses.remove(Status.CANCELED);
+                            statuses.remove(Status.REJECTED);
+                            model.addAttribute("statuses", statuses);
+                        }
+                    }
+                    return "specific-task";
                 }
-                responsibleList.remove(task.getCurrResponsible());
 
-                model.addAttribute("isEditResponsible", true);
-                model.addAttribute("responsibleList", responsibleList);
+                if (!task.getStatus().equals(Status.RESOLVED)) {
+                    List<User> responsibleList = new ArrayList<>();
+                    userDetailsService.getUsersByRegionId(URL_GET_DEPUTIES_BY_REGION_ID,
+                            task.getRegion().getId()).forEach(responsibleList::add);
+
+                    if (task.getRegion().getResponsible() != null) {
+                        responsibleList.add(task.getRegion().getResponsible());
+                    }
+                    responsibleList.remove(task.getCurrResponsible());
+
+                    List<Priority> priorities = Arrays.stream(Priority.values()).collect(toCollection(ArrayList::new));
+                    if (task.getPriority() != null) {
+                        priorities.remove(task.getPriority());
+                    }
+
+                    List<Status> statuses = Arrays.stream(Status.values()).collect(toCollection(ArrayList::new));
+                    statuses.remove(task.getStatus());
+                    statuses.remove(Status.CANCELED);
+                    statuses.remove(Status.REJECTED);
+
+                    model.addAttribute("isEditResponsible", true);
+                    model.addAttribute("responsibleList", responsibleList);
+                    model.addAttribute("priorities", priorities);
+                    model.addAttribute("statuses", statuses);
+                }
+            } else if (task.getStatus().equals(Status.CANCELED) || task.getStatus().equals(Status.REJECTED) ||
+                    task.getStatus().equals(Status.CANCELED_AS_DUPLICATE)) {
+                return "specific-task";
+            } else if (curUser.getRole().equals(Role.USER) && author.getEmail().equals(curUser.getEmail())) {
+                String param = task.getStatus().equals(Status.RESOLVED) ? "isFeedback" : "isEditAuthor";
+                model.addAttribute(param, true);
             }
         } else {
             model.addAttribute("commentForbidden",
                     "Комментировать может только зарегистрированный пользователь!");
         }
 
-        if (task.getStatus().getValue() == 4) {
-            Task originTask = entityService.getOriginTaskFromDuplicate(task.getId());
-            model.addAttribute("originTask", originTask);
-        }
-
-        if (task.getStatus().getValue() == 7) {
-            Iterable<Task> firstTasks = entityService.getFirstFromBlocked(task.getId());
-            model.addAttribute("firstTasks", firstTasks);
-        }
-
         return "specific-task";
-    }
-
-    @PostMapping(LOCAL_URL_GET_TASK_BY_ID)
-    public String changeResponsible(@PathVariable Long id, @RequestParam("changedResponsible") Long responsibleId) {
-        Task task = entityService.getTaskById(id);
-        User previousResponsible = task.getCurrResponsible() != null ? task.getCurrResponsible() :
-                task.getRegion().getResponsible();
-        User responsible = userDetailsService.getUserById(responsibleId);
-
-        task.setCurrResponsible(responsible);
-        entityService.putTask(task);
-        History history = new History(null, task, previousResponsible, responsible, LocalDateTime.now());
-        entityService.postHistory(history);
-        return "redirect:" + LOCAL_URL_GET_TASK_BY_ID.replace("{id}", id.toString());
     }
 
     @GetMapping(LOCAL_URL_AUTHOR_PUT_TASK)
@@ -137,7 +158,8 @@ public class TaskController {
         User curUser = securityService.getCurrentUser();
 
         if (task == null || task.getAuthor() == null || !task.getAuthor().getId().equals(curUser.getId()) ||
-                task.getStatus().equals(Status.RESOLVED) || task.getStatus().equals(Status.CANCELED)) {
+                task.getStatus().equals(Status.RESOLVED) || task.getStatus().equals(Status.CANCELED) ||
+                task.getStatus().equals(Status.REJECTED) || task.getStatus().equals(Status.CANCELED_AS_DUPLICATE)) {
             return REDIRECT_ON_MAIN_PAGE;
         }
 
@@ -168,17 +190,9 @@ public class TaskController {
         if (task == null || (task.getRegion().getResponsible() == null ||
                 !task.getRegion().getResponsible().getId().equals(curUser.getId())) &&
                 (task.getCurrResponsible() == null || !task.getCurrResponsible().getId().equals(curUser.getId())) ||
-                task.getStatus().equals(Status.RESOLVED) || task.getStatus().equals(Status.CANCELED)) {
+                task.getStatus().equals(Status.RESOLVED) || task.getStatus().equals(Status.CANCELED) ||
+                task.getStatus().equals(Status.REJECTED) || task.getStatus().equals(Status.CANCELED_AS_DUPLICATE)) {
             return REDIRECT_ON_MAIN_PAGE;
-        }
-
-        List<Status> statuses = Arrays.stream(Status.values()).collect(toCollection(ArrayList::new));
-        statuses.remove(task.getStatus());
-        statuses.remove(Status.CANCELED);
-
-        List<Priority> priorities = Arrays.stream(Priority.values()).collect(toCollection(ArrayList::new));
-        if (task.getPriority() != null) {
-            priorities.remove(task.getPriority());
         }
 
         task.setSocialWorkers(entityService.getSocialWorkersByActiveTaskId(task.getId()));
@@ -195,8 +209,6 @@ public class TaskController {
         }
 
         model.addAttribute("task", task);
-        model.addAttribute("statuses", statuses);
-        model.addAttribute("priorities", priorities);
         model.addAttribute("socialWorkers", socialWorkers);
 
         return "responsible-edit-task";
@@ -207,8 +219,6 @@ public class TaskController {
                                           @ModelAttribute("task") Task taskForm,
                                           @RequestParam("email") @Nullable String[] emails) {
         Task task = entityService.getTaskById(id);
-        task.dataExtension(taskForm.getStatus(), taskForm.getPriority());
-        entityService.putTask(task);
 
         entityService.deleteObject(id, URL_DELETE_ACTIVE_TASK_BY_TASK_ID);
 
@@ -216,35 +226,7 @@ public class TaskController {
             for (String email : emails) {
                 User socialWorker = userDetailsService.getUserByEmail(email);
                 entityService.postActiveTask(task.getId(), socialWorker.getId());
-
-                if (task.getStatus().equals(Status.RESOLVED)) {
-                    socialWorker.setTasksCount(socialWorker.getTasksCount() + 1);
-                    userDetailsService.putUser(socialWorker);
-                }
             }
-        }
-
-        if (task.getStatus().equals(Status.RESOLVED)) {
-            User responsible = task.getRegion().getResponsible();
-            User curResponsible = task.getCurrResponsible();
-
-            if (responsible != null && curResponsible != null && responsible.getId().equals(curResponsible.getId())) {
-                responsible.setTasksCount(responsible.getTasksCount() + 1);
-                userDetailsService.putUser(responsible);
-            } else {
-                if (responsible != null) {
-                    responsible.setTasksCount(responsible.getTasksCount() + 1);
-                    userDetailsService.putUser(responsible);
-                }
-
-                if (curResponsible != null) {
-                    curResponsible.setTasksCount(curResponsible.getTasksCount() + 1);
-                    userDetailsService.putUser(curResponsible);
-                }
-            }
-
-            securityService.autoLogin(securityService.getCurrentUser().getEmail(),
-                    securityService.getCurrentUser().getPasswordConfirm());
         }
 
         return "redirect:" + LOCAL_URL_GET_TASK_BY_ID.replace("{id}", id.toString());

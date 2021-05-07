@@ -1,6 +1,8 @@
 package com.netcracker.project.controllers;
 
 
+import com.netcracker.project.model.Role;
+import com.netcracker.project.model.Status;
 import com.netcracker.project.model.Task;
 import com.netcracker.project.model.response.FilterParams;
 import com.netcracker.project.model.response.FilterRadio;
@@ -39,6 +41,9 @@ public class MainController {
 //        Integer currentPage = 1;
 //        mainPageCommon(currentPage, model);
         model.addAttribute("defaultRadio", true);
+        model.addAttribute("infMessage", "Все проблемы");
+        mainPageCommon(1,model);
+
         return "main";
     }
 
@@ -46,7 +51,6 @@ public class MainController {
     @PostMapping(LOCAL_URL_MAIN_PAGE)
     public String mainPagePost(Model model, @RequestParam(required = false) Integer page
     ) {
-
         Integer currentPage = -1;
         if (page != null) {
             model.addAttribute("currentPage", page);
@@ -54,6 +58,7 @@ public class MainController {
         } else currentPage = 1;
 
         mainPageCommon(currentPage, model);
+        model.addAttribute("infMessage", "Все проблемы");
 
         return "taskList";
     }
@@ -171,7 +176,7 @@ public class MainController {
                 filterRadio = new FilterRadio();
                 filterRadio.setMyTasks();
                 filterRadio.setUserId(userId);
-                String infMessage = "Созданные задачи" ;
+                String infMessage = "Созданные проблемы" ;
                 model.addAttribute("infMessage", infMessage);
             }
         } else  if (radioSP != null) {
@@ -179,7 +184,7 @@ public class MainController {
                 filterRadio = new FilterRadio();
                 filterRadio.setSubscribeTasks();
                 filterRadio.setUserId(userId);
-                String infMessage = "Отслеживаемые задачи" ;
+                String infMessage = "Отслеживаемые проблемы" ;
                 model.addAttribute("infMessage", infMessage);
             }
         } else if (radioMAP != null)
@@ -187,11 +192,9 @@ public class MainController {
             filterRadio = new FilterRadio();
             filterRadio.setMyTaskForStaff();
             filterRadio.setUserId(userId);
-            String infMessage = "Мои актуальные задачи" ;
+            String infMessage = "Мои актуальные проблемы" ;
             model.addAttribute("infMessage", infMessage);
         }
-
-
 
         if (inpAuthForm != null)
             System.out.println("inpAuth " + inpAuthForm);
@@ -275,18 +278,16 @@ public class MainController {
     public String filterMyProblemsGet( @RequestParam(required = false) Integer userId,  Model model    ) {
         setRadios(0, userId, model);
         System.out.println("filterMyProblems");
+        String infMessage = "Мои проблемы" ;
+        model.addAttribute("infMessage", infMessage);
 
-//        String infMessage = "Созданные задачи" ;
-//        model.addAttribute("infMessage", infMessage);
-
-//        return "redirect:/api/v1/main-page";
         return "taskList";
     }
 
     @GetMapping(LOCAL_URL_MAIN_PAGE + "/filterSubsProblems")
     public String filterSubscribeProblemsGet( @RequestParam(required = false) Integer userId, Model model) {
         setRadios(1, userId, model);
-        String infMessage = "Отслеживаемые задачи" ;
+        String infMessage = "Отслеживаемые проблемы" ;
         model.addAttribute("infMessage", infMessage);
         return "taskList";
     }
@@ -294,7 +295,7 @@ public class MainController {
     @GetMapping(LOCAL_URL_MAIN_PAGE + "/filterMyProblemsStaff")
     public String filterMyProblemsStaff( @RequestParam(required = false) Integer userId, Model model) {
         setRadios(2, userId, model);
-        String infMessage = "Отслеживаемые задачи" ;
+        String infMessage = "Отслеживаемые проблемы" ;
         model.addAttribute("infMessage", infMessage);
         return "taskList";
     }

@@ -98,7 +98,7 @@ function processingImages(inputImages) {
             inputNewImgTask.className = anyImgClass + " task-preview-img";
             inputNewImgTask.onclick = showFullImg.bind(null, inputNewImgTask);
             divImage.append(inputNewImgTask);
-            
+
             setTimeout(function () {
                 inputNewImgTask.src = compress(inputNewImgTask).src;
             }, 10);
@@ -138,8 +138,11 @@ function taskDivImgRemove(divImgId) {
     document.getElementById(divImgId).remove();
     n++;
 
-    isImgDefault = false;
-    isNoDuplicate();
+    const btnSave = document.getElementById(btnSaveId);
+    if (btnSave) {
+        isImgDefault = false;
+        isNoDuplicate();
+    }
 }
 
 function isNoDuplicate() {
@@ -153,13 +156,3 @@ function isNoDuplicate() {
         document.getElementsByName(inputTaskLocationName)[0].value !== defaultTaskLocation ||
         taskCommentAllow.id !== defaultTaskCommentAllow.id || !isImgDefault);
 }
-
-if ($("#location").val()===''){
-    $("#check-address").attr('disabled',true);
-}else {
-    $("#check-address").attr('disabled',false);
-}
-$("#location").on('change checked',function (){
-    console.log("sdsfsdf");
-    $("#check-address").attr('disabled',false);
-});

@@ -1,7 +1,6 @@
 package com.netcracker.project.controllers.rest;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.netcracker.project.model.Region;
 import com.netcracker.project.model.Role;
 import com.netcracker.project.model.User;
 import com.netcracker.project.service.EntityService;
@@ -11,9 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.thymeleaf.exceptions.TemplateInputException;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -22,6 +19,8 @@ import static java.util.stream.Collectors.toList;
 
 @RestController
 public class AdminRestController {
+    public static String geoLocation;
+
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
     @Autowired
@@ -53,17 +52,14 @@ public class AdminRestController {
         User user = userDetailsService.getUserByEmail(email);
         return user == null;
     }
-    @PostMapping("/api/v1/save-regions")
-    public void saveRegs(@RequestBody String regions ) {
-        Iterable<Region> regions1 = new ArrayList<>();
-        List<String>rr = new ArrayList<>(Arrays.asList(regions.split(",")));
-        for (String str:rr) {
-            ((ArrayList<Region>) regions1).add(new Region(null,str,null));
-        }
-        entityService.putRegions(regions1);
-    }
+
     @GetMapping(LOCAL_URL_GET_MUNICIPALITIES)
     public JsonNode getMunicipalities() {
         return entityService.getAllObjects(URL_GET_MUNICIPALITIES);
+    }
+
+    @PostMapping(LOCAL_URL_POST_GEOLOCATION)
+    public void setGeoLocation(@RequestBody String geoLocation) {
+        AdminRestController.geoLocation = geoLocation;
     }
 }

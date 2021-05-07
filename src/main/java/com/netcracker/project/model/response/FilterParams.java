@@ -47,7 +47,6 @@ public class FilterParams {
             empty = false;
         }
 
-        System.out.println("listTasksStatus " + listTasksStatus.size());
 
         if (authorFilter != null)
         {

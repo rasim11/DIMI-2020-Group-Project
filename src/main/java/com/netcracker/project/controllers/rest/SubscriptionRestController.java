@@ -36,4 +36,9 @@ public class SubscriptionRestController {
         Subscription subscription = new Subscription(null, user, task);
         entityService.postSubscription(subscription);
     }
+
+    @GetMapping(LOCAL_URL_GET_SUBSCRIPTIONS_BY_TASK_ID)
+    public Iterable<Subscription> getSubscriptionsByTaskId(@PathVariable Long id) {
+        return entityService.getSubscriptionsByTaskId(id);
+    }
 }

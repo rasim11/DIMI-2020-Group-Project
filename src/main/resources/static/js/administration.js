@@ -377,6 +377,7 @@ function addFilterActions(spanTitleFilter, divFilter) {
 
     const divFilterActions = document.createElement("div");
     divFilterActions.className = divClassFilterActions;
+    divFilterActions.style.textAlign = "center";
     divFilter.appendChild(divFilterActions);
 
     for (let j = 0; j < 2; j++) {
@@ -390,7 +391,6 @@ function addFilterActions(spanTitleFilter, divFilter) {
         } else {
             btn.className = "btn btn-secondary";
             btn.textContent = "Сбросить";
-            btn.style.float = "right";
             btn.addEventListener("click", filterInactive.bind(null, divFilter, spanTitleFilter));
         }
 

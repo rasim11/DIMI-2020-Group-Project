@@ -1,34 +1,32 @@
 var tasksLocation = [];
-// var page = [[${taskList}]];
 var map;
+if (tasks===''){
+    console.log("empty task")
+    $("#show-on-map").hidden;
+}
 $("#show-on-map").on('click', function () {
-    if(map!==undefined){
+    if(map!==undefined) {
         map.destroy();
     }
     ymaps.ready(init);
 });
-console.log(tasks);
 
 function init() {
     // Забираем запрос из поля ввода.
     var i = 0;
     var obj;
-    if (tasks.length!==0) {
+    if (tasks.length>0) {
         for (let task of tasks) {
             ymaps.geocode(task.taskLocation).then(function (res) {
                 obj = res.geoObjects.get(0);
                 tasksLocation[i] = showResult(obj, task.taskName);
-                if (i + 1 > tasks.length - 1) {
+                if (i + 1 === tasks.length) {
                     createMap();
                 }
                 i++;
             });
         }
-    }else {
-        createMap();
     }
-
-
     function showResult(obj, taskName) {
         var mapContainer = $('#mapForAllTasks'),
             bounds = obj.properties.get('boundedBy'),
@@ -45,9 +43,6 @@ function init() {
         temp = createPlaceMark(mapState.center, address, taskName);
 
         return temp;
-        // Создаём карту.
-        // createMap(mapState, request);
-        // Выводим сообщение под картой.
     }
 
     function createPlaceMark(coords, iconText, balloonText) {
@@ -62,8 +57,7 @@ function init() {
 
     function createMap() {
         // Если карта еще не была создана, то создадим ее и добавим метку с адресом.
-        if (tasksLocation.length!==0) {
-            let ballons = new ymaps.GeoObjectCollection();
+        let ballons = new ymaps.GeoObjectCollection();
             map = new ymaps.Map('mapForAllTasks', {
                 center: [53.507836, 49.420393],
                 zoom: 11,
@@ -73,7 +67,6 @@ function init() {
                 searchControlProvider: 'yandex#search'
             });
 
-            console.log(tasksLocation[0]);
             while (tasksLocation.length !== 0) {
                 let tempTaskName = tasksLocation[0];
                 tasksLocation.splice(0, 1);
@@ -89,31 +82,8 @@ function init() {
             }
             map.geoObjects.add(ballons);
             map.setBounds(ballons.getBounds());
-            if (ballons.length === 1) {
+            if (balloons.length === 1) {
                 map.setZoom(11);
             }
         }
-        ymaps.borders.load('RU', {
-            lang: 'ru',
-            quality:2
-        }).then(function (geojson) {
-            var regions = [];
-            console.log(geojson.features[0]);
-            for (var i = 0; i < geojson.features.length; i++) {
-                regions[i] = geojson.features[i].properties.name;
-            }
-            getAllObjectsFromRequest('save-regions',regions);
-        });
-    }
-}
-function getAllObjectsFromRequest(url,regions) {
-    const xhr = new XMLHttpRequest();
-    xhr.open('POST', url, false);
-    xhr.setRequestHeader('Content-Type', 'text/plain;utf-8');
-    xhr.send(regions);
-
-    if (xhr.status !== 200) {
-        alert(xhr.status + ': ' + xhr.statusText);
-        return null;
-    }
 }

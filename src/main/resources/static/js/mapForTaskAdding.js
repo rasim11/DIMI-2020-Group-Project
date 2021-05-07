@@ -1,4 +1,3 @@
-
 ymaps.ready(getCurrentLocation);
 
 function getCurrentLocation() {
@@ -6,53 +5,59 @@ function getCurrentLocation() {
     ymaps.geolocation.get().then(function (res) {
         var mapContainer = $('#map'),
             bounds = res.geoObjects.get(0).properties.get('boundedBy');
-            // Рассчитываем видимую область для текущей положения пользователя.
-            mapState = ymaps.util.bounds.getCenterAndZoom(
-                bounds,
-                [mapContainer.width(), mapContainer.height()]
-            );
-        mapState={center:mapState.center,zoom: 11};
-        mapState.controls=[];
+        // Рассчитываем видимую область для текущей положения пользователя.
+        mapState = ymaps.util.bounds.getCenterAndZoom(
+            bounds,
+            [mapContainer.width(), mapContainer.height()]
+        );
+        mapState = {center: mapState.center, zoom: 11};
+        mapState.controls = [];
         init(mapState);
     }, function (e) {
 
         // Если местоположение невозможно получить, то просто создаем карту.
-        mapState={
+        mapState = {
             center: [55.751574, 37.573856],
             zoom: 11
         };
-        mapState.controls=[];
+        mapState.controls = [];
         init(mapState);
     });
 }
+
 function init(mapState) {
     var suggestAdress = new ymaps.SuggestView('location');
     var count = 0;
     var myPlacemark;
 
-    console.log(mapState);
-    var myMap = new ymaps.Map('map',mapState);
+    var myMap = new ymaps.Map('map', mapState);
 
-    if ($("#location").val()!=''){
+    if ($("#location").val() != '') {
         var coords = ($('#location').val());
         ymaps.geocode(coords).then(function (res) {
             var obj = res.geoObjects.get(0);
             showResult(obj);
         })
     }
-    $("#check-address").on('click', function () {
+
+    document.getElementById("location").parentNode.querySelector("ymaps").onclick = function () {
+        if (document.getElementById(btnSaveId)) {
+            isNoDuplicate();
+        }
+        setValidFormat(document.getElementById("location"));
+
         var coords = ($('#location').val());
         ymaps.geocode(coords).then(function (res) {
             var obj = res.geoObjects.get(0);
             showResult(obj);
-        })
-    });
+        });
+    };
 
     function showResult(obj) {
         var mapContainer = $('#map'),
             bounds = obj.properties.get('boundedBy');
-            // Рассчитываем видимую область для текущего положения пользователя.
-            coords = ymaps.util.bounds.getCenterAndZoom(
+        // Рассчитываем видимую область для текущего положения пользователя.
+        coords = ymaps.util.bounds.getCenterAndZoom(
             bounds,
             [mapContainer.width(), mapContainer.height()]
         );
@@ -81,10 +86,8 @@ function init(mapState) {
     }
 
 
-
     // Слушаем клик на карте.
     myMap.events.add('click', function (e) {
-        $("#check-address").attr('disabled', true);
         coords = e.get('coords');
         // Если метка уже создана – просто передвигаем ее.
         if (myPlacemark) {
@@ -131,6 +134,10 @@ function init(mapState) {
                 });
             var adressValue = document.getElementById("location");
             adressValue.value = firstGeoObject.getAddressLine();
+
+            if (document.getElementById(btnSaveId)) {
+                isNoDuplicate();
+            }
         });
     }
 }

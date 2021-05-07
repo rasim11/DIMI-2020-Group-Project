@@ -83,11 +83,7 @@
            type="checkbox"
            th:value="8"
            th:checked="${checkbox8 != null} ? checked">
-    <input id="ch9"
-           name="checkbox"
-           type="checkbox"
-           th:value="9"
-           th:checked="${checkbox9 != null} ? checked">
+
 
     <input th:id="da1" th:name="date" type="text"/>
     <input th:id="da2" th:name="date" type="text"/>
@@ -158,7 +154,6 @@
                                     <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/>
                                 </svg>
                                 Показать на карте
-                                <!--                            <img id="show-on-map" src="/img/map.png" alt="Открыть карту" width="300px">-->
                             </a>
                             <hr>
                             <span style="font-size: larger;">Фильтры</span>
@@ -173,8 +168,9 @@
                                            th:value="0"
                                            th:checked="${checkbox0 != null} ? checked">
 
-                                    <label class="form-check-label" for="checkbox0" style="font-size: large">В
-                                        обработке</label>
+                                    <label class="form-check-label" for="checkbox0" style="font-size: large">
+                                        В процессе рассмотрения
+                                         </label>
                                 </div>
                                 <div class="form-check">
                                     <input name="checkbox"
@@ -185,7 +181,7 @@
                                            th:checked="${checkbox1 != null} ? checked">
 
                                     <label class="form-check-label" for="checkbox1"
-                                           style="font-size: large">Решаемые</label>
+                                           style="font-size: large">В процессе устранения</label>
                                 </div>
                                 <div class="form-check">
                                     <input name="checkbox"
@@ -196,7 +192,7 @@
                                            th:checked="${checkbox2 != null} ? checked">
 
                                     <label class="form-check-label" for="checkbox2"
-                                           style="font-size: large">Решённые</label>
+                                           style="font-size: large">Устранена</label>
                                 </div>
                                 <div class="form-check">
                                     <input name="checkbox"
@@ -207,7 +203,7 @@
                                            th:checked="${checkbox3 != null} ? checked">
 
                                     <label class="form-check-label" for="checkbox3"
-                                           style="font-size: large">Отменённые</label>
+                                           style="font-size: large">Отменена</label>
                                 </div>
 
                                 <div class="form-check">
@@ -219,7 +215,7 @@
                                            th:checked="${checkbox4 != null} ? checked">
 
                                     <label class="form-check-label" for="checkbox4"
-                                           style="font-size: large">Отмененные как дубликат</label>
+                                           style="font-size: large">Отменена как дубликат</label>
                                 </div>
                                 <div class="form-check">
                                     <input name="checkbox"
@@ -230,7 +226,7 @@
                                            th:checked="${checkbox5 != null} ? checked">
 
                                     <label class="form-check-label" for="checkbox5"
-                                           style="font-size: large">Отклоненные</label>
+                                           style="font-size: large">Отклонена</label>
                                 </div>
                                 <div class="form-check">
                                     <input name="checkbox"
@@ -241,7 +237,7 @@
                                            th:checked="${checkbox6 != null} ? checked">
 
                                     <label class="form-check-label" for="checkbox6"
-                                           style="font-size: large">Открытые</label>
+                                           style="font-size: large">Открыта</label>
                                 </div>
                                 <div class="form-check">
                                     <input name="checkbox"
@@ -252,7 +248,7 @@
                                            th:checked="${checkbox7 != null} ? checked">
 
                                     <label class="form-check-label" for="checkbox7"
-                                           style="font-size: large">Заблокированные</label>
+                                           style="font-size: large">Заблокирована</label>
                                 </div>
                                 <div class="form-check">
                                     <input name="checkbox"
@@ -263,18 +259,7 @@
                                            th:checked="${checkbox8 != null} ? checked">
 
                                     <label class="form-check-label" for="checkbox8"
-                                           style="font-size: large">Ожидают решения</label>
-                                </div>
-                                <div class="form-check">
-                                    <input name="checkbox"
-                                           id="checkbox9"
-                                           type="checkbox"
-                                           class="form-check-input"
-                                           th:value="9"
-                                           th:checked="${checkbox9 != null} ? checked">
-
-                                    <label class="form-check-label" for="checkbox9"
-                                           style="font-size: large">В процессе устранения</label>
+                                           style="font-size: large">В процессе согласования</label>
                                 </div>
 
                                 <br>
@@ -330,7 +315,7 @@
                                             Мои проблемы
                                         </label>
                                     </div>
-                                    <div class="form-check" sec:authorize="hasAnyAuthority('Пользователь')">
+                                    <div class="form-check" sec:authorize="hasAnyAuthority('Обычный пользователь' ) ">
                                         <input class="form-check-input" type="radio" name="flexRadioDefault"
                                                id="radioSubscribeProblems">
                                         <label class="form-check-label" for="radioSubscribeProblems">
@@ -372,7 +357,6 @@
                 </li>
                 <li class="nav-item">
                     <!--                    <br><br>-->
-
                 </li>
             </ul>
         </form>
@@ -383,17 +367,22 @@
         <div class="tableMain">
             <div class="table-item-rowS">
 
-                <!--                <form th:id="findForm">-->
-                <!--                    <input th:type="text" th:name="find" placeholder="Название проблемы" th:id="textFind"-->
-                <!--                           style="width: 80%;"/>-->
-                <!--                    <button class="btn btn-primary" th:type="button" onclick="findFormPost()">-->
-                <!--                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"-->
-                <!--                             class="bi bi-search" viewBox="0 0 16 16">-->
-                <!--                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>-->
-                <!--                        </svg>-->
-                <!--                    </button>-->
-                <!--                </form>-->
-
+                <table  style="width: 100%; border-collapse: collapse; table-layout: fixed;">
+                    <tr>
+                        <td>
+                                <form th:id="findForm">
+                                    <input th:type="text" th:name="find" placeholder="Название проблемы" th:id="textFind"
+                                           style="width: 80%;"/>
+                                    <button class="btn btn-primary" th:type="button" onclick="findFormPost()">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                             class="bi bi-search" viewBox="0 0 16 16">
+                                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                                        </svg>
+                                    </button>
+                                </form>
+                        </td>
+                    </tr>
+                </table>
             </div>
             <div class="table-item-rowS">
                 <div class="table-itemS" th:id="taskListId">
@@ -401,81 +390,6 @@
                     <!--                     -->
                     <div class="table-itemS" th:id="listTaskId" xmlns:th="http://www.w3.org/1999/xhtml">
 
-                        <table class="table  taskTableList">
-
-                            <thead class="table-light">
-                            <tr>
-                                <th scope="col">Название</th>
-                                <th scope="col"></th>
-                                <th scope="col">Автор</th>
-                                <th scope="col">Дата</th>
-                                <th scope="col">Статус</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-
-                            <tbody>
-                            <!--                            <tr th:each="task : ${taskList}" th:onclick="window.location='/order/list';" class="hoverClass">-->
-                            <tr th:each="task : ${taskList}" class="hoverClass"
-                                th:onclick="|window.location.href='task-management/task-get-by-id/${task.id}'|">
-
-                                <td class="clip" colspan="2">
-                                    <span th:text="${task.taskName}" th:title="${task.taskName}"></span>
-                                </td>
-                                <td class="clip">
-                                    <div>
-                                        <span><img th:src="${task.author.getUserImage()}"
-                                                   style="width: 34px; height: 34px; display: inline-block;border-radius: 100%;"/></span>
-                                        <span th:text="${task.author.firstname}"
-                                              th:title="${task.author.firstname}"></span>
-                                        <span th:text="${task.author.lastname}"
-                                              th:title="${task.author.lastname}"></span>
-                                    </div>
-                                </td>
-                                <td class="clip">
-                                    <span th:text="${task.regDate}" th:title="${task.regDate}"></span>
-                                </td>
-                                <td class="clip">
-                                    <span th:text="${task.status.getName}" th:title="${task.status.getName}"></span>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-
-
-                        <div style="display:inline; margin: auto; width: 50%;" align="center">
-                            <form style="display:inline;">
-                            <span th:if="${setFirst}">
-                        <button type="button" class="page-button" th:name="id" th:value="${setFirst}"
-                                th:text="${setFirst}"
-                                th:onclick="'setPage('+ ${setFirst} +')'"/>
-                            <button type="button" class="page-button" th:name="id"
-                                    th:value="${currentPage == null} ? ${1} : ${(currentPage)/2}"
-                                    th:text="..."
-                                    th:onclick="${currentPage == null} ? 'setPage('+ ${1} +') ' : 'setPage('+ ${(currentPage)/2} +') '"/>
-
-                    </span>
-                                <ui th:each="pageNumber : ${pageNumbers}">
-                                    <button type="button"
-                                            th:name="id"
-                                            th:value="${pageNumber}"
-                                            th:text="${pageNumber}"
-                                            th:class="${pageNumber == currentPage} ?  'page-button-current' :  'page-button' "
-                                            th:onclick="'setPage('+ ${pageNumber} +') '"/>
-                                </ui>
-
-                                <span th:if="${setLast}">
-                <button type="button" th:class="page-button" th:name="id"
-                        th:value="${currentPage == null} ? ${setLast} : ${(setLast+currentPage)/2}"
-                        th:text="..."
-                        th:onclick="${currentPage == null} ? 'setPage('+ ${setLast} +') ' :  'setPage('+ ${(setLast+currentPage)/2} +') ' "/>
-                <button type="button" class="page-button" th:name="id"
-                        th:value="${setLast}"
-                        th:text="${setLast}"
-                        th:onclick="'setPage('+ ${setLast} +') '"/>
-            </span>
-                            </form>
-                        </div>
                     </div>
                     <!--                    -->
                 </div>
@@ -508,220 +422,22 @@
     </div>
 </div>
 <br>
+<!--<input type="hidden" id="tasks">-->
+
 <form id="pageForm" hidden>
     <input th:id="page" th:type="text" th:name="page" th:value="1">
 </form>
 <br>
-<!--<script th:inline="javascript">-->
-<!--    var tasks = [[${taskList}]];//Make sure this is bills and not bill as you have done it.-->
-<!--    console.log("task = " + tasks);-->
-<!--</script>-->
-<!--<script src="/js/mapForAllTasksLocation.js" type="text/javascript"></script>-->
 <footer th:insert="blocks/footer :: footer"></footer>
 
-<script>
-    function setPage(val) {
-        var page = document.getElementById("page");
-        page.value = val;
-
-        console.log("pageButtonClick")
-        if (isEmpty()) {
-            console.log("isEmpty")
-            var str = $("#pageForm").serialize();
-            $.ajax({
-                method: 'post',
-                dataType: 'html',
-                data: str,
-                success: function (data) {
-                    $('#listTaskId').html(data);
-                }
-            });
-        } else {
-            console.log("is not Empty")
-            var str = $("#formFilterConst, #pageForm").serialize();
-
-            $.ajax({
-                method: 'post',
-                dataType: 'html',
-                data: str,
-                url: "/api/v1/main-page/filter",
-                success: function (data) {
-                    $('#listTaskId').html(data);
-                }
-            });
-        }
-    }
-
-    function isEmpty() {
-        let arr = new Array();
-        arr.push(document.getElementById("ch0"));
-        arr.push(document.getElementById("ch1"));
-        arr.push(document.getElementById("ch2"));
-        arr.push(document.getElementById("ch3"));
-        arr.push(document.getElementById("ch4"));
-        arr.push(document.getElementById("ch5"));
-        arr.push(document.getElementById("ch6"));
-        arr.push(document.getElementById("ch7"));
-        arr.push(document.getElementById("ch8"));
-        arr.push(document.getElementById("ch9"));
-
-        let arrDate = new Array();
-        arrDate.push(document.getElementById("da1"));
-        arrDate.push(document.getElementById("da2"));
-
-
-        var filterEmpty = true;
-
-        var size = arr.length;
-        for (var i = 0; i < size; ++i) {
-            if (arr[i].checked == true) {
-                filterEmpty = false;
-                break;
-            }
-        }
-
-        size = arrDate.length;
-        console.log("size arrDate " + size);
-
-        for (var i = 0; i < size; ++i) {
-            console.log("filterEmpty arrDate " + i + " " + arrDate[i].value);
-            if (arrDate[i].value != null) {
-                if (arrDate[i].value.length > 0) {
-                    filterEmpty = false;
-                    break;
-                }
-            }
-        }
-
-
-        if (document.getElementById("inpAuthForm").value != "") {
-            filterEmpty = false;
-            console.log("  inpAuthForm empty = false; ");
-        }
-
-        if (document.getElementById("inpRespForm").value != "") {
-            filterEmpty = false;
-            console.log("  inpRespForm empty = false; ");
-        }
-
-        if (document.getElementById("radioAllProblems").checked == false)
-            filterEmpty = false;
-
-        return filterEmpty;
-    }
-
-
-    function pageButtonClick() {
-        console.log("pageButtonClick")
-        if (isEmpty()) {
-            var str = $("#pageForm").serialize();
-            $.ajax({
-                method: 'post',
-                dataType: 'html',
-                data: str,
-                success: function (data) {
-                    $('#listTaskId').html(data);
-                }
-            });
-        }
-    }
-
-    function findFormPost() {
-
-        var textFind = document.getElementById("textFind")
-
-        if (textFind.value != "") {
-            var str = $("#findForm").serialize();
-
-            $.ajax({
-                method: 'post',
-                dataType: 'html',
-                data: str,
-                url: "/api/v1/main-page/find",
-                success: function (data) {
-                    $('#listTaskId').html(data);
-                }
-            });
-        } else {
-            setPage(1);
-        }
-    }
-
-    function getMyTaskList() {
-        var userIdVal = document.getElementById("userId");
-        console.log("getMyTaskList")
-        $.ajax({
-            method: 'get',
-            dataType: 'html',
-            data: {userId: userIdVal.value},
-            url: "/api/v1/main-page/filterMyProblems",
-            success: function (data) {
-                $('#listTaskId').html(data);
-            }
-        });
-
-        var radio = document.getElementById("radioMyProblems");
-        if ( radio != undefined) radio.checked = true;
-        radio = document.getElementById("radioMP");
-        if ( radio != undefined) radio.checked = true;
-    }
-
-    function getMySubsList() {
-        var userIdVal = document.getElementById("userId");
-        console.log("getMyTaskList")
-        $.ajax({
-            method: 'get',
-            dataType: 'html',
-            data: {userId: userIdVal.value},
-            url: "/api/v1/main-page/filterSubsProblems",
-            success: function (data) {
-                $('#listTaskId').html(data);
-            }
-        });
-
-        var radio = document.getElementById("radioSubscribeProblems");
-        if ( radio != undefined) radio.checked = true;
-        radio = document.getElementById("radioSP");
-        if ( radio != undefined) radio.checked = true;
-
-    }
-
-    function getMyTasksStaff() {
-        var userIdVal = document.getElementById("userId");
-        console.log("getMyTaskList")
-        $.ajax({
-            method: 'get',
-            dataType: 'html',
-            data: {userId: userIdVal.value},
-            url: "/api/v1/main-page/filterMyProblemsStaff",
-            success: function (data) {
-                $('#listTaskId').html(data);
-            }
-        });
-
-        var radio = document.getElementById("radioMyProblemsForStaff");
-        if ( radio != undefined) radio.checked = true;
-        radio = document.getElementById("radioMAP");
-        if ( radio != undefined) radio.checked = true;
-    }
-
-
-
-    // $(document).ready(function () {
-    //     $(".clickable-row").click(function () {
-    //         window.location = $(this).data("href");
-    //     });
-    // });
-    //
-    // $("#container").on('click-row.bs.table', function (e, row, $element) {
-    //     window.location = $element.data('href');
-    // });
-
-</script>
+ 
 
 <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
-
 <!-- Include Date Range Picker -->
+<script th:inline="javascript">
+    var tasks = [[${taskList}]];
+</script>
+<script src="/js/mapForAllTasksLocation.js" type="text/javascript"></script>
 <script type="text/javascript"
         src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
 <link rel="stylesheet"

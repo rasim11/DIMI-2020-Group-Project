@@ -9,48 +9,47 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <link href="/css/formData.css" rel="stylesheet">
     <link href="/css/task.css" rel="stylesheet">
+    <link href="/css/blockTitles.css" rel="stylesheet">
     <link href="/css/closeCustom.css" rel="stylesheet">
     <link href="/css/validation.css" rel="stylesheet">
     <script src="/js/urlTemplates.js"></script>
+    <script src="/js/requests.js"></script>
     <script src=/js/validation.js></script>
     <script src=/js/jointFunctions.js></script>
     <script src="/js/specificTask.js"></script>
     <script src="https://api-maps.yandex.ru/2.1/?apikey=5694d7f9-f8dc-4349-9d30-9dc5a908a417&lang=ru_RU"
             type="text/javascript">
     </script>
-
 </head>
 <body onload="calledOnLoad();">
 <header th:insert="blocks/header :: header"></header>
 <div id="div-main-block" class="container external-cont">
     <div class="form-data mb-4">
         <input id="input-task-id" type="hidden" th:value="${task.getId()}">
-        <div id="div-feedback" th:if="${task.getFeedback()}!=null">
-            <input type="hidden" th:value="${task.getFeedback().getFeedback()}">
-            <input type="hidden" th:value="${task.getFeedback().getPublishDate()}">
-        </div>
-        <div id="div-author" th:if="${task.getAuthor()}!=null" style="display: none;">
-            <input type="hidden" th:value="${task.getAuthor().getUserImage()}">
-            <input type="hidden" th:value="${task.getAuthor().getFirstname()}">
+        <div id="div-feedback" th:if="${task.feedback}!=null">
+            <input type="hidden" th:value="${task.feedback.comment}">
+            <input type="hidden" th:value="${task.feedback.publishDate}">
         </div>
         <h3 class="font-weight-bold" th:text="${task.getTaskName()}"/>
         <div class="mb-4" style="display: table; width: 100%">
             <ul class="nav flex-column pr-3" style="display: table-cell">
                 <li class="nav-item mb-3">
-                    <button class="btn dropdown-toggle font-weight-bold" type="button" data-toggle="collapse"
+                    <button class="btn dropdown-toggle font-weight-bold title-block"
+                            type="button" data-toggle="collapse"
                             aria-expanded="true" data-target="#div-description" aria-controls="div-description"
                             style="box-shadow: none;">
                         Описание
                     </button>
                     <div class="collapse show" id="div-description">
                         <div class="card card-body" style="background: none; border: none;">
-                               <span class="mb-4 task-attr" th:text="${task.getTaskDescription()}"
+                               <span class="mb-2 task-attr" th:text="${task.getTaskDescription()}"
                                      style="max-height: 600px; overflow: auto; white-space: pre-wrap;"/>
                         </div>
                     </div>
                 </li>
                 <li th:if="${taskImages} != null" class="nav-item mb-3">
-                    <button class="btn dropdown-toggle font-weight-bold" type="button" data-toggle="collapse"
+                    <button class="btn dropdown-toggle font-weight-bold title-block"
+                            type="button" data-toggle="collapse"
                             aria-expanded="true" data-target="#div-images" aria-controls="div-images"
                             style="box-shadow: none;">
                         Изображения
@@ -62,95 +61,231 @@
                         </div>
                     </div>
                 </li>
-
-                <li th:if="${originTask} != null" class="nav-item mb-3">
-                    <button class="btn dropdown-toggle font-weight-bold" type="button" data-toggle="collapse"
-                            aria-expanded="true" data-target="#div-duplicate" aria-controls="div-description"
+                <li th:if="${task.getStatus().equals(task.getStatus().CANCELED_AS_DUPLICATE)}" class="nav-item mb-3">
+                    <button class="btn dropdown-toggle font-weight-bold title-block"
+                            type="button" data-toggle="collapse"
+                            aria-expanded="true" data-target="#div-origin" aria-controls="div-origin"
                             style="box-shadow: none;">
-                        Оригинальная проблема
+                        Основная проблема
+                    </button>
+                    <label th:if="${isMainProblemsChange}">
+                        (<button class="btn-link" type="button" value="CANCELED_AS_DUPLICATE"
+                                onclick="linkedTask(this, false);"
+                                style="border: none;background: none;outline: none; padding: 0;">
+                            Изменить
+                        </button>)
+                    </label>
+                    <div class="collapse show" id="div-origin">
+                        <div class="card card-body" style="background: none; border: none;">
+                            <ul>
+                                <li th:each="origin : ${originTask}" style="display: flex;" class="mb-2">
+                                    <a th:with="url=${T(com.netcracker.project.url.UrlTemplates).LOCAL_URL_GET_TASK }"
+                                       th:href="@{${url+origin.getId()}}"
+                                       th:text="${origin.getTaskName()}"
+
+                                       th:style="${ origin.getStatus().value == 2 || origin.getStatus().value == 3
+                                       || origin.getStatus().value == 4 || origin.getStatus().value == 5} ?
+                                       'text-decoration: line-through' : ''  "
+                                    />
+                                    <span th:text="${origin.status.name}"
+                                          th:class="'linked-task-status ' +
+                                          ${origin.status.equals(origin.status.RESOLVED) ? 'btn-success' :
+                                          (origin.status.equals(origin.status.CANCELED) ||
+                                          origin.status.equals(origin.status.CANCELED_AS_DUPLICATE) ||
+                                          origin.status.equals(origin.status.REJECTED) ? 'btn-danger' :
+                                           'btn-secondary')}"/>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+                <li th:if="${duplicateTask} != null" class="nav-item mb-3">
+                    <button class="btn dropdown-toggle font-weight-bold title-block"
+                            type="button" data-toggle="collapse"
+                            aria-expanded="true" data-target="#div-duplicate" aria-controls="div-duplicate"
+                            style="box-shadow: none;">
+                        Дубликаты
                     </button>
                     <div class="collapse show" id="div-duplicate">
                         <div class="card card-body" style="background: none; border: none;">
-                            <a th:with="url=${T(com.netcracker.project.url.UrlTemplates).LOCAL_URL_GET_TASK }"
-                               th:href="@{${url+originTask.getId()}}"
-                               th:text="${originTask.getTaskName()}"
-                               class="mb-4 task-attr"
-                               style="max-height: 600px; overflow: auto; white-space: pre-wrap;"/>
+                            <ul>
+                                <li th:each="duplicate : ${duplicateTask}" style="display: flex;" class="mb-2">
+                                    <a th:with="url=${T(com.netcracker.project.url.UrlTemplates).LOCAL_URL_GET_TASK }"
+                                       th:href="@{${url+duplicate.getId()}}"
+                                       th:text="${duplicate.getTaskName()}"
+                                       th:style="${ duplicate.getStatus().value == 2 || duplicate.getStatus().value == 3
+                                       || duplicate.getStatus().value == 4 || duplicate.getStatus().value == 5} ?
+                                       'text-decoration: line-through' : ''  "
+                                    />
+                                    <span th:text="${duplicate.status.name}"
+                                          th:class="'linked-task-status ' +
+                                          ${duplicate.status.equals(duplicate.status.RESOLVED) ? 'btn-success' :
+                                          (duplicate.status.equals(duplicate.status.CANCELED) ||
+                                          duplicate.status.equals(duplicate.status.CANCELED_AS_DUPLICATE) ||
+                                          duplicate.status.equals(duplicate.status.REJECTED) ? 'btn-danger' :
+                                           'btn-secondary')}"/>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </li>
-
                 <li th:if="${firstTasks} != null" class="nav-item mb-3">
-                    <button class="btn dropdown-toggle font-weight-bold" type="button" data-toggle="collapse"
-                            aria-expanded="true" data-target="#div-blocked" aria-controls="div-description"
+                    <button class="btn dropdown-toggle font-weight-bold title-block"
+                            type="button" data-toggle="collapse"
+                            aria-expanded="true" data-target="#div-firstTasks" aria-controls="div-firstTasks"
                             style="box-shadow: none;">
                         Блокирущая проблема
                     </button>
-                    <div class="collapse show" id="div-blocked">
+                    <label th:if="${isEditResponsible}">
+                        (<button class="btn-link" type="button" value="BLOCKED" onclick="linkedTask(this, false);"
+                                style="border: none;background: none;outline: none; padding: 0;">
+                            Изменить
+                        </button>)
+                    </label>
+                    <div class="collapse show" id="div-firstTasks">
                         <div class="card card-body" style="background: none; border: none;">
-                            <p th:each="first : ${firstTasks}">
-                                <a th:with="url=${T(com.netcracker.project.url.UrlTemplates).LOCAL_URL_GET_TASK }"
-                                   th:href="@{${url+first.getId()}}"
-                                   th:text="${first.getTaskName()}"
-                                   class="mb-4 task-attr"
-                                   style="max-height: 600px; overflow: auto; white-space: pre-wrap;"/>
-                            </p>
+                            <ul>
+                                <li th:each="first : ${firstTasks}" style="display: flex;" class="mb-2">
+                                    <a th:with="url=${T(com.netcracker.project.url.UrlTemplates).LOCAL_URL_GET_TASK }"
+                                       th:href="@{${url+first.getId()}}"
+                                       th:text="${first.getTaskName()}"
+                                       th:style="${ first.getStatus().value == 2 || first.getStatus().value == 3
+                                       || first.getStatus().value == 4 || first.getStatus().value == 5} ?
+                                       'text-decoration: line-through' : ''  "
+                                    />
+                                    <span th:text="${first.status.name}"
+                                          th:class="'linked-task-status ' +
+                                          ${first.status.equals(first.status.RESOLVED) ? 'btn-success' :
+                                          (first.status.equals(first.status.CANCELED) ||
+                                          first.status.equals(first.status.CANCELED_AS_DUPLICATE) ||
+                                          first.status.equals(first.status.REJECTED) ? 'btn-danger' :
+                                           'btn-secondary')}"/>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </li>
-
-
-                <li th:if="${task.commentAllow} or ${histories.iterator().hasNext()}"
+                <li th:if="${blockedTask} != null" class="nav-item mb-3">
+                    <button class="btn dropdown-toggle font-weight-bold title-block"
+                            type="button" data-toggle="collapse"
+                            aria-expanded="true" data-target="#div-blocked" aria-controls="div-blocked"
+                            style="box-shadow: none;">
+                        Заблокированные проблемы
+                    </button>
+                    <div class="collapse show" id="div-blocked">
+                        <div class="card card-body" style="background: none; border: none;">
+                            <ul>
+                                <li th:each="blocked : ${blockedTask}" style="display: flex;" class="mb-2">
+                                    <a th:with="url=${T(com.netcracker.project.url.UrlTemplates).LOCAL_URL_GET_TASK }"
+                                       th:href="@{${url+blocked.getId()}}"
+                                       th:text="${blocked.getTaskName()}"
+                                       th:style="${ blocked.getStatus().value == 2 || blocked.getStatus().value == 3
+                                       || blocked.getStatus().value == 4 || blocked.getStatus().value == 5} ?
+                                       'text-decoration: line-through' : ''  "
+                                    />
+                                    <span th:text="${blocked.status.name}"
+                                          th:class="'linked-task-status ' +
+                                          ${blocked.status.equals(blocked.status.RESOLVED) ? 'btn-success' :
+                                          (blocked.status.equals(blocked.status.CANCELED) ||
+                                          blocked.status.equals(blocked.status.CANCELED_AS_DUPLICATE) ||
+                                          blocked.status.equals(blocked.status.REJECTED) ? 'btn-danger' :
+                                           'btn-secondary')}"/>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+                <li class="nav-item mb-3">
+                    <button class="btn dropdown-toggle font-weight-bold title-block"
+                            type="button" data-toggle="collapse"
+                            aria-expanded="true" data-target="#div-linked" aria-controls="div-linked"
+                            style="box-shadow: none;">
+                        Связанные проблемы
+                    </button>
+                    <label th:if="${isLinkedProblemsChange}">
+                        (<button class="btn-link" type="button" onclick="linkedTask(this, false);"
+                                style="border: none;background: none;outline: none; padding: 0;">
+                            Изменить
+                        </button>)
+                    </label>
+                    <div class="collapse show" id="div-linked">
+                        <div class="card card-body" style="background: none; border: none;">
+                            <ul>
+                                <li th:each="linked : ${linkedTask}" style="display: flex;" class="mb-2">
+                                    <a th:with="url=${T(com.netcracker.project.url.UrlTemplates).LOCAL_URL_GET_TASK }"
+                                       th:href="@{${url+linked.getId()}}"
+                                       th:text="${linked.getTaskName()}"
+                                       th:style="${ linked.getStatus().value == 2 || linked.getStatus().value == 3
+                                       || linked.getStatus().value == 4 || linked.getStatus().value == 5} ?
+                                       'text-decoration: line-through' : ''  "
+                                    />
+                                    <span th:text="${linked.status.name}"
+                                          th:class="'linked-task-status ' +
+                                          ${linked.status.equals(linked.status.RESOLVED) ? 'btn-success' :
+                                          (linked.status.equals(linked.status.CANCELED) ||
+                                          linked.status.equals(linked.status.CANCELED_AS_DUPLICATE) ||
+                                          linked.status.equals(linked.status.REJECTED) ? 'btn-danger' :
+                                           'btn-secondary')}"/>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+                <li th:if="${task.commentAllow} or ${checkFeedback.iterator().hasNext()} or
+                 ${histories.iterator().hasNext()}"
                     class="nav-item mb-3">
                     <nav>
                         <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                            <a th:if="${task.commentAllow}"
-                               class="nav-item nav-link active" id="nav-comment-tab" data-toggle="tab"
+                            <a th:if="${task.commentAllow} or ${checkFeedback.iterator().hasNext()}"
+                               class="nav-item nav-link active font-weight-bold" id="nav-comment-tab" data-toggle="tab"
                                href="#div-comment-box" role="tab" aria-controls="div-comment-box" aria-selected="true">
                                 Комментарии
                             </a>
                             <a th:if="${histories.iterator().hasNext()}"
-                               class="nav-item nav-link" id="nav-history-tab" data-toggle="tab" href="#history-box"
-                               role="tab" aria-controls="history-box" aria-selected="false">
+                               class="nav-item nav-link font-weight-bold" id="nav-history-tab" data-toggle="tab"
+                               href="#history-box" role="tab" aria-controls="history-box" aria-selected="false">
                                 История
                             </a>
                         </div>
                     </nav>
                     <div class="tab-content" id="nav-tab-content">
-                        <div th:if="${task.commentAllow}"
+                        <div th:if="${task.commentAllow} or ${checkFeedback.iterator().hasNext()}"
                              class="tab-pane fade show active" id="div-comment-box" role="tabpanel"
                              aria-labelledby="nav-comment-tab">
-                            <span class="task-attr mt-2 mb-3">Всего комментариев:</span>
-                            <span th:if="${commentForbidden}!=null" class="task-attr"
-                                  th:text="${commentForbidden}"/>
-                            <div class="comment" th:if="${commentPermission}!=null">
-                                <div class="mb-4" style="display: table; width: 100%;">
-                                    <div style="display: table-cell; width: 40px;">
-                                        <img th:src="${#authentication.getPrincipal().getUserImage()}"
-                                             class="comment-author-img">
-                                    </div>
-                                    <div class="pl-2" style="display: table-cell;">
+                            <div th:if="${task.commentAllow}">
+                                <span id="span-comments-count" class="task-attr mt-2 mb-3">Всего комментариев:</span>
+                                <span th:if="${commentForbidden}" class="task-attr"
+                                      th:text="${commentForbidden}"/>
+                                <div class="comment" th:if="!${commentForbidden}">
+                                    <div class="mb-4" style="display: table; width: 100%;">
+                                        <div style="display: table-cell; width: 40px;">
+                                            <img th:src="${#authentication.getPrincipal().getUserImage()}"
+                                                 class="comment-author-img">
+                                        </div>
+                                        <div class="pl-2" style="display: table-cell;">
                                             <span class="font-weight-bold"
                                                   th:text="${#authentication.getPrincipal().getFirstname()}"/>
-                                        <textarea class="form-control" style="min-height: 70px;"
-                                                  id="textarea-comment-text"
-                                                  placeholder="Оставьте комментарий"
-                                                  oninput="isCommentValid(this);"></textarea>
+                                            <textarea class="form-control" style="min-height: 70px;"
+                                                      id="textarea-comment-text"
+                                                      placeholder="Оставьте комментарий"
+                                                      oninput="isCommentValid(this);"></textarea>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <button type="button" class="btn btn-outline-success" disabled
+                                                onclick="postComment();printComments();">
+                                            Оставить комментарий
+                                        </button>
+                                        <button type="button" class="btn btn-outline-danger" disabled
+                                                onclick="cancelCommentBtn()">
+                                            Отмена
+                                        </button>
                                     </div>
                                 </div>
-                                <div>
-                                    <button type="button" class="btn btn-outline-success" disabled
-                                            onclick="postComment();printComments();">
-                                        Оставить комментарий
-                                    </button>
-                                    <button type="button" class="btn btn-outline-danger" disabled
-                                            onclick="cancelCommentBtn()">
-                                        Отмена
-                                    </button>
-                                </div>
+                                <hr>
                             </div>
-                            <hr>
-                            <div id="div-print-comments" style="overflow: auto;">
+                            <div th:class="${!task.commentAllow ? 'mt-2' : ''}"
+                                 id="div-print-comments" style="overflow: auto;">
                             </div>
                         </div>
                         <div th:if="${histories.iterator().hasNext()}"
@@ -170,12 +305,14 @@
                                     <td style="max-width: 300px;overflow: hidden">
                                         <a th:with="url=${T(com.netcracker.project.url.UrlTemplates).LOCAL_URL_USER_PROFILE}"
                                            th:href="@{${url}(id=${history.previousResponsible.id})}"
-                                           th:text="${history.previousResponsible.lastname + ' ' + history.previousResponsible.firstname}"/>
+                                           th:text="${history.previousResponsible.lastname + ' ' +
+                                            history.previousResponsible.firstname}"/>
                                     </td>
                                     <td style="max-width: 300px;overflow: hidden">
                                         <a th:with="url=${T(com.netcracker.project.url.UrlTemplates).LOCAL_URL_USER_PROFILE}"
                                            th:href="@{${url}(id=${history.currentResponsible.id})}"
-                                           th:text="${history.currentResponsible.lastname + ' ' + history.currentResponsible.firstname}"/>
+                                           th:text="${history.currentResponsible.lastname + ' ' +
+                                            history.currentResponsible.firstname}"/>
                                     </td>
                                     <td th:text="${history.dateToString(history.changedDate)}"
                                         style="max-width: 163px;"/>
@@ -187,51 +324,44 @@
                 </li>
             </ul>
             <ul class="nav flex-column pr-3" style="display: table-cell; width: 35%;">
-                <li th:if="${isEditAuthor}!=null or ${isEditResponsible}!=null or ${isFeedback} != null and
-                 ${task.getFeedback()} == null or ${task.getFeedback()} != null or ${isSubscription} != null"
-                    class="nav-item mb-3">
-                    <button class="btn dropdown-toggle font-weight-bold" type="button" data-toggle="collapse"
+                <li class="nav-item mb-3">
+                    <button class="btn dropdown-toggle font-weight-bold title-block"
+                            type="button" data-toggle="collapse"
                             aria-expanded="true" data-target="#div-actions" aria-controls="div-actions"
                             style="box-shadow: none;">
                         Действия
                     </button>
                     <div class="collapse show" id="div-actions">
                         <div class="card card-body" style="background: none; border: none;">
-                            <div>
+                            <div id="div-btn-actions">
+                                <div th:if="${isEditResponsible}!=null" style="display: inline-block;">
+                                    <a th:with="url=${T(com.netcracker.project.url.UrlTemplates).LOCAL_URL_RESPONSIBLE_PUT_TASK}"
+                                       th:href="@{${url}(id=${task.getId()})}" class="btn btn-primary mb-2">
+                                        Назначить соц. работников
+                                    </a>
+                                    <button type="button" id="btn-reject-task" class="btn btn-danger mb-2"
+                                            th:value="${task.status.REJECTED}"
+                                            onclick="showFeedbackWindow(this, 'Отклонение проблемы')">
+                                        Отклонить
+                                    </button>
+                                </div>
                                 <div th:if="${isEditAuthor}!=null" style="display: inline-block;">
                                     <a th:with="url=${T(com.netcracker.project.url.UrlTemplates).LOCAL_URL_AUTHOR_PUT_TASK}"
-                                       th:href="@{${url}(id=${task.getId()})}" class="btn btn-primary">
+                                       th:href="@{${url}(id=${task.getId()})}" class="btn btn-primary mb-2">
                                         Редактировать
                                     </a>
-                                    <button type="button" id="btn-cancel-task" class="btn btn-danger"
+                                    <button type="button" id="btn-cancel-task" class="btn btn-danger mb-2"
+                                            th:value="${task.status.CANCELED}"
                                             onclick="showFeedbackWindow(this, 'Отмена проблемы')">
                                         Отменить
                                     </button>
                                 </div>
-                                <a th:with="url=${T(com.netcracker.project.url.UrlTemplates).LOCAL_URL_RESPONSIBLE_PUT_TASK}"
-                                   th:href="@{${url}(id=${task.getId()})}" class="btn btn-primary"
-                                   th:if="${isEditResponsible}!=null">
-                                    Редактировать
-                                </a>
-                                <button type="button" id="btn-save-feedback" class="btn btn-success"
+                                <button type="button" id="btn-save-feedback" class="btn btn-success mb-2"
                                         onclick="showFeedbackWindow(this, 'Добавление отзыва')"
-                                        th:if="${isFeedback} != null and ${task.getFeedback()} == null">
+                                        th:if="${isFeedback} != null and ${task.feedback} == null">
                                     Оставить отзыв
                                 </button>
-                                <div th:if="${task.getFeedback()} != null" style="display: inline-block;">
-                                    <button type="button" id="btn-show-feedback" class="btn btn-success"
-                                            onclick="showFeedbackWindow(this, 'Отзыв автора проблемы')"
-                                            th:if="${task.getStatus().getValue()} == 2">
-                                        Отзыв
-                                    </button>
-                                    <button type="button" id="btn-cancellation-reason" class="btn btn-success"
-                                            onclick="showFeedbackWindow(this, 'Причина отмены проблемы')"
-                                            th:if="${task.getStatus().getValue()} == 3">
-                                        Причина отмены
-                                    </button>
-                                </div>
-                                <div th:if="${isSubscription} != null" style="display: inline-block;">
-                                    <button id="btn-subscription"></button>
+                                <div class="mb-2" th:if="${isSubscription} != null" style="display: inline-block;">
                                     <input id="input-cur-user-id" type="hidden"
                                            th:value="${#authentication.getPrincipal().getId()}">
                                 </div>
@@ -240,24 +370,50 @@
                     </div>
                 </li>
                 <li class="nav-item mb-3">
-                    <button class="btn dropdown-toggle font-weight-bold" type="button" data-toggle="collapse"
+                    <button class="btn dropdown-toggle font-weight-bold title-block"
+                            type="button" data-toggle="collapse"
                             aria-expanded="true" data-target="#div-details" aria-controls="div-details"
                             style="box-shadow: none;">
                         Детали
                     </button>
                     <div class="collapse show" id="div-details">
                         <div class="card card-body" style="background: none; border: none;">
-                            <span class="task-attr mb-2" th:if="${task.getPriority()!=null}"
-                                  th:text="'Приоритет: '+${task.getPriority().getName()}"/>
-                            <span class="task-attr mb-2"
-                                  th:if="${task.getPriority()==null}">Приоритет: Не назначен</span>
-                            <span id="span-status" class="task-attr mb-2"
-                                  th:text="'Статус: '+${task.getStatus().getName()}"/>
+                            <label class="task-attr mb-2">
+                                <span th:if="${task.getPriority()!=null}"
+                                      th:text="'Приоритет: '+${task.getPriority().getName()}"/>
+                                <span th:if="${task.getPriority()==null}">Приоритет: Не назначен</span>
+                                <div th:if="${isEditResponsible}!=null" class="dropdown" style="display: inline-block;">
+                                    (<a class="btn-link" type="button" id="a-dropdown-menu-priorities"
+                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Изменить
+                                </a>)
+                                    <div class="dropdown-menu" aria-labelledby="a-dropdown-menu-priorities">
+                                        <button type="button" class="dropdown-item" th:each="priority : ${priorities}"
+                                                th:text="${priority.name}" th:value="${priority}"
+                                                onclick="changeAttr(this, 'priority')"/>
+                                    </div>
+                                </div>
+                            </label>
+                            <label class="task-attr mb-2">
+                                <span id="span-status" th:text="'Статус: '+${task.getStatus().getName()}"/>
+                                <div th:if="${statuses}" class="dropdown" style="display: inline-block;">
+                                    (<a class="btn-link" type="button" id="a-dropdown-menu-statuses"
+                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Изменить
+                                </a>)
+                                    <div class="dropdown-menu" aria-labelledby="a-dropdown-menu-statuses">
+                                        <button type="button" class="dropdown-item" th:each="status : ${statuses}"
+                                                th:text="${status.name}" th:value="${status}"
+                                                onclick="checkedStatus(this)"/>
+                                    </div>
+                                </div>
+                            </label>
                         </div>
                     </div>
                 </li>
                 <li class="nav-item mb-3">
-                    <button class="btn dropdown-toggle font-weight-bold" type="button" data-toggle="collapse"
+                    <button class="btn dropdown-toggle font-weight-bold title-block"
+                            type="button" data-toggle="collapse"
                             aria-expanded="true" data-target="#div-location" aria-controls="div-location"
                             style="box-shadow: none;">
                         Местоположение
@@ -273,7 +429,8 @@
                     </div>
                 </li>
                 <li class="nav-item mb-3">
-                    <button class="btn dropdown-toggle font-weight-bold" type="button" data-toggle="collapse"
+                    <button class="btn dropdown-toggle font-weight-bold title-block"
+                            type="button" data-toggle="collapse"
                             aria-expanded="true" data-target="#div-people" aria-controls="div-people"
                             style="box-shadow: none;">
                         Люди
@@ -309,25 +466,28 @@
                                 <span th:if="${task.getCurrResponsible()}==null">
                                     У данной задачи ответственный не назначен
                                 </span>
-                                <form th:if="${isEditResponsible}!=null and ${!responsibleList.isEmpty()}"
-                                      class="dropdown" style="display: inline-block;" method="post">
-                                    (<a class="btn-link" type="button" id="dropdownMenuButton" data-toggle="dropdown"
-                                        aria-haspopup="true" aria-expanded="false">
+                                <div th:if="${isEditResponsible}!=null and ${!responsibleList.isEmpty()}"
+                                     class="dropdown" style="display: inline-block;">
+                                    (<a class="btn-link" type="button" id="a-dropdown-menu-deputies"
+                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     Изменить
                                 </a>)
-                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                        <button type="submit" name="changedResponsible" class="dropdown-item"
+                                    <div class="dropdown-menu" aria-labelledby="a-dropdown-menu-deputies">
+                                        <button type="button" class="dropdown-item"
                                                 th:each="responsible : ${responsibleList}"
-                                                th:text="${responsible.getLastname() + ' ' +  responsible.getFirstname() + ' ' + responsible.getMiddlename()}"
-                                                th:value="${responsible.getId()}"/>
+                                                th:text="${responsible.getLastname() + ' ' +
+                                                  responsible.getFirstname() + ' ' + responsible.getMiddlename()}"
+                                                th:value="${responsible.getId()}"
+                                                onclick="changeAttr(this, 'deputy')"/>
                                     </div>
-                                </form>
+                                </div>
                             </label>
                         </div>
                     </div>
                 </li>
                 <li class="nav-item mb-3">
-                    <button class="btn dropdown-toggle font-weight-bold" type="button" data-toggle="collapse"
+                    <button class="btn dropdown-toggle font-weight-bold title-block"
+                            type="button" data-toggle="collapse"
                             aria-expanded="true" data-target="#div-date" aria-controls="div-date"
                             style="box-shadow: none;">
                         Даты:
@@ -335,10 +495,14 @@
                     <div class="collapse show" id="div-date">
                         <div class="card card-body" style="background: none; border: none; ">
                             <span class="task-attr" th:text="'Создана: '+${task.getRegDate()}"/>
-                            <span th:if="${task.getStatus().getName()} == 'Решена'" class="task-attr mt-2"
-                                  th:text="'Решена: '+${task.dateToString(task.getCompleteDate())}"/>
-                            <span th:if="${task.getStatus().getName()} == 'Отменена'" class="task-attr mt-2"
+                            <span th:if="${task.getStatus().equals(task.getStatus().RESOLVED)}" class="task-attr mt-2"
+                                  th:text="'Устранена: '+${task.dateToString(task.getCompleteDate())}"/>
+                            <span th:if="${task.getStatus().equals(task.getStatus().CANCELED_AS_DUPLICATE) ||
+                                    task.getStatus().equals(task.getStatus().CANCELED)}"
+                                  class="task-attr mt-2"
                                   th:text="'Отменена: '+${task.dateToString(task.getCompleteDate())}"/>
+                            <span th:if="${task.getStatus().equals(task.getStatus().REJECTED)}" class="task-attr mt-2"
+                                  th:text="'Отклонена: '+${task.dateToString(task.getCompleteDate())}"/>
                         </div>
                     </div>
                 </li>

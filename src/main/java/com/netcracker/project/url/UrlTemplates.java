@@ -4,6 +4,9 @@ public final class UrlTemplates {
     private UrlTemplates() {
     }
 
+    public static final String SERVER = "https://projects-db.herokuapp.com";
+//    public static final String LOCAL = "http://localhost:8080";
+
     public static final String API = "/api";
     public static final String VERSION = "/v1";
     public static final String USER_MANAGEMENT = "/user-management";
@@ -23,20 +26,17 @@ public final class UrlTemplates {
     public static final String BY_ID = "-by-id";
     public static final String BY_EMAIL = "-by-email";
     public static final String COMMENT_GET = "/comment-get";
-    public static final String SERVER = "https://projects-db.herokuapp.com";
     public static final String USER_POST = "/user-post";
     public static final String USER_DELETE = "/user-delete";
     public static final String ALL_USERS_GET = "/all-users-get";
     public static final String ALL_ROLES_GET = "/all-roles-get";
     public static final String TASK_LIST_GET = "/task-list-get";
     public static final String FIND = "/find";
-    public static final String FILTER = "/filter";
     public static final String REGION_MANAGEMENT = "/region-management";
     public static final String ALL_REGIONS_GET = "/all-regions-get";
     public static final String EMAIL_FREE = "/email-free";
     public static final String REGION_GET = "/region-get";
     public static final String REGION_PUT = "/region-put";
-    public static final String REGIONS_PUT = "/regions-put";
     public static final String USER_ROLE_EDIT = "/user-role-edit";
     public static final String REDIRECT_ON_ADMINISTRATION = "redirect:" + API + VERSION + ADMIN_MANAGEMENT;
     public static final String COMMENT_POST = "/comment-post";
@@ -47,7 +47,6 @@ public final class UrlTemplates {
     public static final String ACTIVE_TASK_DELETE = "/active-task-delete";
     public static final String ACTIVE_TASK_POST = "/active-task-post";
     public static final String FEEDBACK_MANAGEMENT = "/feedback-management";
-    public static final String FEEDBACK_POST = "/feedback-post";
     public static final String COMMENT_DELETE = "/comment-delete";
     public static final String FEEDBACK_GET = "/feedback-get";
     public static final String SUBSCRIPTION_MANAGEMENT = "/subscription-management";
@@ -80,7 +79,6 @@ public final class UrlTemplates {
             COMMENT_GET + "-by-task/{id}";
     public static final String LOCAL_URL_RESPONSIBLE_PUT_TASK = API + VERSION + TASK_MANAGEMENT +
             TASK_PUT + BY_ID + "-by-responsible/{id}";
-    public static final String LOCAL_URL_POST_FEEDBACK = API + VERSION + FEEDBACK_MANAGEMENT + FEEDBACK_POST;
     public static final String LOCAL_URL_GET_SUBSCRIPTION_BY_TASK_USER_IDS = API + VERSION + SUBSCRIPTION_MANAGEMENT +
             "/subscription-get-by-task-user-ids/{taskId}&{userId}";
     public static final String LOCAL_URL_DELETE_SUBSCRIPTION_BY_ID = API + VERSION + SUBSCRIPTION_MANAGEMENT +
@@ -95,6 +93,21 @@ public final class UrlTemplates {
     public static final String LOCAL_URL_POST_EMP = API + VERSION + USER_MANAGEMENT + "/post-emp";
     public static final String LOCAL_URL_GET_MUNICIPALITIES = API + VERSION + MUNICIPALITY_MANAGEMENT +
             "/municipalities-get";
+    public static final String LOCAL_URL_CHANGE_TASK_DEPUTY = API + VERSION + TASK_MANAGEMENT + "/change-deputy";
+    public static final String LOCAL_URL_CHANGE_TASK_PRIORITY = API + VERSION + TASK_MANAGEMENT + "/change-priority";
+    public static final String LOCAL_URL_CHANGE_TASK_STATUS = API + VERSION + TASK_MANAGEMENT + "/change-status";
+    public static final String LOCAL_URL_GET_TASKS = API + VERSION + TASK_MANAGEMENT + "/tasks-get";
+    public static final String LOCAL_URL_GET_FIRST_BY_BLOCKED = API + VERSION + TASK_MANAGEMENT +
+            "/get-first-by-blocked/{id}";
+    public static final String LOCAL_URL_GET_ORIGIN_BY_DUPLICATE = API + VERSION + TASK_MANAGEMENT +
+            "/get-origin-by-duplicate/{id}";
+    public static final String LOCAL_URL_POST_DUPLICATES_TASKS = API + VERSION + TASK_MANAGEMENT + "/post-duplicates";
+    public static final String LOCAL_URL_POST_BLOCKED_TASKS = API + VERSION + TASK_MANAGEMENT + "/post-blocked";
+    public static final String LOCAL_URL_GET_LINKED_TASKS = API + VERSION + TASK_MANAGEMENT + "/get-linked-tasks/{id}";
+    public static final String LOCAL_URL_POST_LINKED_TASKS = API + VERSION + TASK_MANAGEMENT + "/post-linked";
+    public static final String LOCAL_URL_POST_GEOLOCATION = API + VERSION  + "/set-geolocation";
+    public static final String LOCAL_URL_GET_SUBSCRIPTIONS_BY_TASK_ID = API + VERSION + SUBSCRIPTION_MANAGEMENT +
+            "/subscriptions-get-by-task-id/{id}";
 
     public static final String URL_GET_ALL_REGIONS = SERVER + LOCAL_URL_GET_ALL_REGIONS;
     public static final String URL_GET_ALL_USERS = SERVER + LOCAL_URL_GET_ALL_USERS;
@@ -109,7 +122,6 @@ public final class UrlTemplates {
     public static final String URL_GET_REGION_BY_ID = SERVER + API + VERSION +
             REGION_MANAGEMENT + REGION_GET + BY_ID + "/{id}";
     public static final String URL_PUT_REGION = SERVER + API + VERSION + REGION_MANAGEMENT + REGION_PUT;
-    public static final String URL_POST_STANDARD_REGIONS = SERVER + API + VERSION + REGION_MANAGEMENT + "/add-standard-regions";
     public static final String URL_GET_REGION_BY_RESPONSIBLE_EMAIL = SERVER + API + VERSION +
             REGION_MANAGEMENT + REGION_GET + "-by-responsible" + BY_EMAIL + "/{email}";
     public static final String URL_GET_REGION_BY_NAME = SERVER + API + VERSION +
@@ -128,11 +140,8 @@ public final class UrlTemplates {
             TASK_SOCIAL_WORKERS_MANAGEMENT + ACTIVE_TASK_DELETE + "-by-worker" + BY_ID + "/{id}";
     public static final String URL_POST_ACTIVE_TASK = SERVER + API + VERSION + TASK_SOCIAL_WORKERS_MANAGEMENT +
             ACTIVE_TASK_POST;
-    public static final String URL_POST_FEEDBACK = SERVER + LOCAL_URL_POST_FEEDBACK;
     public static final String URL_POST_COMMENT = SERVER + LOCAL_URL_POST_COMMENT;
     public static final String URL_GET_COMMENT_BY_TASK_ID = SERVER + LOCAL_URL_GET_COMMENT_BY_TASK_ID;
-    public static final String URL_DELETE_COMMENT_BY_AUTHOR_ID = SERVER + API + VERSION + COMMENT_MANAGEMENT +
-            COMMENT_DELETE + "-by-author/{id}";
     public static final String URL_GET_FEEDBACK_BY_TASK_ID = SERVER + API + VERSION + FEEDBACK_MANAGEMENT +
             FEEDBACK_GET + "-by-task/{id}";
     public static final String URL_GET_SUBSCRIPTION_BY_TASK_USER_IDS = SERVER +
@@ -148,8 +157,6 @@ public final class UrlTemplates {
     public static final String URL_GET_HISTORY_BY_TASK_ID = SERVER + API + VERSION +
             HISTORY_MANAGEMENT + "/history-get-by-task-id/{id}";
     public static final String URL_POST_HISTORY = SERVER + API + VERSION + HISTORY_MANAGEMENT + "/history-post";
-    public static final String URL_GET_ORIGIN_FROM_DUPLICATE = SERVER + API + VERSION + "/get-origin-from-duplicate/{id}";
-    public static final String URL_GET_FIRST_FROM_BLOCKED = SERVER + API + VERSION + "/get-first-from-blocked/{id}";
     public static final String URL_GET_MUNICIPALITIES = SERVER + LOCAL_URL_GET_MUNICIPALITIES;
     public static final String URL_GET_MUNICIPALITY_BY_ID = SERVER + API + VERSION + MUNICIPALITY_MANAGEMENT +
             "/municipality-get-by-id/{id}";
@@ -157,4 +164,21 @@ public final class UrlTemplates {
             HISTORY_MANAGEMENT + "/history-get-by-previous-current-responsible-id/{id}";
     public static final String URL_DELETE_HISTORY = SERVER + API + VERSION + HISTORY_MANAGEMENT +
             "/history-delete/{id}";
+    public static final String URL_GET_ORIGIN_FROM_DUPLICATE = SERVER + API + VERSION + "/get-origin-from-duplicate/{id}";
+    public static final String URL_GET_DUPLICATE_FROM_ORIGIN = SERVER + API + VERSION + "/get-duplicate-from-origin/{id}";
+    public static final String URL_GET_FIRST_FROM_BLOCKED = SERVER + API + VERSION + "/get-first-from-blocked/{id}";
+    public static final String URL_GET_BLOCKED_FROM_FIRST = SERVER + API + VERSION + "/get-blocked-from-first/{id}";
+    public static final String URL_GET_LINKED_TASKS = SERVER + API + VERSION + "/get-linked-tasks/{id}";
+    public static final String URL_POST_DUPLICATES_TASKS = SERVER + LOCAL_URL_POST_DUPLICATES_TASKS;
+    public static final String URL_POST_BLOCKED_TASKS = SERVER + LOCAL_URL_POST_BLOCKED_TASKS;
+    public static final String URL_DELETE_DUPLICATES_BY_ID = SERVER + API + VERSION + TASK_MANAGEMENT +
+            "/delete-duplicates-by-id/{id}";
+    public static final String URL_DELETE_BLOCKED_BY_ID = SERVER + API + VERSION + TASK_MANAGEMENT +
+            "/delete-blocked-by-id/{id}";
+    public static final String URL_DELETE_LINKED_TASKS = SERVER + API + VERSION + TASK_MANAGEMENT +
+            "/delete-linked-tasks/{id}";
+    public static final String URL_POST_LINKED_TASKS = SERVER + LOCAL_URL_POST_LINKED_TASKS;
+    public static final String URL_GET_SUBSCRIPTIONS_BY_TASK_ID = SERVER + LOCAL_URL_GET_SUBSCRIPTIONS_BY_TASK_ID;
+    public static final String URL_GET_COMMENTS_BY_AUTHOR = SERVER + API + VERSION + COMMENT_MANAGEMENT +
+            "/comments-get-by-author/{id}";
 }
