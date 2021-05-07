@@ -3,7 +3,10 @@ const URL_POST_GEOLOCATION = "/api/v1/set-geolocation";
 function getCurrentLocation() {
     if (!$("#geoLocation").text()){
         console.log("all right");
-        ymaps.geolocation.get().then(function (res) {
+        ymaps.geolocation.get({
+            // Выставляем опцию для определения положения по ip
+            provider: 'browser',
+        }).then(function (res) {
             let loc = strVerify(res.geoObjects.get(0).properties.get('text')).trim();
             const xhr = new XMLHttpRequest();
             xhr.open('POST', URL_POST_GEOLOCATION, false);
