@@ -10,7 +10,7 @@ $("#location").on("click", function () {
 function init() {
     // Забираем запрос из поля ввода.
     // Геокодируем введённые данные.
-    ymaps.geocode($("#location").val()).then(function (res) {
+    ymaps.geocode(request).then(function (res) {
         var obj = res.geoObjects.get(0);
         showResult(obj);
     });
@@ -33,11 +33,9 @@ function init() {
         // Если карта еще не была создана, то создадим ее и добавим метку с адресом.
             map = new ymaps.Map('map',
                 {
-                    center:state,
+                    center:state.center,
                     zoom:13,
                     controls:[]
-                },{
-                    searchControlProvider: 'yandex#search'
                 });
             placemark = new ymaps.Placemark(
                 map.getCenter(), {
