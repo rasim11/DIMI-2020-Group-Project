@@ -10,7 +10,7 @@ $("#location").on("click", function () {
 function init() {
     // Забираем запрос из поля ввода.
     // Геокодируем введённые данные.
-    ymaps.geocode(request).then(function (res) {
+    ymaps.geocode($("#location").val()).then(function (res) {
         var obj = res.geoObjects.get(0);
         showResult(obj);
     });
@@ -22,13 +22,8 @@ function init() {
             mapState = ymaps.util.bounds.getCenterAndZoom(
                 bounds,
                 [mapContainer.width(), mapContainer.height()]
-            ),
-            // Сохраняем полный адрес для сообщения под картой.
-            address = [obj.getCountry(), obj.getAddressLine()].join(', '),
-            // Сохраняем укороченный адрес для подписи метки.
-            shortAddress = [obj.getThoroughfare(), obj.getPremiseNumber(), obj.getPremise()].join(' ');
+            );
         // Убираем контролы с карты.
-        mapState.controls = [];
         // Создаём карту.
         createMap(mapState, request);
         // Выводим сообщение под картой.
@@ -36,7 +31,14 @@ function init() {
 
     function createMap(state, caption) {
         // Если карта еще не была создана, то создадим ее и добавим метку с адресом.
-            map = new ymaps.Map('map', state);
+            map = new ymaps.Map('map',
+                {
+                    center:state.center,
+                    zoom:13,
+                    controls:[]
+                },{
+                    searchControlProvider: 'yandex#search'
+                });
             placemark = new ymaps.Placemark(
                 map.getCenter(), {
                     iconCaption: caption,
