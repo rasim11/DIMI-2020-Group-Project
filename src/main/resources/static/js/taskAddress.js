@@ -33,7 +33,7 @@ function init() {
         // Если карта еще не была создана, то создадим ее и добавим метку с адресом.
             map = new ymaps.Map('map',
                 {
-                    center:state.center,
+                    center:state,
                     zoom:13,
                     controls:[]
                 },{
