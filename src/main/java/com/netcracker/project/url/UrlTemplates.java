@@ -5,7 +5,7 @@ public final class UrlTemplates {
     }
 
     public static final String SERVER = "https://projects-db.herokuapp.com";
-    public static final String LOCAL = "http://localhost:8080";
+    public static final String LOCAL = "https://socialissuetracker.herokuapp.com";
 
     public static final String API = "/api";
     public static final String VERSION = "/v1";
