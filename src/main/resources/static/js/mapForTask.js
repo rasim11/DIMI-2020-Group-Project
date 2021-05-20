@@ -1,7 +1,10 @@
+const inputTaskLocationId = "input-task-location";
+
 ymaps.ready(getCurrentLocation);
 
 function getCurrentLocation() {
     var mapState;
+
     ymaps.geolocation.get().then(function (res) {
         var mapContainer = $('#map'),
             bounds = res.geoObjects.get(0).properties.get('boundedBy');
@@ -12,7 +15,7 @@ function getCurrentLocation() {
         );
         mapState = {center: mapState.center, zoom: 11};
         mapState.controls = [];
-        init(mapState);
+        initMap(mapState);
     }, function (e) {
 
         // Если местоположение невозможно получить, то просто создаем карту.
@@ -21,32 +24,33 @@ function getCurrentLocation() {
             zoom: 11
         };
         mapState.controls = [];
-        init(mapState);
+        initMap(mapState);
     });
 }
 
-function init(mapState) {
-    var suggestAdress = new ymaps.SuggestView('location');
+function initMap(mapState) {
+    var suggestAdress = new ymaps.SuggestView(inputTaskLocationId);
     var count = 0;
     var myPlacemark;
+    var adressValue = document.getElementById(inputTaskLocationId);
 
     var myMap = new ymaps.Map('map', mapState);
 
-    if ($("#location").val() != '') {
-        var coords = ($('#location').val());
+    if ($("#" + inputTaskLocationId).val()) {
+        var coords = ($("#" + inputTaskLocationId).val());
         ymaps.geocode(coords).then(function (res) {
             var obj = res.geoObjects.get(0);
             showResult(obj);
         })
     }
 
-    document.getElementById("location").parentNode.querySelector("ymaps").onclick = function () {
+    document.getElementById(inputTaskLocationId).parentNode.querySelector("ymaps").onclick = function () {
         if (document.getElementById(btnSaveId)) {
             isNoDuplicate();
         }
-        setValidFormat(document.getElementById("location"));
+        setValidFormat(document.getElementById(inputTaskLocationId));
 
-        var coords = ($('#location').val());
+        var coords = ($("#" + inputTaskLocationId).val());
         ymaps.geocode(coords).then(function (res) {
             var obj = res.geoObjects.get(0);
             showResult(obj);
@@ -61,12 +65,13 @@ function init(mapState) {
             bounds,
             [mapContainer.width(), mapContainer.height()]
         );
-        // Россия, Самарская область, Тольятти, Белорусская улица, 31
+        console.log(obj.getAdministrativeAreas()[0]);
         // // Сохраняем полный адрес для сообщения под картой.
-        address = [obj.getCountry(), obj.getAddressLine()].join(', '),
+        address = checkRegionExistence(obj),
             // Сохраняем укороченный адрес для подписи метки.
             shortAddress = [obj.getThoroughfare(), obj.getPremiseNumber(), obj.getPremise()].join(' ');
-
+        console.log(address);
+        adressValue.value = address;
         if (myPlacemark) {
             myPlacemark.geometry.setCoordinates(coords.center);
             myPlacemark.properties.set({iconCaption: shortAddress, balloonContent: address});
@@ -78,6 +83,7 @@ function init(mapState) {
             myPlacemark.properties.set({iconCaption: shortAddress, balloonContent: address});
             myMap.geoObjects.add(myPlacemark);
         }
+
         // Масштабируем карту на область видимости геообъекта.
         myMap.setBounds(bounds, {
             // Проверяем наличие тайлов на данном масштабе.
@@ -132,12 +138,28 @@ function init(mapState) {
                     // В качестве контента балуна задаем строку с адресом объекта.
                     balloonContent: firstGeoObject.getAddressLine()
                 });
-            var adressValue = document.getElementById("location");
-            adressValue.value = firstGeoObject.getAddressLine();
+            //
+            //
+            // let address = firstGeoObject.getAddressLine();
+            // if(region!==firstGeoObject.getAddressLine().split(',')[1].trim()){
+            //     address = address.substr(0,address.split(',')[0].length)+','+region+','+address.substr(address.split(',')[0].length+region.length-2,address.length);
+            //     // console.log("works: " + address);
+            // }
+            adressValue.value = checkRegionExistence(firstGeoObject);
 
             if (document.getElementById(btnSaveId)) {
                 isNoDuplicate();
             }
         });
+    }
+
+    function checkRegionExistence(sourceAddress) {
+        let region = sourceAddress.getAdministrativeAreas()[0];
+        let fullAddress = sourceAddress.getAddressLine();
+        if (region !== fullAddress.split(',')[1].trim()) {
+            fullAddress = fullAddress.substr(0, fullAddress.split(',')[0].length) + ', ' +
+                region + fullAddress.substr(fullAddress.split(',')[0].length, fullAddress.length);
+        }
+        return fullAddress;
     }
 }

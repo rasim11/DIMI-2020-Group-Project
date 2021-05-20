@@ -71,6 +71,7 @@ public final class UrlTemplates {
     public static final String LOCAL_URL_USER_REGISTRATION = API + VERSION + USER_MANAGEMENT + USER_REGISTRATION;
     public static final String LOCAL_URL_POST_TASK = API + VERSION + TASK_MANAGEMENT + TASK_POST;
     public static final String LOCAL_URL_GET_TASK_BY_ID = API + VERSION + TASK_MANAGEMENT + TASK_GET + BY_ID + "/{id}";
+    public static final String LOCAL_URL_GET_TASK_BY_CITY = API + VERSION + TASK_MANAGEMENT + TASK_GET + "-by-city/{city}";
     public static final String LOCAL_URL_GET_TASK = API + VERSION + TASK_MANAGEMENT + TASK_GET + BY_ID + "/";
     public static final String LOCAL_URL_AUTHOR_PUT_TASK = API + VERSION + TASK_MANAGEMENT + TASK_PUT +
             BY_ID + "-by-author/{id}";
@@ -86,8 +87,7 @@ public final class UrlTemplates {
     public static final String LOCAL_URL_POST_SUBSCRIPTION = API + VERSION + SUBSCRIPTION_MANAGEMENT +
             "/subscription-post";
     public static final String LOCAL_URL_GET_EMPLOYEES = API + VERSION + USER_MANAGEMENT +
-            "/get-employees-by-responsible-email/{email}/{regionId}/{searchString}/{criterion}/{sort}/{actualTask}" +
-            "/{resolvedTask}/{regDate}/{page}/{role}";
+            "/get-employees-by-responsible-email";
     public static final String LOCAL_URL_GET_TASKS_BY_WORKER_ID = API + VERSION + TASK_SOCIAL_WORKERS_MANAGEMENT +
             "/active-tasks-get-by-social-worker" + BY_ID + "/{id}";
     public static final String LOCAL_URL_POST_EMP = API + VERSION + USER_MANAGEMENT + "/post-emp";
@@ -105,9 +105,15 @@ public final class UrlTemplates {
     public static final String LOCAL_URL_POST_BLOCKED_TASKS = API + VERSION + TASK_MANAGEMENT + "/post-blocked";
     public static final String LOCAL_URL_GET_LINKED_TASKS = API + VERSION + TASK_MANAGEMENT + "/get-linked-tasks/{id}";
     public static final String LOCAL_URL_POST_LINKED_TASKS = API + VERSION + TASK_MANAGEMENT + "/post-linked";
-    public static final String LOCAL_URL_POST_GEOLOCATION = API + VERSION  + "/set-geolocation";
+    public static final String LOCAL_URL_POST_GEOLOCATION = API + VERSION + "/set-geolocation";
     public static final String LOCAL_URL_GET_SUBSCRIPTIONS_BY_TASK_ID = API + VERSION + SUBSCRIPTION_MANAGEMENT +
             "/subscriptions-get-by-task-id/{id}";
+    public static final String LOCAL_URL_GET_CONFIRM_ACCOUNT = API + VERSION + USER_MANAGEMENT +
+            "/confirm-account/{url}";
+    public static final String LOCAL_URL_GENERATE_URL_CONFIRM_ACCOUNT = API + VERSION + USER_MANAGEMENT +
+            "/generate-url-confirm-account";
+    public static final String LOCAL_URL_CHECK_USER_ON_LOGOUT = API + VERSION + USER_MANAGEMENT +
+            "/check-user-on-logout";
 
     public static final String URL_GET_ALL_REGIONS = SERVER + LOCAL_URL_GET_ALL_REGIONS;
     public static final String URL_GET_ALL_USERS = SERVER + LOCAL_URL_GET_ALL_USERS;
@@ -181,4 +187,6 @@ public final class UrlTemplates {
     public static final String URL_GET_SUBSCRIPTIONS_BY_TASK_ID = SERVER + LOCAL_URL_GET_SUBSCRIPTIONS_BY_TASK_ID;
     public static final String URL_GET_COMMENTS_BY_AUTHOR = SERVER + API + VERSION + COMMENT_MANAGEMENT +
             "/comments-get-by-author/{id}";
+    public static final String URL_GET_USER_BY_URL_ACCOUNT_CONFIRM = SERVER + API + VERSION + USER_MANAGEMENT +
+            "/get-by-url-account-confirm/{url}";
 }

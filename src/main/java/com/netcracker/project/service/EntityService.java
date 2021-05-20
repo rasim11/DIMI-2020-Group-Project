@@ -5,9 +5,13 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netcracker.project.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import javax.annotation.PostConstruct;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Set;
 
@@ -21,17 +25,9 @@ public class EntityService {
     private ObjectMapper mapper;
 
     public boolean postTask(User user, Task task) {
-        String[] locationsElem = task.getTaskLocation().split(",");
-        if (locationsElem.length < 2) {
+        if (!checkLocation(task)) {
             return false;
         }
-
-        Region region = restTemplate.getForObject(URL_GET_REGION_BY_NAME, Region.class, locationsElem[1].trim());
-        if (region == null) {
-            return false;
-        }
-        task.setRegion(region);
-        task.setCurrResponsible(region.getResponsible());
 
         task.trim();
         task.dataExtension(user);
@@ -234,6 +230,30 @@ public class EntityService {
         JsonNode objects = restTemplate.getForObject(URL_GET_COMMENTS_BY_AUTHOR, JsonNode.class, id);
         return mapper.convertValue(objects,
                 new TypeReference<Iterable<Comment>>() {
+                }
+        );
+    }
+
+    public boolean checkLocation(Task task) {
+        String[] locationsElem = task.getTaskLocation().split(",");
+        if (locationsElem.length < 2) {
+            return false;
+        }
+
+        Region region = restTemplate.getForObject(URL_GET_REGION_BY_NAME, Region.class, locationsElem[1].trim());
+        if (region == null) {
+            return false;
+        }
+        task.setRegion(region);
+        task.setCurrResponsible(region.getResponsible());
+
+        return true;
+    }
+
+    public Iterable<Task> getAllTasks() {
+        JsonNode objects = restTemplate.getForObject(URL_GET_TASK_LIST, JsonNode.class);
+        return mapper.convertValue(objects,
+                new TypeReference<Iterable<Task>>() {
                 }
         );
     }

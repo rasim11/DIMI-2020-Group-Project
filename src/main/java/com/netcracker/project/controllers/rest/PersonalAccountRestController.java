@@ -4,6 +4,7 @@ import com.netcracker.project.model.Region;
 import com.netcracker.project.model.Role;
 import com.netcracker.project.model.User;
 import com.netcracker.project.service.EntityService;
+import com.netcracker.project.service.MailService;
 import com.netcracker.project.service.SecurityService;
 import com.netcracker.project.service.impl.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import static com.netcracker.project.url.UrlTemplates.*;
 @RestController
 public class PersonalAccountRestController {
     private static final Long USERS_COUNT_ON_PAGE = 10L;
+    public static final Long TIME_BEFORE_ACCOUNT_DELETION = 24 * 60 * 60 * 1000L;
 
     @Autowired
     private SecurityService securityService;
@@ -25,10 +27,12 @@ public class PersonalAccountRestController {
     private EntityService entityService;
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
+    @Autowired
+    private MailService mailService;
 
     @GetMapping(LOCAL_URL_GET_CURRENT_USER)
     public User getCurUser() {
-        return securityService.getCurrentUser();
+        return userDetailsService.getUserByEmail(securityService.getCurrentUser().getEmail());
     }
 
     @PutMapping(LOCAL_URL_PUT_USER)
@@ -61,17 +65,20 @@ public class PersonalAccountRestController {
     }
 
     @GetMapping(LOCAL_URL_GET_EMPLOYEES)
-    public Map<String, Object> getEmployees(@PathVariable String actualTask, @PathVariable Integer criterion,
-                                            @PathVariable String email, @PathVariable Long page,
-                                            @PathVariable String regDate, @PathVariable String resolvedTask,
-                                            @PathVariable String searchString, @PathVariable Integer sort,
-                                            @PathVariable Role role, @PathVariable Long regionId) {
-        Region region = regionId != -1 ? entityService.getRegionById(regionId) :
-                entityService.getRegionByResponsibleEmail(email);
+    public Map<String, Object> getEmployees(@RequestParam(required = false) String searchString,
+                                            @RequestParam(required = false) Integer criterion,
+                                            @RequestParam Integer sort, @RequestParam Long page,
+                                            @RequestParam(required = false) String[] actualTask,
+                                            @RequestParam(required = false) String[] resolvedTask,
+                                            @RequestParam(required = false) String[] regDate,
+                                            @RequestParam(required = false) String[] empRoles) {
+        User curUser = userDetailsService.getUserByEmail(securityService.getCurrentUser().getEmail());
+        Region region = curUser.getRegion() != null ? curUser.getRegion() :
+                entityService.getRegionByResponsibleEmail(curUser.getEmail());
         List<User> userList = new ArrayList<>();
 
         userDetailsService.getUsersByRegionId(URL_GET_WORKERS_BY_REGION_ID, region.getId()).forEach(userList::add);
-        if (role.equals(Role.RESPONSIBLE)) {
+        if (curUser.getRole().equals(Role.RESPONSIBLE)) {
             userDetailsService.getUsersByRegionId(URL_GET_DEPUTIES_BY_REGION_ID, region.getId()).forEach(userList::add);
         }
 
@@ -81,6 +88,10 @@ public class PersonalAccountRestController {
         }
 
         userList = userList.stream().sorted((a, b) -> {
+            if (sort == null) {
+                return 0;
+            }
+
             int res = 0;
             switch (sort) {
                 case 0:
@@ -95,56 +106,63 @@ public class PersonalAccountRestController {
             }
             return res;
         }).filter(x -> {
-            if (searchString.equals("null")) {
+            if (searchString == null || criterion == null) {
                 return true;
             }
+            String searchStringTrim = searchString.trim();
 
             boolean res = false;
             switch (criterion) {
                 case 0:
                     res = String.join(" ", x.getLastname(), x.getFirstname(),
-                            x.getMiddlename()).contains(searchString);
+                            x.getMiddlename()).contains(searchStringTrim);
                     break;
                 case 1:
-                    res = x.getEmail().contains(searchString);
+                    res = x.getEmail().contains(searchStringTrim);
                     break;
                 case 2:
-                    res = x.getPhoneNumber().contains(searchString);
+                    res = x.getPhoneNumber().contains(searchStringTrim);
                     break;
             }
             return res;
         }).filter(x -> {
-            if (regDate.equals("null")) {
+            if (regDate == null) {
                 return true;
             }
 
-            List<LocalDate> localDates = Arrays.stream(regDate.split("\\|")).map(y -> {
+            List<LocalDate> localDates = Arrays.stream(regDate).map(y -> {
                 String[] arr = y.split("-");
                 return LocalDate.of(Integer.parseInt(arr[0]), Integer.parseInt(arr[1]),
                         Integer.parseInt(arr[2]));
             }).collect(Collectors.toList());
 
-            return x.getRegDate().compareTo(localDates.get(0)) >= 0 && x.getRegDate().compareTo(localDates.get(1)) <= 0;
+            return x.getRegDate().toLocalDate().compareTo(localDates.get(0)) >= 0 &&
+                    x.getRegDate().toLocalDate().compareTo(localDates.get(1)) <= 0;
         }).filter(x -> {
-            if (resolvedTask.equals("null")) {
+            if (resolvedTask == null) {
                 return true;
             }
 
-            String[] resolvedTaskTemp = resolvedTask.split("\\|");
-            Long[] resolvedTaskRange = {Long.parseLong(resolvedTaskTemp[0]),
-                    resolvedTaskTemp[1].equals("maxLong") ? Long.MAX_VALUE : Long.parseLong(resolvedTaskTemp[1])};
+            Long[] resolvedTaskRange = {Long.parseLong(resolvedTask[0]),
+                    resolvedTask[1].equals("maxLong") ? Long.MAX_VALUE : Long.parseLong(resolvedTask[1])};
 
             return resolvedTaskRange[0] <= x.getTasksCount() && x.getTasksCount() <= resolvedTaskRange[1];
         }).filter(x -> {
-            if (actualTask.equals("null")) {
+            if (actualTask == null) {
                 return true;
             }
 
-            String[] actualTaskTemp = actualTask.split("\\|");
-            Long[] actualTaskRange = {Long.parseLong(actualTaskTemp[0]),
-                    actualTaskTemp[1].equals("maxLong") ? Long.MAX_VALUE : Long.parseLong(actualTaskTemp[1])};
+            Long[] actualTaskRange = {Long.parseLong(actualTask[0]),
+                    actualTask[1].equals("maxLong") ? Long.MAX_VALUE : Long.parseLong(actualTask[1])};
 
             return actualTaskRange[0] <= x.calculateActiveTask() && x.calculateActiveTask() <= actualTaskRange[1];
+        }).filter(x -> {
+            if (empRoles == null) {
+                return true;
+            }
+
+            List<Role> roles = Arrays.stream(empRoles).map(Role::valueOf).collect(Collectors.toList());
+            return roles.contains(x.getRole());
         }).collect(Collectors.toList());
 
         Map<String, Object> result = new HashMap<>();
@@ -161,5 +179,34 @@ public class PersonalAccountRestController {
         User user = userDetailsService.getUserById(id);
         user.setActiveTasks(entityService.getActiveTaskBySocialWorkersId(user.getId()));
         return user.calculateActiveTask();
+    }
+
+    @GetMapping(LOCAL_URL_GENERATE_URL_CONFIRM_ACCOUNT)
+    public void generateUrlConfirmAccount() {
+        User user = userDetailsService.getUserByEmail(securityService.getCurrentUser().getEmail());
+        if (user == null) {
+            return;
+        }
+
+        user.setUrlAccountConfirm(UUID.randomUUID().toString());
+        userDetailsService.putUser(user);
+
+        mailService.confirmAccount(user);
+    }
+
+    @GetMapping(LOCAL_URL_CHECK_USER_ON_LOGOUT)
+    public String checkUserOnLogout() {
+        if (securityService.isAuthenticated()) {
+            User curUser = securityService.getCurrentUser();
+            if (!curUser.getIsAccountConfirmed()) {
+                if (userDetailsService.getUserById(curUser.getId()) != null) {
+                    return Boolean.toString(false);
+                } else {
+                    return Boolean.toString(true);
+                }
+            }
+        }
+
+        return "disable";
     }
 }

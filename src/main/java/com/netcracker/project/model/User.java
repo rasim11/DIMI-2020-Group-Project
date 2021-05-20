@@ -8,10 +8,12 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
+import java.util.UUID;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -28,11 +30,13 @@ public class User implements UserDetails {
     private String passwordConfirm;
     private String appointment;
     private Role role;
-    private LocalDate regDate;
+    private LocalDateTime regDate;
     private Long tasksCount;
     private Region region;
     private Municipality municipality;
     private Set<Task> activeTasks;
+    private Boolean isAccountConfirmed;
+    private String urlAccountConfirm;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -64,17 +68,22 @@ public class User implements UserDetails {
         return true;
     }
 
+    public void createUrlAccountConfirm() {
+        this.isAccountConfirmed = false;
+        this.urlAccountConfirm = UUID.randomUUID().toString();
+    }
+
     public void dataExtension(Role role) {
-        this.regDate = LocalDate.now();
+        this.regDate = LocalDateTime.now();
         this.tasksCount = 0L;
         this.role = role;
+        this.createUrlAccountConfirm();
     }
 
     public void dataExtension(Role role, Region region) {
-        this.regDate = LocalDate.now();
-        this.tasksCount = 0L;
-        this.role = role;
+        this.dataExtension(role);
         this.region = region;
+        this.createUrlAccountConfirm();
     }
 
     public void update(User user) {

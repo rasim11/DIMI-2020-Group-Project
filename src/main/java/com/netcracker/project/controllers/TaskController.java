@@ -79,7 +79,6 @@ public class TaskController {
         model.addAttribute("histories", entityService.getHistoryByTaskId(id));
         model.addAttribute("task", task);
         model.addAttribute("taskImages", taskImages);
-        model.addAttribute("checkFeedback", entityService.getCommentByTaskId(id));
 
         if (securityService.isAuthenticated()) {
             User curUser = securityService.getCurrentUser();
@@ -172,14 +171,25 @@ public class TaskController {
     }
 
     @PostMapping(LOCAL_URL_AUTHOR_PUT_TASK)
-    public String updateTaskPost(@PathVariable Long id, @ModelAttribute("taskForm") Task taskForm) {
-        Task task = entityService.getTaskById(id);
+    public String updateTaskPost(@PathVariable Long id, @ModelAttribute("taskForm") Task taskForm, Model model) {
+        if (entityService.checkLocation(taskForm)) {
+            Task task = entityService.getTaskById(id);
 
-        taskForm.trim();
-        task.dataExtension(taskForm);
-        entityService.putTask(task);
+            taskForm.trim();
+            task.dataExtension(taskForm);
 
-        return "redirect:" + LOCAL_URL_GET_TASK_BY_ID.replace("{id}", id.toString());
+            entityService.putTask(task);
+            return "redirect:" + LOCAL_URL_GET_TASK_BY_ID.replace("{id}", id.toString());
+        } else {
+            String[] taskImages = taskForm.getTaskImage().length() != 0 ?
+                    taskForm.getTaskImage().split(" ") : null;
+
+            model.addAttribute("regionNotFound",
+                    "В данном регионе платформа Social Issues Tracker не поддерживается!");
+            model.addAttribute("taskImages", taskImages);
+
+            return "author-edit-task";
+        }
     }
 
     @GetMapping(LOCAL_URL_RESPONSIBLE_PUT_TASK)

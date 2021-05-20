@@ -10,8 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.netcracker.project.url.UrlTemplates.*;
 
@@ -83,7 +86,7 @@ public class TaskRestController {
                 }
             }
 
-            User curUser = securityService.getCurrentUser();
+            User curUser = userDetailsService.getUserByEmail(securityService.getCurrentUser().getEmail());
             securityService.autoLogin(curUser.getEmail(), curUser.getPasswordConfirm());
         } else if (task.getStatus().equals(Status.CANCELED) || task.getStatus().equals(Status.REJECTED)) {
             task.setCompleteDate(LocalDateTime.now());
@@ -94,13 +97,13 @@ public class TaskRestController {
                 userDetailsService.putUser(author);
             }
 
-            User curUser = securityService.getCurrentUser();
+            User curUser = userDetailsService.getUserByEmail(securityService.getCurrentUser().getEmail());
             securityService.autoLogin(curUser.getEmail(), curUser.getPasswordConfirm());
         }
 
         entityService.putTask(task);
 
-        mailService.sendMail(task);
+        mailService.changeStatus(task);
     }
 
     @GetMapping(LOCAL_URL_GET_TASKS)
@@ -139,5 +142,13 @@ public class TaskRestController {
     @PostMapping(LOCAL_URL_POST_LINKED_TASKS)
     public void postLinked(@RequestBody String attrStr) {
         entityService.postStringObj(attrStr, 2);
+    }
+
+    @GetMapping(LOCAL_URL_GET_TASK_BY_CITY)
+    public List<Task> getTasksByCity(@PathVariable String city) {
+        List<Task> tasks = new ArrayList<>();
+        entityService.getAllTasks().forEach(tasks::add);
+
+        return tasks.stream().filter(x -> x.getTaskLocation().contains(city.trim())).collect(Collectors.toList());
     }
 }

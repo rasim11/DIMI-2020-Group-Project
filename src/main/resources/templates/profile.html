@@ -2,13 +2,15 @@
 <html xmlns:th="http://www.thymeleaf.org/" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
     <meta charset="UTF-8">
-    <title>TF|Профиль</title>
+    <title>SIT|Профиль</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <link href="/css/blockTitles.css" rel="stylesheet">
     <link href="/css/imgProfile.css" rel="stylesheet">
     <link href="/css/formData.css" rel="stylesheet">
+    <script src="/js/urlTemplates.js"></script>
+    <script src="/js/requests.js"></script>
     <script src="https://api-maps.yandex.ru/2.1/?apikey=5694d7f9-f8dc-4349-9d30-9dc5a908a417&lang=ru_RU"
             type="text/javascript">
     </script>
@@ -77,12 +79,15 @@
                                 <div class="card card-body" style="background: none; border: none;">
                                     <span class="mb-2" style="display: block;" th:text="'Название: ' +
                                      ${user.municipality.name}"/>
-                                    <span class="mb-2" style="display: block;" th:text="'Адрес: ' +
+                                    <span class="mb-2" style="display: block;" th:if="${user.municipality.location != null}"
+                                          th:text="'Адрес: ' +
                                      ${user.municipality.location}"/>
-                                    <span class="mb-2" style="display: block;" th:text="'Номер телефона: ' +
+                                    <span class="mb-2" style="display: block;" th:if="${user.municipality.phoneNumber != null}"
+                                          th:text="'Номер телефона: ' +
                                     ${user.municipality.phoneNumber}"/>
-                                    <span class="mb-2" style="display: block;" th:text="'Email: ' +
-                                     ${user.municipality.email}"/>
+                                    <span class="mb-2" style="display: block;"
+                                          th:if="${user.municipality.email != null}"
+                                          th:text="'Email: ' + ${user.municipality.email}"/>
                                 </div>
                             </div>
                         </li>
@@ -97,7 +102,7 @@
                                 <div class="card card-body" style="background: none; border: none;">
                                     <span class="mb-2" style="display: block;" th:text="'Решённых проблем: ' +
                                     ${user.getTasksCount()}"/>
-                                    <a class="mb-2" href="#">
+                                    <a class="mb-2" th:href="@{/api/v1/main-page?otherUserTasks=true(userId=${user.getId})}">
                                         Проблемы пользователя
                                     </a>
                                 </div>
@@ -128,7 +133,8 @@
                         <p th:text="'Регион: '+${region}"/>
                         <p th:text="'Решённых проблем: '+${user.getTasksCount()}"/>
                     </div>
-                    <a href="#"><p>Проблемы пользователя</p></a>
+                    <a th:href="@{/api/v1/main-page?otherUserTasks=true(userId=${user.getId})}"><p>Проблемы пользователя</p></a>
+
                 </div>
             </div>
             <form th:if="${!role.equals(role.ADMIN) && #authentication.principal.role.equals(role.ADMIN)}"
@@ -142,5 +148,6 @@
 
 <footer th:insert="blocks/footer :: footer"></footer>
 
+<script src="/js/mapForAllTasksLocation.js" type="text/javascript"></script>
 </body>
 </html>

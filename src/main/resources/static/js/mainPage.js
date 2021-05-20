@@ -238,3 +238,22 @@ function getMyTasksStaff() {
     if (radio != undefined) radio.checked = true;
 }
 
+function getOtherUserTasks(valueId) {
+    var userIdVal = valueId
+    console.log("otherUserTasks")
+    $.ajax({
+        method: 'get',
+        dataType: 'html',
+        data: {userId: userIdVal},
+        url: "/api/v1/main-page/otherUserTasks",
+        success: function (data) {
+            $('#listTaskId').html(data);
+        }
+    });
+
+    var radio = document.getElementById("radioMyProblemsForStaff");
+    if (radio != undefined) radio.checked = true;
+    radio = document.getElementById("radioMAP");
+    if (radio != undefined) radio.checked = true;
+}
+

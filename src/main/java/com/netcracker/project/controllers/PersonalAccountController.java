@@ -1,5 +1,7 @@
 package com.netcracker.project.controllers;
 
+import com.netcracker.project.components.UserNotConfirm;
+import com.netcracker.project.controllers.rest.PersonalAccountRestController;
 import com.netcracker.project.model.Region;
 import com.netcracker.project.model.Role;
 import com.netcracker.project.model.User;
@@ -24,9 +26,12 @@ public class PersonalAccountController {
     private UserDetailsServiceImpl userDetailsService;
     @Autowired
     private EntityService entityService;
+    @Autowired
+    private UserNotConfirm userNotConfirm;
 
     @GetMapping(LOCAL_URL_PERSONAL_ACCOUNT)
     public String personalAccountGet(Model model) {
+        model.addAttribute("timeBeforeAccountDeletion", PersonalAccountRestController.TIME_BEFORE_ACCOUNT_DELETION);
         return "personal-account";
     }
 
@@ -88,7 +93,7 @@ public class PersonalAccountController {
             roles.add(Role.DEPUTY);
         }
 
-        model.addAttribute("title", "TF|Регистрация сотрудника");
+        model.addAttribute("title", "SIT|Регистрация сотрудника");
         model.addAttribute("userForm", new User());
         model.addAttribute("roles", roles);
         return "registration-through-admin";
@@ -102,6 +107,8 @@ public class PersonalAccountController {
         userForm.setRegion(region);
 
         userDetailsService.addWorkerOrResponsible(userForm);
+
+        userNotConfirm.deleteUserWithTime(userDetailsService.getUserByEmail(userForm.getEmail()));
 
         return "redirect:" + LOCAL_URL_PERSONAL_ACCOUNT;
     }

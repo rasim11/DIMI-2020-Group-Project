@@ -42,9 +42,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         LOCAL_URL_USER_REGISTRATION_ADMIN + "/**").hasAuthority("Админ")
                 .antMatchers(LOCAL_URL_RESPONSIBLE_PUT_TASK + "/**")
                     .hasAnyAuthority("Ответственный", "Региональный ответственный")
-                .antMatchers(LOCAL_URL_PERSONAL_ACCOUNT + "/**").fullyAuthenticated()
+                .antMatchers(
+                        LOCAL_URL_PERSONAL_ACCOUNT + "/**",
+                        LOCAL_URL_GENERATE_URL_CONFIRM_ACCOUNT + "/**").fullyAuthenticated()
                 .antMatchers(
                         "/resources/**",
+                        LOCAL_URL_GET_CONFIRM_ACCOUNT,
                         LOCAL_URL_MAIN_PAGE,
                         LOCAL_URL_USER_PROFILE,
                         LOCAL_URL_GET_TASK_BY_ID).permitAll()

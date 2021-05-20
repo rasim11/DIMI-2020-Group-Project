@@ -4,10 +4,12 @@ package com.netcracker.project.controllers;
 import com.netcracker.project.model.Role;
 import com.netcracker.project.model.Status;
 import com.netcracker.project.model.Task;
+import com.netcracker.project.model.User;
 import com.netcracker.project.model.response.FilterParams;
 import com.netcracker.project.model.response.FilterRadio;
 import com.netcracker.project.model.response.GetPageAndDateRange;
 
+import com.netcracker.project.service.impl.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
@@ -34,6 +36,9 @@ public class MainController {
 
     final String pageUrl = URL_GET_TASK_LIST + "/page";
     final String filterUrl = URL_GET_TASK_LIST + "/filter";
+
+    @Autowired
+    UserDetailsServiceImpl userDetailsService;
 
 
     @GetMapping(LOCAL_URL_MAIN_PAGE)
@@ -190,7 +195,7 @@ public class MainController {
         } else if (radioMAP != null)
         if (radioMAP) {
             filterRadio = new FilterRadio();
-            filterRadio.setMyTaskForStaff();
+            filterRadio.setMyActualProblems();
             filterRadio.setUserId(userId);
             String infMessage = "Мои актуальные проблемы" ;
             model.addAttribute("infMessage", infMessage);
@@ -295,7 +300,23 @@ public class MainController {
     @GetMapping(LOCAL_URL_MAIN_PAGE + "/filterMyProblemsStaff")
     public String filterMyProblemsStaff( @RequestParam(required = false) Integer userId, Model model) {
         setRadios(2, userId, model);
-        String infMessage = "Отслеживаемые проблемы" ;
+        String infMessage = "Мои актуальные проблемы" ;
+        model.addAttribute("infMessage", infMessage);
+        return "taskList";
+    }
+
+    @GetMapping(LOCAL_URL_MAIN_PAGE + "/otherUserTasks")
+    public String filterOtherUserTasks( @RequestParam(required = false) Integer userId, Model model) {
+
+        setRadios(0, userId, model);
+        Long id =  userId.longValue();
+        User user = userDetailsService.getUserById(id);
+
+        String infMessage = "Проблемы пользователя " ;
+        if (user !=null) {
+            infMessage += user.getFirstname() + " ";
+            infMessage += user.getLastname() + " ";
+        }
         model.addAttribute("infMessage", infMessage);
         return "taskList";
     }
@@ -313,7 +334,7 @@ public class MainController {
             if (valeOfRadio == 1)
                 filterRadio.setSubscribeTasks();
             if (valeOfRadio == 2)
-                filterRadio.setMyTaskForStaff();
+                filterRadio.setMyActualProblems();
 
             filterRadio.setUserId(userId);
             filterParams.setFilterRadio(filterRadio);

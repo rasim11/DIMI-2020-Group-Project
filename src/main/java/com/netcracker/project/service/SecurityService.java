@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 public class SecurityService {
     @Autowired
     private AuthenticationManager authenticationManager;
-
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
 
@@ -31,7 +30,7 @@ public class SecurityService {
 
     public User getCurrentUser() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        return (User)auth.getPrincipal();
+        return (User) auth.getPrincipal();
     }
 
     public void autoLogin(String email, String password) {

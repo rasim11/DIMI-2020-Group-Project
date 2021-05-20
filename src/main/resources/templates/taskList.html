@@ -22,11 +22,14 @@
                 <span th:text="${task.taskName}" th:title="${task.taskName}"></span>
             </td>
             <td class="clip">
-                <div>
+                <div th:if="${task.author != null}">
                     <span><img th:src="${task.author.getUserImage()}"
                                style="width: 34px; height: 34px; display: inline-block;border-radius: 100%;"/></span>
                     <span th:text="${task.author.firstname}" th:title="${task.author.firstname}"></span>
                     <span th:text="${task.author.lastname}" th:title="${task.author.lastname}"></span>
+                </div>
+                <div th:unless="${task.author != null}">
+                    <span>Аккаунт удален</span>
                 </div>
             </td>
             <td class="clip">
@@ -73,5 +76,9 @@
             </span>
         </form>
     </div>
+    <script th:inline="javascript">
+        var tasksAll = [[${taskList}]];
+    </script>
+
 </div>
 

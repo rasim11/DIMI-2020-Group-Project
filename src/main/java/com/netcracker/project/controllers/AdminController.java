@@ -1,5 +1,6 @@
 package com.netcracker.project.controllers;
 
+import com.netcracker.project.components.UserNotConfirm;
 import com.netcracker.project.model.Role;
 import com.netcracker.project.model.User;
 import com.netcracker.project.service.impl.UserDetailsServiceImpl;
@@ -21,6 +22,8 @@ import static com.netcracker.project.url.UrlTemplates.*;
 public class AdminController {
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
+    @Autowired
+    private UserNotConfirm userNotConfirm;
 
     @GetMapping(LOCAL_URL_ADMINISTRATION)
     public String administrationGet(Model model) {
@@ -32,7 +35,7 @@ public class AdminController {
         List<Role> roles = Arrays.stream(Role.values()).collect(Collectors.toList());
         roles.remove(Role.ADMIN);
 
-        model.addAttribute("title", "TF|Регистрация пользователя");
+        model.addAttribute("title", "SIT|Регистрация пользователя");
         model.addAttribute("roles", roles);
         model.addAttribute("userForm", new User());
         return "registration-through-admin";
@@ -43,10 +46,12 @@ public class AdminController {
         Role curRole = userForm.getRole();
 
         if (curRole.equals(Role.USER)) {
-            userDetailsService.addUser(userForm);
+            userDetailsService.postUser(userForm);
         } else {
             userDetailsService.addWorkerOrResponsible(userForm);
         }
+
+        userNotConfirm.deleteUserWithTime(userDetailsService.getUserByEmail(userForm.getEmail()));
 
         return REDIRECT_ON_ADMINISTRATION;
     }

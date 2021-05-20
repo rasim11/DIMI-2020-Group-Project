@@ -17,7 +17,6 @@ public class Task {
     private String taskDescription;
     private String taskLocation;
     private Priority priority;
-    private Boolean commentAllow;
     private String taskImage;
     private User author;
     private Region region;
@@ -41,7 +40,8 @@ public class Task {
         this.taskDescription = task.taskDescription;
         this.taskLocation = task.taskLocation;
         this.taskImage = task.taskImage;
-        this.commentAllow = task.commentAllow;
+        this.region = task.region;
+        this.currResponsible = task.currResponsible;
     }
 
     public void trim() {

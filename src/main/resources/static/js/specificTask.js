@@ -445,7 +445,7 @@ function linkedTask(btn, isChangeStatus) {
 
         const spanDescription = document.createElement("span");
         spanDescription.className = "mr-2";
-        spanDescription.innerText = "Выбирите проблемы из списка:";
+        spanDescription.innerText = "Выберите проблемы из списка:";
         spanDescription.style.whiteSpace = "nowrap";
         divBody.append(spanDescription);
 

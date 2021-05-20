@@ -1,6 +1,4 @@
 const formTaskAddId = "form-task";
-const spanErrMsgId = "span-err-msg";
-const divCommentAllowClass = "div-comment-allow";
 const divImagesClass = "div-images";
 const divImageClass = "div-image";
 const inputLoadImgId = "input-load-img";
@@ -10,41 +8,18 @@ const btnSaveId = "btn-save";
 const inputTaskName = "taskName";
 const textareaTaskDescriptionName = "taskDescription";
 const inputTaskLocationName = "taskLocation";
-const inputTaskCommentAllowName = "commentAllow";
 let n = 3;
 let defaultTaskName;
 let defaultTaskDescription;
 let defaultTaskLocation;
-let defaultTaskCommentAllow;
 let isImgDefault = true;
 
-function isCommentAllowChecked() {
-    const inputCommentAllow = document.getElementsByName(inputTaskCommentAllowName);
-    if (inputCommentAllow[0].checked || inputCommentAllow[1].checked) {
-        const spanErrMsg = document.getElementById(spanErrMsgId);
-        if (spanErrMsg) {
-            spanErrMsg.remove();
-        }
-        return true;
-    } else {
-        let spanErrMsg = document.getElementById(spanErrMsgId);
-        if (!spanErrMsg) {
-            spanErrMsg = document.createElement("span");
-            spanErrMsg.textContent = "Выберите действие";
-            spanErrMsg.style.color = "red";
-            spanErrMsg.style.display = "block";
-            spanErrMsg.id = spanErrMsgId;
-            document.querySelector("." + divCommentAllowClass).prepend(spanErrMsg);
-        }
-        return false;
-    }
-}
 
 function loadTask() {
     const formTaskAdd = document.getElementById(formTaskAddId);
     formTaskAdd.onsubmit = function (e) {
         e.preventDefault();
-        if (isNoEmpty(formTaskAdd) & isCommentAllowChecked()) {
+        if (isNoEmpty(formTaskAdd)) {
             const inputTaskImages = document.createElement("input");
             inputTaskImages.name = taskImageName;
             inputTaskImages.type = "hidden";
@@ -69,9 +44,6 @@ function loadTaskEdit() {
     defaultTaskName = document.getElementsByName(inputTaskName)[0].value;
     defaultTaskDescription = document.getElementsByName(textareaTaskDescriptionName)[0].value;
     defaultTaskLocation = document.getElementsByName(inputTaskLocationName)[0].value;
-    defaultTaskCommentAllow = document.getElementsByName(inputTaskCommentAllowName)[0].checked === true ?
-        document.getElementsByName(inputTaskCommentAllowName)[0] :
-        document.getElementsByName(inputTaskCommentAllowName)[1];
 }
 
 
@@ -147,12 +119,8 @@ function taskDivImgRemove(divImgId) {
 
 function isNoDuplicate() {
     const btnSave = document.getElementById(btnSaveId);
-    const taskCommentAllow = document.getElementsByName(inputTaskCommentAllowName)[0].checked === true ?
-        document.getElementsByName(inputTaskCommentAllowName)[0] :
-        document.getElementsByName(inputTaskCommentAllowName)[1];
 
     btnSave.disabled = !(document.getElementsByName(inputTaskName)[0].value !== defaultTaskName ||
         document.getElementsByName(textareaTaskDescriptionName)[0].value !== defaultTaskDescription ||
-        document.getElementsByName(inputTaskLocationName)[0].value !== defaultTaskLocation ||
-        taskCommentAllow.id !== defaultTaskCommentAllow.id || !isImgDefault);
+        document.getElementsByName(inputTaskLocationName)[0].value !== defaultTaskLocation || !isImgDefault);
 }

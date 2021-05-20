@@ -2,14 +2,15 @@
 <html xmlns:th="http://www.thymeleaf.org/" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
     <script src="/js/mainPage.js"></script>
-    <title>TF|Главная</title>
+    <title>SIT|Главная</title>
     <script src="/js/tasksList.js"></script>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <link href="/css/tasksList.css" rel="stylesheet">
-
+    <script src="/js/requests.js"></script>
+    <script src="/js/urlTemplates.js"></script>
     <link rel="stylesheet" href="https://formden.com/static/cdn/bootstrap-iso.css"/>
     <script src="https://api-maps.yandex.ru/2.1/?apikey=5694d7f9-f8dc-4349-9d30-9dc5a908a417&lang=ru_RU"
             type="text/javascript">
@@ -102,7 +103,7 @@
 </form>
 
 
-<script type="text/javascript"  th:if="${param.myTasks == null && param.mySubs == null && param.myTasksStaff == null}">
+<script type="text/javascript"  th:if="${param.myTasks == null && param.mySubs == null && param.myTasksStaff == null && param.otherUserTasks == null }">
     $(document).ready(function() {
         setPage(1);
     });
@@ -123,6 +124,14 @@
 <script type="text/javascript"  th:if="${param.myTasksStaff} ">
     $(document).ready(function() {
         getMyTasksStaff()
+    });
+</script>
+
+<script type="text/javascript"  th:if="${param.otherUserTasks } ">
+    $(document).ready(function() {
+        console.log("otherUserTasks")
+        var bills = [[${param.userId}]];
+        getOtherUserTasks(bills)
     });
 </script>
 
@@ -148,7 +157,7 @@
 
                     <div id="collapseStatus">
                         <div class="card card-body" style="background: none;border: none">
-                            <a href="#exampleModalCenter" style="text-decoration:none;font-size: 24px;" data-toggle="modal" id="show-on-map">
+                            <a href="#AllTasksLocation" style="text-decoration:none;font-size: 24px;" data-toggle="modal" id="show-on-map">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="red"
                                      class="bi bi-geo-alt-fill" viewBox="0 0 16 16">
                                     <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/>
@@ -323,7 +332,7 @@
                                         </label>
                                     </div>
 
-                                    <div class="form-check" sec:authorize="hasAnyAuthority('Соц. работник','Ответственный')">
+                                    <div class="form-check" sec:authorize="hasAnyAuthority('Соц. работник','Ответственный', 'Региональный ответственный')">
                                         <input class="form-check-input" type="radio" name="flexRadioDefault"
                                                id="radioMyProblemsForStaff">
                                         <label class="form-check-label" for="radioMyProblemsForStaff">
@@ -397,13 +406,8 @@
         </div>
     </div>
 </div>
-<!--<div class="modal-dialog modal-xl" id="exampleModalCenter">...</div>-->
-<!--<div class="tasks-map-window show">-->
-<!--    <div id="div-dynamic-window" style="text-align: center;width: 600px; height: 400px">-->
-<!--        <div id="mapForAllTasks" style="width: 100%; height: 400px"></div>-->
-<!--    </div>-->
-<!--</div>-->
-<div class="modal fade" id="exampleModalCenter"role="dialog" aria-labelledby="exampleModalCenterTitle"
+
+<div class="modal fade" id="AllTasksLocation" role="dialog" aria-labelledby="exampleModalCenterTitle"
      aria-hidden="true">
     <div class="modal-dialog" style="max-width: 80%;" role="document">
     <div class="modal-content">
@@ -415,7 +419,7 @@
             </div>
             <div class="modal-body">
                 <div id="map-div">
-                    <div id="mapForAllTasks" style="width: 100%; height: 700px"></div>
+                    <div id="mapForAllTasks" style="width: 100%; height: 70vh;"></div>
                 </div>
             </div>
         </div>
@@ -434,9 +438,9 @@
 
 <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
 <!-- Include Date Range Picker -->
-<script th:inline="javascript">
-    var tasks = [[${taskList}]];
-</script>
+<!--<script th:inline="javascript">-->
+<!--    var tasksAll = [[${taskList}]];-->
+<!--</script>-->
 <script src="/js/mapForAllTasksLocation.js" type="text/javascript"></script>
 <script type="text/javascript"
         src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>

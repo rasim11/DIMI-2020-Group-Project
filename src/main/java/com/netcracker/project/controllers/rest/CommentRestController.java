@@ -5,6 +5,7 @@ import com.netcracker.project.model.Task;
 import com.netcracker.project.model.User;
 import com.netcracker.project.service.EntityService;
 import com.netcracker.project.service.SecurityService;
+import com.netcracker.project.service.impl.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,12 +24,14 @@ public class CommentRestController {
     private EntityService entityService;
     @Autowired
     private SecurityService securityService;
+    @Autowired
+    private UserDetailsServiceImpl userDetailsService;
 
     @PostMapping(LOCAL_URL_POST_COMMENT)
     public void addComment(@RequestBody String commentStr) {
         String[] commentBody = commentStr.split("&&&");
         Task task = entityService.getTaskById(Long.parseLong(commentBody[1]));
-        User curUser = securityService.getCurrentUser();
+        User curUser = userDetailsService.getUserByEmail(securityService.getCurrentUser().getEmail());
 
         Comment comment = new Comment(null, task, commentBody[0].trim(), LocalDateTime.now(),
                 curUser, commentBody.length >= 3 ? commentBody[2] : null);
