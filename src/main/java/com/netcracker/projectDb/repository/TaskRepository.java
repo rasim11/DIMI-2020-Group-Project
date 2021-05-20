@@ -5,6 +5,8 @@ import com.netcracker.projectDb.model.Status;
 import com.netcracker.projectDb.model.User;
 import org.springframework.data.repository.CrudRepository;
 
+import javax.jws.soap.SOAPBinding;
+
 public interface TaskRepository extends CrudRepository<Task, Long> {
     Iterable<Task> findAllByTaskName(String var1);
 
@@ -13,4 +15,5 @@ public interface TaskRepository extends CrudRepository<Task, Long> {
     Iterable<Task> findAllByAuthor(User author);
 
     Iterable<Task> findAllByCurrResponsible(User currResponsible);
+
 }

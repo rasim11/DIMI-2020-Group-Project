@@ -1,0 +1,89 @@
+[
+  {
+    "lastname":"Админов",
+    "firstname": "Админ",
+    "middlename": "Админович",
+    "role": "ADMIN",
+    "email": "a@admin.ru",
+    "phoneNumber": "123",
+    "password": "$2a$10$H1itEA0gacJqp7.k5knFeunepBoE99GF9HzTqYExClu6Y6asN6ly.",
+    "isAccountConfirmed": true
+  },
+  {
+    "lastname":"Жуков",
+    "firstname": "Георгий",
+    "middlename": "Константинович",
+    "role": "RESPONSIBLE",
+    "email": "reg@mail.ru",
+    "phoneNumber": "+79626678758",
+    "password": "$2a$10$I2aeuTzjZ/dAO8x22shNNuxdB/HcsP.EIh9qwoE/h0MRZ9NnvHXaC",
+    "isAccountConfirmed": true,
+    "tasksCount": 0
+  },
+  {
+    "lastname":"Иванов",
+    "firstname": "Иван",
+    "middlename": "Иванович",
+    "role": "USER",
+    "email": "user1@mail.ru",
+    "phoneNumber": "+79277818618",
+    "password": "$2a$10$I2aeuTzjZ/dAO8x22shNNuxdB/HcsP.EIh9qwoE/h0MRZ9NnvHXaC",
+    "isAccountConfirmed": true,
+    "tasksCount": 0
+  },
+  {
+    "lastname":"Попов",
+    "firstname": "Сергей",
+    "middlename": "Сергеевич",
+    "role": "USER",
+    "email": "user2@mail.ru",
+    "phoneNumber": "+79372117856",
+    "password": "$2a$10$I2aeuTzjZ/dAO8x22shNNuxdB/HcsP.EIh9qwoE/h0MRZ9NnvHXaC",
+    "isAccountConfirmed": true,
+    "tasksCount": 0
+  },
+  {
+    "lastname":"Рокоссовский",
+    "firstname": "Константин",
+    "middlename": "Константинович",
+    "role": "SOCIAL_WORKER",
+    "email": "worker1@mail.ru",
+    "phoneNumber": "+79277833898",
+    "password": "$2a$10$I2aeuTzjZ/dAO8x22shNNuxdB/HcsP.EIh9qwoE/h0MRZ9NnvHXaC",
+    "isAccountConfirmed": true,
+    "tasksCount": 0
+  },
+  {
+    "lastname":"Конев",
+    "firstname": "Иван",
+    "middlename": "Степанович",
+    "role": "SOCIAL_WORKER",
+    "email": "worker2@mail.ru",
+    "phoneNumber": "+78482955400",
+    "password": "$2a$10$I2aeuTzjZ/dAO8x22shNNuxdB/HcsP.EIh9qwoE/h0MRZ9NnvHXaC",
+    "isAccountConfirmed": true,
+    "tasksCount": 0
+  },
+  {
+    "lastname":"Василевский",
+    "firstname": "Александр",
+    "middlename": "Михайлович",
+    "role": "DEPUTY",
+    "email": "resp@mail.ru",
+    "phoneNumber": "+79372102612",
+    "password": "$2a$10$I2aeuTzjZ/dAO8x22shNNuxdB/HcsP.EIh9qwoE/h0MRZ9NnvHXaC",
+    "isAccountConfirmed": true,
+    "tasksCount": 0
+  },
+  {
+    "lastname":"Никитин",
+    "firstname": "Иван",
+    "middlename": "Иванович",
+    "role": "USER",
+    "email": "ivan@mail.ru",
+    "phoneNumber": "+79372112236",
+    "password": "$2a$10$I2aeuTzjZ/dAO8x22shNNuxdB/HcsP.EIh9qwoE/h0MRZ9NnvHXaC",
+    "isAccountConfirmed": true,
+    "tasksCount": 0
+  }
+]

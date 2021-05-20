@@ -26,8 +26,6 @@ public class Task {
     @NotNull
     @Column(columnDefinition = "text")
     private String taskLocation;
-    @NotNull
-    private Boolean commentAllow;
     @Lob
     @Null
     private String taskImage;

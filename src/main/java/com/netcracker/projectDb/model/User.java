@@ -8,6 +8,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @AllArgsConstructor
@@ -43,7 +44,7 @@ public class User {
     @Null
     private String appointment;
     @NotNull
-    private LocalDate regDate;
+    private LocalDateTime regDate;
     @Null
     private Long tasksCount;
     @Null
@@ -52,4 +53,8 @@ public class User {
     @Null
     @ManyToOne
     private Municipality municipality;
+    @NotNull
+    private Boolean isAccountConfirmed;
+    @Null
+    private String urlAccountConfirm;
 }

@@ -83,7 +83,6 @@ public class TaskController {
                 if (user != null) {
                     if (filterRadio.getMyTasks()) // если мои проблемы
                     {
-
                         if (user.getRole() == Role.USER) {
                             taskList = (ArrayList<Task>) taskService.findAllByAuthor(user);
                         } else if (user.getRole() == Role.SOCIAL_WORKER) { // если проблемы для соц работников
@@ -92,7 +91,7 @@ public class TaskController {
                                 Task activeTask = elem.getActiveTask();
                                 taskList.add(activeTask);
                             }
-                        } else if (user.getRole() == Role.RESPONSIBLE) // если проблемы для ответственного
+                        } else if (user.getRole() == Role.RESPONSIBLE) // если проблемы для регионального ответственного
                         {
                             taskList = (ArrayList<Task>) taskService.findAll();
                             taskList = (ArrayList<Task>) taskList.stream()
@@ -102,21 +101,10 @@ public class TaskController {
                                     .filter( (x)->  x.getRegion().getResponsible().getId() != null)
                                     .filter( (x)->  x.getRegion().getResponsible().getId() == user.getId())
                                     .collect(Collectors.toList());
+                        } else if (user.getRole() == Role.DEPUTY) // если проблемы для ответственного
+                        {
+                            taskList = (ArrayList<Task>) taskService.getAllByCurrResponsibleId(userId);
                         }
-
-//                        else if (filterRadio.getMyTaskForStaff()) // если броблемы для соц работников
-//                    {
-//                        System.out.println("если броблемы для соц работников");
-//                        Iterable<TaskSocialWorkers> taskSocialWorkers = taskSocialWorkersService.getAllBySocialWorker(user);
-//
-//                        for (TaskSocialWorkers elem : taskSocialWorkers)
-//                        {
-//                            Task activeTask = elem.getActiveTask();
-//                            taskList.add(activeTask);
-//                        }
-//                        return filterAll(filterParams, taskList);
-//                    }
-
 
                         return filterAll(filterParams, taskList);
                     } else if (filterRadio.getSubscribeTasks()) // если проблемы с подпиской
@@ -131,6 +119,40 @@ public class TaskController {
                             return filterAll(filterParams, taskList);
                         } else return null;
                     }
+                    else if (filterRadio.getMyActualProblems()) // если мои актуальные проблемы
+                    {
+                        if (user.getRole() == Role.USER) {
+                            taskList = (ArrayList<Task>) taskService.findAllByAuthor(user);
+                        } else if (user.getRole() == Role.SOCIAL_WORKER) { // если проблемы для соц работников
+                            Iterable<TaskSocialWorkers> taskSocialWorkers = taskSocialWorkersService.getAllBySocialWorker(user);
+                            for (TaskSocialWorkers elem : taskSocialWorkers) {
+                                Task activeTask = elem.getActiveTask();
+                                taskList.add(activeTask);
+                            }
+                        } else if (user.getRole() == Role.RESPONSIBLE) // если проблемы для регионального ответственного
+                        {
+                            taskList = (ArrayList<Task>) taskService.findAll();
+                            taskList = (ArrayList<Task>) taskList.stream()
+//                                    .filter( (x)->  x.getRegion().getResponsible().getId() == user.getId() )
+                                    .filter( (x)->  x.getRegion()!= null  )
+                                    .filter( (x)->  x.getRegion().getResponsible() != null)
+                                    .filter( (x)->  x.getRegion().getResponsible().getId() != null)
+                                    .filter( (x)->  x.getRegion().getResponsible().getId() == user.getId())
+                                    .collect(Collectors.toList());
+                        } else if (user.getRole() == Role.DEPUTY) // если проблемы для ответственного
+                        {
+                            taskList = (ArrayList<Task>) taskService.getAllByCurrResponsibleId(userId);
+                        }
+
+                        taskList = (ArrayList<Task>) taskList.stream()
+                                 .filter( (x)->  (x.getStatus()==Status.IN_CREATING ||
+                                         x.getStatus()==Status.IN_PROCESSING ||
+                                         x.getStatus()==Status.OPENED ||
+                                         x.getStatus()==Status.AWAITING_SOLUTION) )
+                                .collect(Collectors.toList());
+
+                        return filterAll(filterParams, taskList);
+                    }
                 } else return null;
             } else { // если нет радиокнопок, то возварщаем все проблемы
 
@@ -141,7 +163,7 @@ public class TaskController {
         return null;
     }
 
-
+// поочередная фильтрация по всем пунктам
     public GetPageAndDateRange filterAll(FilterParams filterParams, ArrayList<Task> taskList) {
         System.out.println("taskList" + taskList.size());
         taskList = filterByStatus(filterParams, taskList);
@@ -152,7 +174,6 @@ public class TaskController {
         System.out.println("taskList filterByAuthor" + taskList.size());
         taskList = filterByResponsible(filterParams, taskList);
         System.out.println("taskList filterByResponsible" + taskList.size());
-
 
         GetPageAndDateRange getPageAndDateRange = new GetPageAndDateRange(null, null, null);
         getPageAndDateRange.setAllTaskCount(taskList.size());

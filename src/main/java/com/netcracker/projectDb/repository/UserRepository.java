@@ -5,8 +5,6 @@ import com.netcracker.projectDb.model.Role;
 import com.netcracker.projectDb.model.User;
 import org.springframework.data.repository.CrudRepository;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Null;
 import java.util.Optional;
 
 public interface UserRepository extends CrudRepository<User, Long> {
@@ -15,5 +13,8 @@ public interface UserRepository extends CrudRepository<User, Long> {
     Iterable<User> findAllByRoleIsNot(Role role);
 
     Iterable<User> findAllByRegion(Region region);
-    Iterable<User> findAllByRoleAndRegion(Role role,Region region);
+
+    Iterable<User> findAllByRoleAndRegion(Role role, Region region);
+
+    Optional<User> findByUrlAccountConfirm(String urlAccountConfirm);
 }

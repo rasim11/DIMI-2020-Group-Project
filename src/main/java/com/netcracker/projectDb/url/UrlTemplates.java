@@ -121,4 +121,6 @@ public final class UrlTemplates {
             "/subscriptions-get-by-task-id/{id}";
     public static final String URL_GET_COMMENTS_BY_AUTHOR = API + VERSION + COMMENT_MANAGEMENT +
             "/comments-get-by-author/{id}";
+    public static final String URL_GET_USER_BY_URL_ACCOUNT_CONFIRM = API + VERSION + USER_MANAGEMENT +
+            "/get-by-url-account-confirm/{url}";
 }
