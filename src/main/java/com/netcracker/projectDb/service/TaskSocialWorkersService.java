@@ -6,8 +6,9 @@ import com.netcracker.projectDb.model.User;
 import com.netcracker.projectDb.repository.TaskSocialWorkersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
+
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
